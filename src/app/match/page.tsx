@@ -7,8 +7,12 @@ import { Logo } from "@/components/Logo";
 type GameType = "draw" | "categories";
 
 function ProverbGame({
+  team1,
+  team2,
   onRoundEnd,
 }: {
+  team1: string;
+  team2: string;
   onRoundEnd: () => void;
 }) {
   const puzzles = [
@@ -34,11 +38,22 @@ function ProverbGame({
   const ROUND_TIME = 20;
   const [index, setIndex] = useState(() => Math.floor(Math.random() * puzzles.length));
   const current = useMemo(() => puzzles[index], [index]);
+
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
   const [revealed, setRevealed] = useState(false);
 
+  const [team1Ready, setTeam1Ready] = useState(false);
+  const [team2Ready, setTeam2Ready] = useState(false);
+  const [team1Time, setTeam1Time] = useState<number | null>(null);
+  const [team2Time, setTeam2Time] = useState<number | null>(null);
+
   useEffect(() => {
     if (revealed) return;
+
+    if (team1Ready || team2Ready) {
+      setRevealed(true);
+      return;
+    }
 
     if (timeLeft <= 0) {
       setRevealed(true);
@@ -50,7 +65,7 @@ function ProverbGame({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, revealed]);
+  }, [timeLeft, revealed, team1Ready, team2Ready]);
 
   function nextQuestion() {
     let nextIndex = Math.floor(Math.random() * puzzles.length);
@@ -64,6 +79,10 @@ function ProverbGame({
     setIndex(nextIndex);
     setTimeLeft(ROUND_TIME);
     setRevealed(false);
+    setTeam1Ready(false);
+    setTeam2Ready(false);
+    setTeam1Time(null);
+    setTeam2Time(null);
   }
 
   return (
@@ -81,6 +100,50 @@ function ProverbGame({
           ركز... الوقت يمشي ⏳
         </div>
       )}
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
+          <p className="text-lg font-black">{team1}</p>
+          <p className="mt-2 text-sm text-white/80">
+            {team1Ready ? "🔴 خلص" : "🔴 ينتظر"}
+          </p>
+          {team1Time !== null && (
+            <p className="mt-1 text-xs text-white/70">خلص خلال {team1Time} ثانية</p>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              setTeam1Ready(true);
+              setTeam1Time(ROUND_TIME - timeLeft);
+            }}
+            disabled={team1Ready || revealed}
+            className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
+          >
+            ✅ خلصنا
+          </button>
+        </div>
+
+        <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
+          <p className="text-lg font-black">{team2}</p>
+          <p className="mt-2 text-sm text-white/80">
+            {team2Ready ? "🔵 خلص" : "🔵 ينتظر"}
+          </p>
+          {team2Time !== null && (
+            <p className="mt-1 text-xs text-white/70">خلص خلال {team2Time} ثانية</p>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              setTeam2Ready(true);
+              setTeam2Time(ROUND_TIME - timeLeft);
+            }}
+            disabled={team2Ready || revealed}
+            className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
+          >
+            ✅ خلصنا
+          </button>
+        </div>
+      </div>
 
       {revealed && (
         <>
@@ -166,6 +229,8 @@ function CategoriesGame({
     setRevealed(false);
     setTeam1Ready(false);
     setTeam2Ready(false);
+    setTeam1Time(null);
+    setTeam2Time(null);
   }
 
   return (
@@ -200,9 +265,15 @@ function CategoriesGame({
           <p className="mt-2 text-sm text-white/80">
             {team1Ready ? "🔴 جاهز" : "🔴 لم ينتهِ"}
           </p>
+          {team1Time !== null && (
+            <p className="mt-1 text-xs text-white/70">خلص خلال {team1Time} ثانية</p>
+          )}
           <button
             type="button"
-            onClick={() => setTeam1Ready(true)}
+            onClick={() => {
+              setTeam1Ready(true);
+              setTeam1Time(ROUND_TIME - timeLeft);
+            }}
             disabled={team1Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
@@ -215,9 +286,15 @@ function CategoriesGame({
           <p className="mt-2 text-sm text-white/80">
             {team2Ready ? "🔵 جاهز" : "🔵 لم ينتهِ"}
           </p>
+          {team2Time !== null && (
+            <p className="mt-1 text-xs text-white/70">خلص خلال {team2Time} ثانية</p>
+          )}
           <button
             type="button"
-            onClick={() => setTeam2Ready(true)}
+            onClick={() => {
+              setTeam2Ready(true);
+              setTeam2Time(ROUND_TIME - timeLeft);
+            }}
             disabled={team2Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
@@ -317,7 +394,7 @@ export default function MatchPage() {
 
   const currentGameBoard =
     selectedGame === "draw" ? (
-      <ProverbGame onRoundEnd={endRound} />
+      <ProverbGame team1={team1} team2={team2} onRoundEnd={endRound} />
     ) : (
       <CategoriesGame team1={team1} team2={team2} onRoundEnd={endRound} />
     );
