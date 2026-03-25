@@ -4,6 +4,12 @@ import { Logo } from "@/components/Logo";
 
 const games = [
   {
+    href: "/match?game=word",
+    emoji: "💬",
+    title: "وشي الكلمة؟",
+    desc: "خمن الكلمة بحروف عربية"
+  },
+  {
     href: "/match?game=draw",
     emoji: "✏️",
     title: "وش المثل؟",
@@ -28,7 +34,7 @@ export default function Home() {
         منصة ألعاب عائلية عربية بتصميم موحد، وتجربة جماعية ممتعة داخل البيت.
       </p>
 
-      <div className="mt-10 grid w-full max-w-4xl gap-5 md:grid-cols-2">
+      <div className="mt-10 grid w-full max-w-6xl gap-5 md:grid-cols-3">
         {games.map((game) => (
           <Link key={game.title} href={game.href} className="block">
             <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
@@ -41,7 +47,7 @@ export default function Home() {
       </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link href="/match?game=draw" className="btn-primary">
+        <Link href="/match?game=word" className="btn-primary">
           ابدأ تحدي الفريقين
         </Link>
       </div>
