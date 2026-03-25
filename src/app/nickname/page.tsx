@@ -3,17 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type NicknamePageProps = {
-  searchParams?: {
-    game?: string;
-  };
-};
+type SearchParams = Promise<{
+  game?: string;
+}>;
 
-export default function NicknamePage({ searchParams }: NicknamePageProps) {
+function NicknameForm({ game }: { game: string }) {
   const router = useRouter();
   const [name, setName] = useState('');
-
-  const game = searchParams?.game || 'word';
 
   useEffect(() => {
     const saved = localStorage.getItem('nickname');
@@ -51,4 +47,15 @@ export default function NicknamePage({ searchParams }: NicknamePageProps) {
       </div>
     </main>
   );
+}
+
+export default async function NicknamePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const params = await searchParams;
+  const game = params?.game || 'word';
+
+  return <NicknameForm game={game} />;
 }
