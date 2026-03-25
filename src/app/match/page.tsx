@@ -4,7 +4,166 @@ import { useEffect, useMemo, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
 
-type GameType = "draw" | "categories";
+type GameType = "word" | "draw" | "categories";
+
+function WordGame({
+  onRoundEnd,
+}: {
+  onRoundEnd: () => void;
+}) {
+  const WORDS_3 = [
+    "بيت", "باب", "بحر", "جمل", "جبل", "حبر", "حلم", "حوت",
+    "خيل", "درب", "رمل", "ريح", "زهر", "سهم", "سور", "شمس",
+    "صقر", "طير", "عين", "قمر", "قلم", "كلب", "ليل", "مطر",
+    "نار", "نجم", "نور", "نهر", "ورد", "وقت"
+  ];
+
+  const WORDS_4 = [
+    "كتاب", "مكتب", "هاتف", "تفاح", "قطار", "كرسي", "شمعة", "خيمة",
+    "سحاب", "غروب", "نجمة", "مكيف", "قهوة", "طريق", "ملعب", "موزة",
+    "صحن", "سرير", "شباك", "حليب", "ورقة", "نخله", "ورده", "سمكه",
+    "بيضه", "علبه", "شاحن", "لوحه", "مخده", "منبه", "فرشه", "ساعه",
+    "غرفه", "مطبخ", "شارع", "مدرس", "طالب"
+  ];
+
+  function getRandomWord() {
+    const useFour = Math.random() < 0.7;
+    const list = useFour ? WORDS_4 : WORDS_3;
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  const MAX_TRIES = 6;
+  const [answer, setAnswer] = useState(getRandomWord);
+  const [guesses, setGuesses] = useState<string[]>([]);
+  const [current, setCurrent] = useState("");
+  const [status, setStatus] = useState<"playing" | "won" | "lost">("playing");
+
+  function normalize(text: string) {
+    return text.trim().replace(/\s+/g, "");
+  }
+
+  function submitGuess() {
+    const guess = normalize(current);
+
+    if (status !== "playing") return;
+    if (guess.length !== answer.length) return;
+    if (guesses.length >= MAX_TRIES) return;
+
+    const nextGuesses = [...guesses, guess];
+    setGuesses(nextGuesses);
+    setCurrent("");
+
+    if (guess === answer) {
+      setStatus("won");
+      return;
+    }
+
+    if (nextGuesses.length >= MAX_TRIES) {
+      setStatus("lost");
+    }
+  }
+
+  function getCellColor(letter: string, index: number, guess: string) {
+    if (answer[index] === letter) return "bg-green-500 border-green-500";
+    if (answer.includes(letter)) return "bg-yellow-400 border-yellow-400";
+    return "bg-gray-400 border-gray-400";
+  }
+
+  function resetWordGame() {
+    setAnswer(getRandomWord());
+    setGuesses([]);
+    setCurrent("");
+    setStatus("playing");
+  }
+
+  const emptyRows = MAX_TRIES - guesses.length;
+
+  return (
+    <GlassCard className="p-6 text-center">
+      <h2 className="text-2xl font-black">وشي الكلمة؟</h2>
+      <p className="mt-2 text-white/80">
+        خمن الكلمة من {answer.length} حروف
+      </p>
+
+      <div className="mt-6 space-y-2">
+        {guesses.map((guess, rowIndex) => (
+          <div key={rowIndex} className="flex justify-center gap-2">
+            {guess.split("").map((letter, colIndex) => (
+              <div
+                key={colIndex}
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl border text-lg font-black text-white ${getCellColor(letter, colIndex, guess)}`}
+              >
+                {letter}
+              </div>
+            ))}
+          </div>
+        ))}
+
+        {Array.from({ length: emptyRows }).map((_, rowIndex) => (
+          <div key={`empty-${rowIndex}`} className="flex justify-center gap-2">
+            {Array.from({ length: answer.length }).map((_, colIndex) => (
+              <div
+                key={colIndex}
+                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/25 bg-white/10 text-lg font-black text-white"
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 flex flex-col items-center gap-3">
+        <input
+          value={current}
+          onChange={(e) => setCurrent(e.target.value.slice(0, answer.length))}
+          disabled={status !== "playing"}
+          placeholder={`اكتب كلمة من ${answer.length} حروف`}
+          className="w-full max-w-sm rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-center text-white outline-none placeholder:text-white/60 disabled:opacity-50"
+        />
+
+        <div className="flex flex-wrap justify-center gap-3">
+          <button
+            type="button"
+            onClick={submitGuess}
+            disabled={status !== "playing"}
+            className="rounded-full bg-white px-6 py-3 font-bold text-red-500 disabled:opacity-50"
+          >
+            تأكيد
+          </button>
+
+          <button
+            type="button"
+            onClick={resetWordGame}
+            className="rounded-full border border-white/20 bg-white/10 px-6 py-3 font-bold"
+          >
+            كلمة جديدة
+          </button>
+
+          <button
+            type="button"
+            onClick={onRoundEnd}
+            disabled={status === "playing"}
+            className="rounded-full bg-white px-6 py-3 font-bold text-red-500 disabled:opacity-50"
+          >
+            إنهاء الجولة
+          </button>
+        </div>
+      </div>
+
+      {status === "won" && (
+        <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
+          <p className="text-lg font-black">🔥 ممتاز! عرفت الكلمة</p>
+        </div>
+      )}
+
+      {status === "lost" && (
+        <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
+          <p className="text-lg font-black">انتهت المحاولات</p>
+          <p className="mt-2 text-white/80">الكلمة الصحيحة: {answer}</p>
+        </div>
+      )}
+    </GlassCard>
+  );
+}
 
 function ProverbGame({
   team1,
@@ -335,7 +494,7 @@ export default function MatchPage() {
   const [team1, setTeam1] = useState("فريق 1");
   const [team2, setTeam2] = useState("فريق 2");
   const [rounds, setRounds] = useState(3);
-  const [selectedGame, setSelectedGame] = useState<GameType>("draw");
+  const [selectedGame, setSelectedGame] = useState<GameType>("word");
 
   const [started, setStarted] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
@@ -349,7 +508,7 @@ export default function MatchPage() {
     const params = new URLSearchParams(window.location.search);
     const game = params.get("game");
 
-    if (game === "draw" || game === "categories") {
+    if (game === "word" || game === "draw" || game === "categories") {
       setSelectedGame(game);
     }
   }, []);
@@ -393,7 +552,9 @@ export default function MatchPage() {
   const currentTeam = currentRound % 2 === 1 ? team1 : team2;
 
   const currentGameBoard =
-    selectedGame === "draw" ? (
+    selectedGame === "word" ? (
+      <WordGame onRoundEnd={endRound} />
+    ) : selectedGame === "draw" ? (
       <ProverbGame team1={team1} team2={team2} onRoundEnd={endRound} />
     ) : (
       <CategoriesGame team1={team1} team2={team2} onRoundEnd={endRound} />
@@ -442,6 +603,7 @@ export default function MatchPage() {
                   onChange={(e) => setSelectedGame(e.target.value as GameType)}
                   className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
                 >
+                  <option value="word">وشي الكلمة؟</option>
                   <option value="draw">خمن المثل من الإيموجي</option>
                   <option value="categories">إنسان حيوان نبات جماد</option>
                 </select>
