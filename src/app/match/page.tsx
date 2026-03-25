@@ -112,7 +112,7 @@ function WordGame({
       </div>
 
       <div className="mt-6 flex flex-col items-center gap-3">
-        <input
+<input
   type="text"
   dir="rtl"
   inputMode="text"
@@ -129,7 +129,6 @@ function WordGame({
   placeholder={`اكتب كلمة من ${answer.length} حروف`}
   className="w-full max-w-sm rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-center text-2xl font-black text-white outline-none placeholder:text-white/60 disabled:opacity-50"
 />
-        />
 
         <div className="flex flex-wrap justify-center gap-3">
           <button
