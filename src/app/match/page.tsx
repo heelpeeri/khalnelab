@@ -114,20 +114,10 @@ function WordGame({
       <div className="mt-6 flex flex-col items-center gap-3">
 <input
   type="text"
-  dir="rtl"
-  inputMode="text"
-  autoComplete="off"
-  autoCorrect="off"
-  spellCheck={false}
-  maxLength={answer.length}
   value={current}
-  onChange={(e) => {
-    const value = e.target.value.replace(/\s/g, "");
-    setCurrent(value);
-  }}
-  disabled={false}
-  placeholder={`اكتب كلمة من ${answer.length} حروف`}
-  className="w-full max-w-sm rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-center text-2xl font-black text-white outline-none placeholder:text-white/60 disabled:opacity-50"
+  onChange={(e) => setCurrent(e.target.value)}
+  placeholder="اكتب هنا"
+  className="w-full max-w-sm border border-red-500 bg-white px-4 py-3 text-black"
 />
 
         <div className="flex flex-wrap justify-center gap-3">
