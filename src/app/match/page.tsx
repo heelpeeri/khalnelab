@@ -31,7 +31,7 @@ function ProverbGame({
     { emoji: "🔥➡️💨😡", answer: "لا تشب النار وتزعل من دخانها" },
   ];
 
-  const ROUND_TIME = 12;
+  const ROUND_TIME = 20;
   const [index, setIndex] = useState(() => Math.floor(Math.random() * puzzles.length));
   const current = useMemo(() => puzzles[index], [index]);
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
@@ -39,22 +39,28 @@ function ProverbGame({
 
   useEffect(() => {
     if (revealed) return;
+
     if (timeLeft <= 0) {
       setRevealed(true);
       return;
     }
 
-    const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
+    const timer = setTimeout(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
     return () => clearTimeout(timer);
   }, [timeLeft, revealed]);
 
   function nextQuestion() {
     let nextIndex = Math.floor(Math.random() * puzzles.length);
+
     if (puzzles.length > 1) {
       while (nextIndex === index) {
         nextIndex = Math.floor(Math.random() * puzzles.length);
       }
     }
+
     setIndex(nextIndex);
     setTimeLeft(ROUND_TIME);
     setRevealed(false);
@@ -64,7 +70,7 @@ function ProverbGame({
     <GlassCard className="p-6 text-center">
       <h2 className="text-2xl font-black">خمن المثل من الإيموجي</h2>
 
-      <div className="mt-4 rounded-full bg-white px-4 py-2 text-sm font-black text-red-500 inline-block">
+      <div className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-sm font-black text-red-500">
         الوقت: {timeLeft}
       </div>
 
@@ -72,15 +78,21 @@ function ProverbGame({
 
       {!revealed && (
         <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-white/80">
-          انتظر انتهاء الوقت
+          ركز... الوقت يمشي ⏳
         </div>
       )}
 
       {revealed && (
-        <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-5">
-          <p className="text-sm text-white/70">الإجابة الصحيحة</p>
-          <p className="mt-2 text-2xl font-black">{current.answer}</p>
-        </div>
+        <>
+          <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
+            <p className="text-lg font-black">⏰ انتهى الوقت!</p>
+          </div>
+
+          <div className="mt-4 rounded-2xl border border-white/20 bg-white/10 p-5">
+            <p className="text-sm text-white/70">الإجابة الصحيحة</p>
+            <p className="mt-2 text-2xl font-black">{current.answer}</p>
+          </div>
+        </>
       )}
 
       <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -106,27 +118,53 @@ function ProverbGame({
 }
 
 function CategoriesGame({
+  team1,
+  team2,
   onRoundEnd,
 }: {
+  team1: string;
+  team2: string;
   onRoundEnd: () => void;
 }) {
   const fields = ["إنسان", "حيوان", "نبات", "جماد", "بلاد"];
-  const ROUND_TIME = 20;
+  const ROUND_TIME = 40;
   const letters = ["م", "س", "ب", "ر", "ن", "ل", "ك"];
-  const [letter] = useState(() => letters[Math.floor(Math.random() * letters.length)]);
+  const [letter, setLetter] = useState(() => letters[Math.floor(Math.random() * letters.length)]);
+
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
   const [revealed, setRevealed] = useState(false);
 
+  const [team1Ready, setTeam1Ready] = useState(false);
+  const [team2Ready, setTeam2Ready] = useState(false);
+
   useEffect(() => {
     if (revealed) return;
+
+    if (team1Ready && team2Ready) {
+      setRevealed(true);
+      return;
+    }
+
     if (timeLeft <= 0) {
       setRevealed(true);
       return;
     }
 
-    const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
+    const timer = setTimeout(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
     return () => clearTimeout(timer);
-  }, [timeLeft, revealed]);
+  }, [timeLeft, revealed, team1Ready, team2Ready]);
+
+  function nextLetter() {
+    const next = letters[Math.floor(Math.random() * letters.length)];
+    setLetter(next);
+    setTimeLeft(ROUND_TIME);
+    setRevealed(false);
+    setTeam1Ready(false);
+    setTeam2Ready(false);
+  }
 
   return (
     <GlassCard className="p-6">
@@ -137,7 +175,7 @@ function CategoriesGame({
         </div>
       </div>
 
-      <div className="mt-4 rounded-full bg-white px-4 py-2 text-sm font-black text-red-500 inline-block">
+      <div className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-sm font-black text-red-500">
         الوقت: {timeLeft}
       </div>
 
@@ -154,13 +192,53 @@ function CategoriesGame({
         ))}
       </div>
 
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
+          <p className="text-lg font-black">{team1}</p>
+          <p className="mt-2 text-sm text-white/80">
+            {team1Ready ? "🔴 جاهز" : "🔴 لم ينتهِ"}
+          </p>
+          <button
+            type="button"
+            onClick={() => setTeam1Ready(true)}
+            disabled={team1Ready || revealed}
+            className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
+          >
+            ✅ خلصنا
+          </button>
+        </div>
+
+        <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
+          <p className="text-lg font-black">{team2}</p>
+          <p className="mt-2 text-sm text-white/80">
+            {team2Ready ? "🔵 جاهز" : "🔵 لم ينتهِ"}
+          </p>
+          <button
+            type="button"
+            onClick={() => setTeam2Ready(true)}
+            disabled={team2Ready || revealed}
+            className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
+          >
+            ✅ خلصنا
+          </button>
+        </div>
+      </div>
+
       {revealed && (
-        <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center text-white/80">
-          انتهى الوقت، قرروا الآن مين فاز بالجولة
+        <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
+          <p className="text-lg font-black">🚫 انتهى الوقت – وقت الإعلان</p>
         </div>
       )}
 
-      <div className="mt-6 flex justify-center">
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <button
+          type="button"
+          onClick={nextLetter}
+          className="rounded-full border border-white/20 bg-white/10 px-6 py-3 font-bold"
+        >
+          حرف جديد
+        </button>
+
         <button
           type="button"
           onClick={onRoundEnd}
@@ -188,7 +266,14 @@ export default function MatchPage() {
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
 
-  const currentTeam = currentRound % 2 === 1 ? team1 : team2;
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const game = params.get("game");
+
+    if (game === "draw" || game === "categories") {
+      setSelectedGame(game);
+    }
+  }, []);
 
   function startGame() {
     if (!team1.trim() || !team2.trim()) return;
@@ -226,11 +311,13 @@ export default function MatchPage() {
     setGameEnded(false);
   }
 
+  const currentTeam = currentRound % 2 === 1 ? team1 : team2;
+
   const currentGameBoard =
     selectedGame === "draw" ? (
       <ProverbGame onRoundEnd={endRound} />
     ) : (
-      <CategoriesGame onRoundEnd={endRound} />
+      <CategoriesGame team1={team1} team2={team2} onRoundEnd={endRound} />
     );
 
   return (
