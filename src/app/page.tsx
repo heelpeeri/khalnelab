@@ -4,19 +4,19 @@ import { Logo } from "@/components/Logo";
 
 const games = [
   {
-    href: "/nickname?game=word",
+    href: "/match?game=word",
     emoji: "💬",
     title: "وشي الكلمة؟",
     desc: "خمن الكلمة قبل الكل"
   },
   {
-    href: "/nickname?game=draw",
+    href: "/match?game=draw",
     emoji: "✏️",
     title: "وش المثل؟",
     desc: "خمن المثل من الإيموجي"
   },
   {
-    href: "/nickname?game=categories",
+    href: "/match?game=categories",
     emoji: "🌍",
     title: "إنسان حيوان نبات جماد",
     desc: "ومعها بلاد أيضًا"
@@ -26,16 +26,12 @@ const games = [
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-4 py-10 text-center">
-      
-      {/* 🔥 الشعار صار أكبر ومركزي */}
       <div className="mb-6 flex justify-center">
         <Logo size={220} />
       </div>
 
-      {/* ❌ حذفنا خل نلعب */}
-
       <p className="mt-2 max-w-xl text-lg text-white/85">
-        منصة ألعاب عائلية عربية بتصميم موحد، وغرف سهلة، وتجربة مرحة على الجوال.
+        منصة ألعاب عائلية عربية بتصميم موحد، وتجربة جماعية ممتعة داخل البيت.
       </p>
 
       <div className="mt-10 grid w-full max-w-6xl gap-5 md:grid-cols-3">
@@ -51,8 +47,9 @@ export default function Home() {
       </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link href="/nickname?game=word" className="btn-primary">جرب الآن</Link>
-        <Link href="/nickname?game=categories" className="btn-secondary">ابدأ اللعب</Link>
+        <Link href="/match?game=draw" className="btn-primary">
+          ابدأ تحدي الفريقين
+        </Link>
       </div>
     </main>
   );
