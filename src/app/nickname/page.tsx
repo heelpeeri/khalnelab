@@ -1,60 +1,54 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { GlassCard } from "@/components/GlassCard";
-import { Logo } from "@/components/Logo";
-import { getNickname, makeRoomId, saveNickname, type GameType } from "@/lib/storage";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-const gameTitle: Record<GameType, string> = {
-  word: "وشي الكلمة؟",
-  draw: "وشي الرسمة؟",
-  categories: "إنسان حيوان نبات جماد",
+type NicknamePageProps = {
+  searchParams?: {
+    game?: string;
+  };
 };
 
-export default function NicknamePage() {
+export default function NicknamePage({ searchParams }: NicknamePageProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
 
-  const game = useMemo<GameType>(() => {
-    const value = searchParams.get("game");
-    if (value === "draw" || value === "categories" || value === "word") return value;
-    return "word";
-  }, [searchParams]);
+  const game = searchParams?.game || 'word';
 
   useEffect(() => {
-    setName(getNickname());
+    const saved = localStorage.getItem('nickname');
+    if (saved) setName(saved);
   }, []);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     if (!name.trim()) return;
-    saveNickname(name.trim());
-    const roomId = makeRoomId();
-    router.push(`/room/${roomId}?game=${game}&name=${encodeURIComponent(name.trim())}`);
+
+    localStorage.setItem('nickname', name);
+    router.push(`/room/demo?player=${encodeURIComponent(name)}&game=${game}`);
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-8">
-      <GlassCard className="w-full max-w-xl p-8 text-center">
-        <Logo size={120} />
-        <p className="mt-4 text-sm text-white/70">اللعبة المختارة</p>
-        <h1 className="mt-2 text-3xl font-black">{gameTitle[game]}</h1>
-        <p className="mt-3 text-white/80">اكتب اسمًا مستعارًا ثم أنشئ غرفة جديدة.</p>
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-500 via-red-600 to-pink-500 px-4 text-white">
+      <div className="w-full max-w-md rounded-[32px] border border-white/20 bg-white/10 p-8 shadow-xl backdrop-blur-xl">
+        <img src="/logo.png" alt="خل نلعب" className="mx-auto mb-6 w-28" />
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+        <h1 className="mb-3 text-3xl font-black">اختر اسمك</h1>
+        <p className="mb-6 text-sm text-white/80">أدخل اسمًا مستعارًا للعب</p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="اكتب اسمك المستعار"
-            className="input"
+            placeholder="مثال: أبو فيصل"
+            className="w-full rounded-2xl border border-white/20 bg-white/20 px-4 py-3 text-white outline-none placeholder:text-white/60"
           />
-          <button type="submit" className="btn-primary w-full">
-            إنشاء غرفة
+
+          <button className="w-full rounded-2xl bg-white px-5 py-3 font-bold text-red-500 transition hover:scale-105">
+            متابعة
           </button>
         </form>
-      </GlassCard>
+      </div>
     </main>
   );
 }
