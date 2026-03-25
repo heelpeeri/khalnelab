@@ -12,7 +12,7 @@ const games = [
   {
     href: "/nickname?game=draw",
     emoji: "✏️",
-    title: "وشي الرسمة؟",
+    title: "وش المثل؟",
     desc: "ارسم، وخمن، واجمع النقاط"
   },
   {
