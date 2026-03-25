@@ -136,6 +136,8 @@ function CategoriesGame({
 
   const [team1Ready, setTeam1Ready] = useState(false);
   const [team2Ready, setTeam2Ready] = useState(false);
+  const [team1Time, setTeam1Time] = useState<number | null>(null);
+  const [team2Time, setTeam2Time] = useState<number | null>(null);
 
   useEffect(() => {
     if (revealed) return;
