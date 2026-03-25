@@ -13,7 +13,7 @@ const games = [
     href: "/nickname?game=draw",
     emoji: "✏️",
     title: "وش المثل؟",
-    desc: "ارسم، وخمن، واجمع النقاط"
+    desc: "خمن المثل من الإيموجي"
   },
   {
     href: "/nickname?game=categories",
@@ -26,9 +26,15 @@ const games = [
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-4 py-10 text-center">
-      <Logo size={180} />
-      <h1 className="mt-4 text-5xl font-black md:text-6xl">خل نلعب</h1>
-      <p className="mt-3 max-w-xl text-lg text-white/85">
+      
+      {/* 🔥 الشعار صار أكبر ومركزي */}
+      <div className="mb-6 flex justify-center">
+        <Logo size={220} />
+      </div>
+
+      {/* ❌ حذفنا خل نلعب */}
+
+      <p className="mt-2 max-w-xl text-lg text-white/85">
         منصة ألعاب عائلية عربية بتصميم موحد، وغرف سهلة، وتجربة مرحة على الجوال.
       </p>
 
