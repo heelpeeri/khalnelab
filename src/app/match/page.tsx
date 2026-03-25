@@ -125,7 +125,7 @@ function WordGame({
     const value = e.target.value.replace(/\s/g, "");
     setCurrent(value);
   }}
-  disabled={status !== "playing"}
+  disabled={false}
   placeholder={`اكتب كلمة من ${answer.length} حروف`}
   className="w-full max-w-sm rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-center text-2xl font-black text-white outline-none placeholder:text-white/60 disabled:opacity-50"
 />
