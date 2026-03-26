@@ -11,7 +11,7 @@ const games = [
   },
   {
     href: "/match?game=draw",
-    emoji: "✏️",
+    emoji: "📄✏️",
     title: "وش المثل؟",
     desc: "خمن المثل من الإيموجي"
   },
