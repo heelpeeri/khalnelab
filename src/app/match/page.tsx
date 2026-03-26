@@ -5,6 +5,7 @@ import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
 
 type GameType = "word" | "draw" | "categories";
+type PlayMode = "solo" | "teams";
 
 function WordGame({
   onRoundEnd,
@@ -20,10 +21,10 @@ function WordGame({
 
   const WORDS_4 = [
     "كتاب", "مكتب", "هاتف", "تفاح", "قطار", "كرسي", "شمعة", "خيمة",
-    "سحاب", "غروب", "نجمة", "مكيف", "قهوة", "طريق", "ملعب", "موزة",
-    "احبك", "سرير", "شباك", "حليب", "ورقة", "نخله", "ورده", "سمكه",
-    "بيضه", "علبه", "شاحن", "لوحه", "مخده", "منبه", "فرشه", "ساعه",
-    "غرفه", "مطبخ", "شارع", "مدرس", "طالب"
+    "سحاب", "نجمة", "مكيف", "قهوة", "طريق", "ملعب", "موزة", "صحن",
+    "سرير", "شباك", "حليب", "ورقة", "نخله", "ورده", "سمكه", "بيضه",
+    "علبه", "شاحن", "لوحه", "مخده", "منبه", "فرشه", "ساعه", "غرفه",
+    "مطبخ", "شارع", "مدرس", "طالب"
   ];
 
   function getRandomWord() {
@@ -81,9 +82,7 @@ function WordGame({
   return (
     <GlassCard className="p-6 text-center">
       <h2 className="text-2xl font-black">وشي الكلمة؟</h2>
-      <p className="mt-2 text-white/80">
-        خمن الكلمة من {answer.length} حروف
-      </p>
+      <p className="mt-2 text-white/80">خمن الكلمة من {answer.length} حروف</p>
 
       <div className="mt-6 space-y-2">
         {guesses.map((guess, rowIndex) => (
@@ -112,13 +111,13 @@ function WordGame({
       </div>
 
       <div className="mt-6 flex flex-col items-center gap-3">
-<input
-  type="text"
-  value={current}
-  onChange={(e) => setCurrent(e.target.value)}
-  placeholder="اكتب هنا"
-  className="w-full max-w-sm border border-red-500 bg-white px-4 py-3 text-black"
-/>
+        <input
+          type="text"
+          value={current}
+          onChange={(e) => setCurrent(e.target.value)}
+          placeholder={`اكتب كلمة من ${answer.length} حروف`}
+          className="w-full max-w-sm rounded-2xl border border-white/20 bg-white px-4 py-3 text-center text-2xl font-black text-black outline-none"
+        />
 
         <div className="flex flex-wrap justify-center gap-3">
           <button
@@ -166,12 +165,12 @@ function WordGame({
 }
 
 function ProverbGame({
-  team1,
-  team2,
+  side1Name,
+  side2Name,
   onRoundEnd,
 }: {
-  team1: string;
-  team2: string;
+  side1Name: string;
+  side2Name: string;
   onRoundEnd: () => void;
 }) {
   const puzzles = [
@@ -201,15 +200,15 @@ function ProverbGame({
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
   const [revealed, setRevealed] = useState(false);
 
-  const [team1Ready, setTeam1Ready] = useState(false);
-  const [team2Ready, setTeam2Ready] = useState(false);
-  const [team1Time, setTeam1Time] = useState<number | null>(null);
-  const [team2Time, setTeam2Time] = useState<number | null>(null);
+  const [side1Ready, setSide1Ready] = useState(false);
+  const [side2Ready, setSide2Ready] = useState(false);
+  const [side1Time, setSide1Time] = useState<number | null>(null);
+  const [side2Time, setSide2Time] = useState<number | null>(null);
 
   useEffect(() => {
     if (revealed) return;
 
-    if (team1Ready || team2Ready) {
+    if (side1Ready || side2Ready) {
       setRevealed(true);
       return;
     }
@@ -224,7 +223,7 @@ function ProverbGame({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, revealed, team1Ready, team2Ready]);
+  }, [timeLeft, revealed, side1Ready, side2Ready]);
 
   function nextQuestion() {
     let nextIndex = Math.floor(Math.random() * puzzles.length);
@@ -238,10 +237,10 @@ function ProverbGame({
     setIndex(nextIndex);
     setTimeLeft(ROUND_TIME);
     setRevealed(false);
-    setTeam1Ready(false);
-    setTeam2Ready(false);
-    setTeam1Time(null);
-    setTeam2Time(null);
+    setSide1Ready(false);
+    setSide2Ready(false);
+    setSide1Time(null);
+    setSide2Time(null);
   }
 
   return (
@@ -262,20 +261,20 @@ function ProverbGame({
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
-          <p className="text-lg font-black">{team1}</p>
+          <p className="text-lg font-black">{side1Name}</p>
           <p className="mt-2 text-sm text-white/80">
-            {team1Ready ? "🔴 خلص" : "🔴 ينتظر"}
+            {side1Ready ? "✅ خلص" : "⏳ ينتظر"}
           </p>
-          {team1Time !== null && (
-            <p className="mt-1 text-xs text-white/70">خلص خلال {team1Time} ثانية</p>
+          {side1Time !== null && (
+            <p className="mt-1 text-xs text-white/70">خلص خلال {side1Time} ثانية</p>
           )}
           <button
             type="button"
             onClick={() => {
-              setTeam1Ready(true);
-              setTeam1Time(ROUND_TIME - timeLeft);
+              setSide1Ready(true);
+              setSide1Time(ROUND_TIME - timeLeft);
             }}
-            disabled={team1Ready || revealed}
+            disabled={side1Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
             ✅ خلصنا
@@ -283,20 +282,20 @@ function ProverbGame({
         </div>
 
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
-          <p className="text-lg font-black">{team2}</p>
+          <p className="text-lg font-black">{side2Name}</p>
           <p className="mt-2 text-sm text-white/80">
-            {team2Ready ? "🔵 خلص" : "🔵 ينتظر"}
+            {side2Ready ? "✅ خلص" : "⏳ ينتظر"}
           </p>
-          {team2Time !== null && (
-            <p className="mt-1 text-xs text-white/70">خلص خلال {team2Time} ثانية</p>
+          {side2Time !== null && (
+            <p className="mt-1 text-xs text-white/70">خلص خلال {side2Time} ثانية</p>
           )}
           <button
             type="button"
             onClick={() => {
-              setTeam2Ready(true);
-              setTeam2Time(ROUND_TIME - timeLeft);
+              setSide2Ready(true);
+              setSide2Time(ROUND_TIME - timeLeft);
             }}
-            disabled={team2Ready || revealed}
+            disabled={side2Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
             ✅ خلصنا
@@ -340,15 +339,14 @@ function ProverbGame({
 }
 
 function CategoriesGame({
-  team1,
-  team2,
+  side1Name,
+  side2Name,
   onRoundEnd,
 }: {
-  team1: string;
-  team2: string;
+  side1Name: string;
+  side2Name: string;
   onRoundEnd: () => void;
 }) {
-  const fields = ["إنسان", "حيوان", "نبات", "جماد", "بلاد"];
   const ROUND_TIME = 40;
   const letters = ["م", "س", "ب", "ر", "ن", "ل", "ك"];
   const [letter, setLetter] = useState(() => letters[Math.floor(Math.random() * letters.length)]);
@@ -356,15 +354,15 @@ function CategoriesGame({
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
   const [revealed, setRevealed] = useState(false);
 
-  const [team1Ready, setTeam1Ready] = useState(false);
-  const [team2Ready, setTeam2Ready] = useState(false);
-  const [team1Time, setTeam1Time] = useState<number | null>(null);
-  const [team2Time, setTeam2Time] = useState<number | null>(null);
+  const [side1Ready, setSide1Ready] = useState(false);
+  const [side2Ready, setSide2Ready] = useState(false);
+  const [side1Time, setSide1Time] = useState<number | null>(null);
+  const [side2Time, setSide2Time] = useState<number | null>(null);
 
   useEffect(() => {
     if (revealed) return;
 
-    if (team1Ready && team2Ready) {
+    if (side1Ready && side2Ready) {
       setRevealed(true);
       return;
     }
@@ -379,25 +377,26 @@ function CategoriesGame({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, revealed, team1Ready, team2Ready]);
+  }, [timeLeft, revealed, side1Ready, side2Ready]);
 
   function nextLetter() {
     const next = letters[Math.floor(Math.random() * letters.length)];
     setLetter(next);
     setTimeLeft(ROUND_TIME);
     setRevealed(false);
-    setTeam1Ready(false);
-    setTeam2Ready(false);
-    setTeam1Time(null);
-    setTeam2Time(null);
+    setSide1Ready(false);
+    setSide2Ready(false);
+    setSide1Time(null);
+    setSide2Time(null);
   }
 
   return (
-    <GlassCard className="p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-2xl font-black">إنسان حيوان نبات جماد بلاد</h2>
-        <div className="rounded-full bg-white px-4 py-2 text-sm font-black text-red-500">
-          الحرف: {letter}
+    <GlassCard className="p-6 text-center">
+      <h2 className="text-2xl font-black">إنسان حيوان نبات جماد بلاد</h2>
+
+      <div className="mt-6 flex justify-center">
+        <div className="rounded-[30px] bg-white px-12 py-8 text-7xl font-black text-red-500 shadow-xl">
+          {letter}
         </div>
       </div>
 
@@ -405,39 +404,38 @@ function CategoriesGame({
         الوقت: {timeLeft}
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-  {fields.map((field) => (
-    <div
-      key={field}
-      className="rounded-3xl border border-white/20 bg-white/10 p-6 text-center"
-    >
-      <p className="text-2xl font-black">{field}</p>
-
-      <div className="mt-4 text-4xl">❓</div>
-
-      <p className="mt-3 text-sm text-white/60">
-        قول الإجابة بصوتك
-      </p>
-    </div>
-  ))}
-</div>
+      <div className="mt-6 rounded-3xl border border-white/20 bg-white/10 p-6 text-center">
+        <p className="text-lg font-black">تعليمات الجولة</p>
+        <p className="mt-3 leading-8 text-white/80">
+          فكروا في:
+          <br />
+          إنسان – حيوان – نبات – جماد – بلاد
+          <br />
+          كلها تبدأ بنفس الحرف
+          <br />
+          <br />
+          أول واحد يخلص يقول: <span className="font-black text-white">خلصنا!</span>
+          <br />
+          ثم يضغط الزر
+        </p>
+      </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
-          <p className="text-lg font-black">{team1}</p>
+          <p className="text-lg font-black">{side1Name}</p>
           <p className="mt-2 text-sm text-white/80">
-            {team1Ready ? "🔴 جاهز" : "🔴 لم ينتهِ"}
+            {side1Ready ? "✅ جاهز" : "⏳ لم ينتهِ"}
           </p>
-          {team1Time !== null && (
-            <p className="mt-1 text-xs text-white/70">خلص خلال {team1Time} ثانية</p>
+          {side1Time !== null && (
+            <p className="mt-1 text-xs text-white/70">خلص خلال {side1Time} ثانية</p>
           )}
           <button
             type="button"
             onClick={() => {
-              setTeam1Ready(true);
-              setTeam1Time(ROUND_TIME - timeLeft);
+              setSide1Ready(true);
+              setSide1Time(ROUND_TIME - timeLeft);
             }}
-            disabled={team1Ready || revealed}
+            disabled={side1Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
             ✅ خلصنا
@@ -445,20 +443,20 @@ function CategoriesGame({
         </div>
 
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
-          <p className="text-lg font-black">{team2}</p>
+          <p className="text-lg font-black">{side2Name}</p>
           <p className="mt-2 text-sm text-white/80">
-            {team2Ready ? "🔵 جاهز" : "🔵 لم ينتهِ"}
+            {side2Ready ? "✅ جاهز" : "⏳ لم ينتهِ"}
           </p>
-          {team2Time !== null && (
-            <p className="mt-1 text-xs text-white/70">خلص خلال {team2Time} ثانية</p>
+          {side2Time !== null && (
+            <p className="mt-1 text-xs text-white/70">خلص خلال {side2Time} ثانية</p>
           )}
           <button
             type="button"
             onClick={() => {
-              setTeam2Ready(true);
-              setTeam2Time(ROUND_TIME - timeLeft);
+              setSide2Ready(true);
+              setSide2Time(ROUND_TIME - timeLeft);
             }}
-            disabled={team2Ready || revealed}
+            disabled={side2Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
             ✅ خلصنا
@@ -495,15 +493,18 @@ function CategoriesGame({
 }
 
 export default function MatchPage() {
-  const [team1, setTeam1] = useState("فريق 1");
-  const [team2, setTeam2] = useState("فريق 2");
+  const [mode, setMode] = useState<PlayMode>("teams");
+
+  const [side1, setSide1] = useState("فريق 1");
+  const [side2, setSide2] = useState("فريق 2");
+
   const [rounds, setRounds] = useState(3);
   const [selectedGame, setSelectedGame] = useState<GameType>("word");
 
   const [started, setStarted] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
-  const [team1Score, setTeam1Score] = useState(0);
-  const [team2Score, setTeam2Score] = useState(0);
+  const [side1Score, setSide1Score] = useState(0);
+  const [side2Score, setSide2Score] = useState(0);
 
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
@@ -517,12 +518,17 @@ export default function MatchPage() {
     }
   }, []);
 
+  const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
+  const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
+  const currentTurnLabel = mode === "teams" ? "دور الفريق" : "دور اللاعب";
+  const winnerQuestionLabel = mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
+
   function startGame() {
-    if (!team1.trim() || !team2.trim()) return;
+    if (!side1.trim() || !side2.trim()) return;
     setStarted(true);
     setCurrentRound(1);
-    setTeam1Score(0);
-    setTeam2Score(0);
+    setSide1Score(0);
+    setSide2Score(0);
     setGameEnded(false);
   }
 
@@ -530,9 +536,9 @@ export default function MatchPage() {
     setShowWinnerModal(true);
   }
 
-  function chooseWinner(winner: "team1" | "team2" | "none") {
-    if (winner === "team1") setTeam1Score((s) => s + 1);
-    if (winner === "team2") setTeam2Score((s) => s + 1);
+  function chooseWinner(winner: "side1" | "side2" | "none") {
+    if (winner === "side1") setSide1Score((s) => s + 1);
+    if (winner === "side2") setSide2Score((s) => s + 1);
 
     setShowWinnerModal(false);
 
@@ -547,21 +553,21 @@ export default function MatchPage() {
   function resetGame() {
     setStarted(false);
     setCurrentRound(1);
-    setTeam1Score(0);
-    setTeam2Score(0);
+    setSide1Score(0);
+    setSide2Score(0);
     setShowWinnerModal(false);
     setGameEnded(false);
   }
 
-  const currentTeam = currentRound % 2 === 1 ? team1 : team2;
+  const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
 
   const currentGameBoard =
     selectedGame === "word" ? (
       <WordGame onRoundEnd={endRound} />
     ) : selectedGame === "draw" ? (
-      <ProverbGame team1={team1} team2={team2} onRoundEnd={endRound} />
+      <ProverbGame side1Name={side1} side2Name={side2} onRoundEnd={endRound} />
     ) : (
-      <CategoriesGame team1={team1} team2={team2} onRoundEnd={endRound} />
+      <CategoriesGame side1Name={side1} side2Name={side2} onRoundEnd={endRound} />
     );
 
   return (
@@ -570,7 +576,7 @@ export default function MatchPage() {
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm text-white/70">وضع اللعب</p>
-            <h1 className="text-3xl font-black">تحدي الفريقين</h1>
+            <h1 className="text-3xl font-black">تحدي الجلسة</h1>
           </div>
           <Logo size={90} />
         </div>
@@ -579,27 +585,22 @@ export default function MatchPage() {
           <GlassCard className="p-6">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-bold">اسم فريق 1</label>
-                <input
-                  value={team1}
-                  onChange={(e) => setTeam1(e.target.value)}
+                <label className="mb-2 block text-sm font-bold">نوع التحدي</label>
+                <select
+                  value={mode}
+                  onChange={(e) => {
+                    const nextMode = e.target.value as PlayMode;
+                    setMode(nextMode);
+                    setSide1(nextMode === "teams" ? "فريق 1" : "لاعب 1");
+                    setSide2(nextMode === "teams" ? "فريق 2" : "لاعب 2");
+                  }}
                   className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
-                  placeholder="مثال: الصقور"
-                />
+                >
+                  <option value="teams">فريقين</option>
+                  <option value="solo">فردي</option>
+                </select>
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold">اسم فريق 2</label>
-                <input
-                  value={team2}
-                  onChange={(e) => setTeam2(e.target.value)}
-                  className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
-                  placeholder="مثال: الذئاب"
-                />
-              </div>
-            </div>
-
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-bold">اختيار اللعبة</label>
                 <select
@@ -612,19 +613,41 @@ export default function MatchPage() {
                   <option value="categories">إنسان حيوان نبات جماد</option>
                 </select>
               </div>
+            </div>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-bold">{side1Label}</label>
+                <input
+                  value={side1}
+                  onChange={(e) => setSide1(e.target.value)}
+                  className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
+                  placeholder={mode === "teams" ? "مثال: الصقور" : "مثال: محمد"}
+                />
+              </div>
 
               <div>
-                <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
-                <select
-                  value={rounds}
-                  onChange={(e) => setRounds(Number(e.target.value))}
+                <label className="mb-2 block text-sm font-bold">{side2Label}</label>
+                <input
+                  value={side2}
+                  onChange={(e) => setSide2(e.target.value)}
                   className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
-                >
-                  <option value={1}>1</option>
-                  <option value={3}>3</option>
-                  <option value={5}>5</option>
-                </select>
+                  placeholder={mode === "teams" ? "مثال: الذئاب" : "مثال: خالد"}
+                />
               </div>
+            </div>
+
+            <div className="mt-4">
+              <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
+              <select
+                value={rounds}
+                onChange={(e) => setRounds(Number(e.target.value))}
+                className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
+              >
+                <option value={1}>1</option>
+                <option value={3}>3</option>
+                <option value={5}>5</option>
+              </select>
             </div>
 
             <button
@@ -652,21 +675,21 @@ export default function MatchPage() {
                 </div>
 
                 <div className="rounded-2xl bg-white/10 p-4">
-                  <p className="text-sm text-white/70">دور الفريق</p>
-                  <p className="mt-1 text-2xl font-black">{currentTeam}</p>
+                  <p className="text-sm text-white/70">{currentTurnLabel}</p>
+                  <p className="mt-1 text-2xl font-black">{currentTurnName}</p>
                 </div>
 
                 <div className="rounded-2xl bg-white/10 p-4">
                   <div className="flex items-center justify-between">
-                    <span>{team1}</span>
-                    <span className="font-black">{team1Score}</span>
+                    <span>{side1}</span>
+                    <span className="font-black">{side1Score}</span>
                   </div>
                 </div>
 
                 <div className="rounded-2xl bg-white/10 p-4">
                   <div className="flex items-center justify-between">
-                    <span>{team2}</span>
-                    <span className="font-black">{team2Score}</span>
+                    <span>{side2}</span>
+                    <span className="font-black">{side2Score}</span>
                   </div>
                 </div>
               </div>
@@ -680,21 +703,21 @@ export default function MatchPage() {
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               <div className="rounded-3xl bg-white/10 p-5">
-                <p className="text-lg font-bold">{team1}</p>
-                <p className="mt-2 text-4xl font-black">{team1Score}</p>
+                <p className="text-lg font-bold">{side1}</p>
+                <p className="mt-2 text-4xl font-black">{side1Score}</p>
               </div>
 
               <div className="rounded-3xl bg-white/10 p-5">
-                <p className="text-lg font-bold">{team2}</p>
-                <p className="mt-2 text-4xl font-black">{team2Score}</p>
+                <p className="text-lg font-bold">{side2}</p>
+                <p className="mt-2 text-4xl font-black">{side2Score}</p>
               </div>
             </div>
 
             <p className="mt-6 text-2xl font-black">
-              {team1Score > team2Score
-                ? `الفائز: ${team1}`
-                : team2Score > team1Score
-                ? `الفائز: ${team2}`
+              {side1Score > side2Score
+                ? `الفائز: ${side1}`
+                : side2Score > side1Score
+                ? `الفائز: ${side2}`
                 : "تعادل"}
             </p>
 
@@ -712,21 +735,21 @@ export default function MatchPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
           <div className="w-full max-w-md rounded-[32px] border border-white/20 bg-[#7a001f] p-6 text-center shadow-2xl">
             <h3 className="text-2xl font-black">مين فاز؟</h3>
-            <p className="mt-2 text-white/75">اختر الفريق الفائز في هذه الجولة</p>
+            <p className="mt-2 text-white/75">{winnerQuestionLabel}</p>
 
             <div className="mt-6 space-y-3">
               <button
-                onClick={() => chooseWinner("team1")}
+                onClick={() => chooseWinner("side1")}
                 className="w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500"
               >
-                {team1}
+                {side1}
               </button>
 
               <button
-                onClick={() => chooseWinner("team2")}
+                onClick={() => chooseWinner("side2")}
                 className="w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500"
               >
-                {team2}
+                {side2}
               </button>
 
               <button
