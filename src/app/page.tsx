@@ -17,7 +17,7 @@ const games = [
   },
   {
     href: "/match?game=categories",
-    emoji: "🌍",
+    emoji: "🙋🏻‍♂️🐱🌿🥁🇸🇦",
     title: "إنسان حيوان نبات جماد",
     desc: "ومعها بلاد أيضًا"
   }
