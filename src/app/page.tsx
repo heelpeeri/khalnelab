@@ -11,15 +11,15 @@ const games = [
   },
   {
     href: "/match?game=draw",
-    emoji: "📄✏️",
+    emoji: "✏️",
     title: "وش المثل؟",
     desc: "خمن المثل من الإيموجي"
   },
   {
     href: "/match?game=categories",
-    emoji: "🙋🏻‍♂️🐱🌿🥁🇸🇦",
-    title: "إنسان حيوان نبات جماد بلاد",
-    desc: "المعروف لا يعرف"
+    emoji: "🌍",
+    title: "إنسان حيوان نبات جماد",
+    desc: "ومعها بلاد أيضًا"
   }
 ];
 
@@ -48,7 +48,7 @@ export default function Home() {
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link href="/match?game=word" className="btn-primary">
-          ابدأ تحدي الفريقين
+          ابدأ التحدي
         </Link>
       </div>
     </main>
