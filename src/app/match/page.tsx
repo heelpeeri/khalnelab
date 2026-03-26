@@ -406,17 +406,21 @@ function CategoriesGame({
       </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {fields.map((field) => (
-          <label key={field} className="rounded-3xl border border-white/20 bg-white/10 p-4">
-            <div className="mb-3 text-sm font-black text-white/90">{field}</div>
-            <input
-              disabled={revealed}
-              className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/60 disabled:opacity-50"
-              placeholder={`اكتب ${field}`}
-            />
-          </label>
-        ))}
-      </div>
+  {fields.map((field) => (
+    <div
+      key={field}
+      className="rounded-3xl border border-white/20 bg-white/10 p-6 text-center"
+    >
+      <p className="text-2xl font-black">{field}</p>
+
+      <div className="mt-4 text-4xl">❓</div>
+
+      <p className="mt-3 text-sm text-white/60">
+        قول الإجابة بصوتك
+      </p>
+    </div>
+  ))}
+</div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
