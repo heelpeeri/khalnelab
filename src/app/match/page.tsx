@@ -64,7 +64,7 @@ function WordGame({
     }
   }
 
-  function getCellColor(letter: string, index: number, guess: string) {
+  function getCellColor(letter: string, index: number) {
     if (answer[index] === letter) return "bg-green-500 border-green-500";
     if (answer.includes(letter)) return "bg-yellow-400 border-yellow-400";
     return "bg-gray-400 border-gray-400";
@@ -90,7 +90,7 @@ function WordGame({
             {guess.split("").map((letter, colIndex) => (
               <div
                 key={colIndex}
-                className={`flex h-12 w-12 items-center justify-center rounded-2xl border text-lg font-black text-white ${getCellColor(letter, colIndex, guess)}`}
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl border text-lg font-black text-white ${getCellColor(letter, colIndex)}`}
               >
                 {letter}
               </div>
@@ -165,10 +165,12 @@ function WordGame({
 }
 
 function ProverbGame({
+  mode,
   side1Name,
   side2Name,
   onRoundEnd,
 }: {
+  mode: PlayMode;
   side1Name: string;
   side2Name: string;
   onRoundEnd: () => void;
@@ -204,6 +206,16 @@ function ProverbGame({
   const [side2Ready, setSide2Ready] = useState(false);
   const [side1Time, setSide1Time] = useState<number | null>(null);
   const [side2Time, setSide2Time] = useState<number | null>(null);
+
+  const side1ReadyButtonLabel =
+    mode === "teams" ? "تسجيل انتهاء الفريق 1" : "تسجيل انتهاء اللاعب 1";
+  const side2ReadyButtonLabel =
+    mode === "teams" ? "تسجيل انتهاء الفريق 2" : "تسجيل انتهاء اللاعب 2";
+
+  const instructionText =
+    mode === "teams"
+      ? 'إذا انتهت المجموعة، تقول لصاحب الجلسة: "خلصنا"، ثم يسجل انتهاءها'
+      : 'إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت"، ثم يسجل انتهاءه';
 
   useEffect(() => {
     if (revealed) return;
@@ -247,6 +259,10 @@ function ProverbGame({
     <GlassCard className="p-6 text-center">
       <h2 className="text-2xl font-black">خمن المثل من الإيموجي</h2>
 
+      <div className="mt-4 rounded-3xl border border-white/20 bg-white/10 p-4 text-sm leading-7 text-white/80">
+        {instructionText}
+      </div>
+
       <div className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-sm font-black text-red-500">
         الوقت: {timeLeft}
       </div>
@@ -263,10 +279,10 @@ function ProverbGame({
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
           <p className="text-lg font-black">{side1Name}</p>
           <p className="mt-2 text-sm text-white/80">
-            {side1Ready ? "✅ خلص" : "⏳ ينتظر"}
+            {side1Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
           </p>
           {side1Time !== null && (
-            <p className="mt-1 text-xs text-white/70">خلص خلال {side1Time} ثانية</p>
+            <p className="mt-1 text-xs text-white/70">تم تسجيله خلال {side1Time} ثانية</p>
           )}
           <button
             type="button"
@@ -277,17 +293,17 @@ function ProverbGame({
             disabled={side1Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
-            ✅ خلصنا
+            {side1ReadyButtonLabel}
           </button>
         </div>
 
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
           <p className="text-lg font-black">{side2Name}</p>
           <p className="mt-2 text-sm text-white/80">
-            {side2Ready ? "✅ خلص" : "⏳ ينتظر"}
+            {side2Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
           </p>
           {side2Time !== null && (
-            <p className="mt-1 text-xs text-white/70">خلص خلال {side2Time} ثانية</p>
+            <p className="mt-1 text-xs text-white/70">تم تسجيله خلال {side2Time} ثانية</p>
           )}
           <button
             type="button"
@@ -298,7 +314,7 @@ function ProverbGame({
             disabled={side2Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
-            ✅ خلصنا
+            {side2ReadyButtonLabel}
           </button>
         </div>
       </div>
@@ -339,10 +355,12 @@ function ProverbGame({
 }
 
 function CategoriesGame({
+  mode,
   side1Name,
   side2Name,
   onRoundEnd,
 }: {
+  mode: PlayMode;
   side1Name: string;
   side2Name: string;
   onRoundEnd: () => void;
@@ -358,6 +376,16 @@ function CategoriesGame({
   const [side2Ready, setSide2Ready] = useState(false);
   const [side1Time, setSide1Time] = useState<number | null>(null);
   const [side2Time, setSide2Time] = useState<number | null>(null);
+
+  const side1ReadyButtonLabel =
+    mode === "teams" ? "تسجيل انتهاء الفريق 1" : "تسجيل انتهاء اللاعب 1";
+  const side2ReadyButtonLabel =
+    mode === "teams" ? "تسجيل انتهاء الفريق 2" : "تسجيل انتهاء اللاعب 2";
+
+  const instructionText =
+    mode === "teams"
+      ? 'فكروا في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهت المجموعة، تقول لصاحب الجلسة: "خلصنا"، ثم يسجل انتهاءها'
+      : 'فكر في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت"، ثم يسجل انتهاءه';
 
   useEffect(() => {
     if (revealed) return;
@@ -406,28 +434,17 @@ function CategoriesGame({
 
       <div className="mt-6 rounded-3xl border border-white/20 bg-white/10 p-6 text-center">
         <p className="text-lg font-black">تعليمات الجولة</p>
-        <p className="mt-3 leading-8 text-white/80">
-          فكروا في:
-          <br />
-          إنسان – حيوان – نبات – جماد – بلاد
-          <br />
-          كلها تبدأ بنفس الحرف
-          <br />
-          <br />
-          أول واحد يخلص يقول: <span className="font-black text-white">خلصنا!</span>
-          <br />
-          ثم يضغط الزر
-        </p>
+        <p className="mt-3 leading-8 text-white/80">{instructionText}</p>
       </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
           <p className="text-lg font-black">{side1Name}</p>
           <p className="mt-2 text-sm text-white/80">
-            {side1Ready ? "✅ جاهز" : "⏳ لم ينتهِ"}
+            {side1Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
           </p>
           {side1Time !== null && (
-            <p className="mt-1 text-xs text-white/70">خلص خلال {side1Time} ثانية</p>
+            <p className="mt-1 text-xs text-white/70">تم تسجيله خلال {side1Time} ثانية</p>
           )}
           <button
             type="button"
@@ -438,17 +455,17 @@ function CategoriesGame({
             disabled={side1Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
-            ✅ خلصنا
+            {side1ReadyButtonLabel}
           </button>
         </div>
 
         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 text-center">
           <p className="text-lg font-black">{side2Name}</p>
           <p className="mt-2 text-sm text-white/80">
-            {side2Ready ? "✅ جاهز" : "⏳ لم ينتهِ"}
+            {side2Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
           </p>
           {side2Time !== null && (
-            <p className="mt-1 text-xs text-white/70">خلص خلال {side2Time} ثانية</p>
+            <p className="mt-1 text-xs text-white/70">تم تسجيله خلال {side2Time} ثانية</p>
           )}
           <button
             type="button"
@@ -459,7 +476,7 @@ function CategoriesGame({
             disabled={side2Ready || revealed}
             className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
           >
-            ✅ خلصنا
+            {side2ReadyButtonLabel}
           </button>
         </div>
       </div>
@@ -521,7 +538,8 @@ export default function MatchPage() {
   const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
   const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
   const currentTurnLabel = mode === "teams" ? "دور الفريق" : "دور اللاعب";
-  const winnerQuestionLabel = mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
+  const winnerQuestionLabel =
+    mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
 
   function startGame() {
     if (!side1.trim() || !side2.trim()) return;
@@ -565,9 +583,19 @@ export default function MatchPage() {
     selectedGame === "word" ? (
       <WordGame onRoundEnd={endRound} />
     ) : selectedGame === "draw" ? (
-      <ProverbGame side1Name={side1} side2Name={side2} onRoundEnd={endRound} />
+      <ProverbGame
+        mode={mode}
+        side1Name={side1}
+        side2Name={side2}
+        onRoundEnd={endRound}
+      />
     ) : (
-      <CategoriesGame side1Name={side1} side2Name={side2} onRoundEnd={endRound} />
+      <CategoriesGame
+        mode={mode}
+        side1Name={side1}
+        side2Name={side2}
+        onRoundEnd={endRound}
+      />
     );
 
   return (
