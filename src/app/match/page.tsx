@@ -9,8 +9,10 @@ type PlayMode = "solo" | "teams";
 
 function WordGame({
   onRoundEnd,
+  roundKey,
 }: {
   onRoundEnd: () => void;
+  roundKey: number;
 }) {
   const WORDS_3 = [
     "بيت", "باب", "بحر", "جمل", "جبل", "حبر", "حلم", "حوت",
@@ -45,6 +47,14 @@ function WordGame({
     "شسيبلاتنمكط",
     "رزلاةوظ",
   ];
+
+  useEffect(() => {
+    setAnswer(getRandomWord());
+    setGuesses([]);
+    setCurrent("");
+    setStatus("playing");
+    setKeyStatus({});
+  }, [roundKey]);
 
   function normalize(text: string) {
     return text.trim().replace(/\s+/g, "");
@@ -92,14 +102,6 @@ function WordGame({
     return "bg-gray-400 border-gray-400";
   }
 
-  function resetWordGame() {
-    setAnswer(getRandomWord());
-    setGuesses([]);
-    setCurrent("");
-    setStatus("playing");
-    setKeyStatus({});
-  }
-
   const emptyRows = MAX_TRIES - guesses.length;
 
   return (
@@ -122,34 +124,24 @@ function WordGame({
         ))}
 
         {Array.from({ length: emptyRows }).map((_, rowIndex) => (
-  <div key={`empty-${rowIndex}`} className="flex justify-center gap-3">
-    {Array.from({ length: answer.length }).map((_, colIndex) => {
-      const previewLetter = rowIndex === 0 ? current[colIndex] ?? "" : "";
+          <div key={`empty-${rowIndex}`} className="flex justify-center gap-3">
+            {Array.from({ length: answer.length }).map((_, colIndex) => {
+              const previewLetter = rowIndex === 0 ? current[colIndex] ?? "" : "";
 
-      return (
-        <div
-          key={colIndex}
-          className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/25 bg-white/10 text-2xl font-black text-white"
-        >
-          {previewLetter}
-        </div>
-      );
-    })}
-  </div>
-))}
+              return (
+                <div
+                  key={colIndex}
+                  className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/25 bg-white/10 text-2xl font-black text-white"
+                >
+                  {previewLetter}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
 
-      
-
       <div className="mt-4 flex flex-wrap justify-center gap-3">
-        <button
-          type="button"
-          onClick={resetWordGame}
-          className="btn-secondary"
-        >
-          كلمة جديدة
-        </button>
-
         <button
           type="button"
           onClick={onRoundEnd}
@@ -236,11 +228,13 @@ function ProverbGame({
   side1Name,
   side2Name,
   onRoundEnd,
+  roundKey,
 }: {
   mode: PlayMode;
   side1Name: string;
   side2Name: string;
   onRoundEnd: () => void;
+  roundKey: number;
 }) {
   const puzzles = [
     { emoji: "🐒👩🦌", answer: "القرد في عين امه غزال" },
@@ -282,6 +276,16 @@ function ProverbGame({
       : 'إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت" ثم يسجلها صاحب الجلسة';
 
   useEffect(() => {
+    setIndex(Math.floor(Math.random() * puzzles.length));
+    setTimeLeft(ROUND_TIME);
+    setRevealed(false);
+    setSide1Ready(false);
+    setSide2Ready(false);
+    setSide1Time(null);
+    setSide2Time(null);
+  }, [roundKey]);
+
+  useEffect(() => {
     if (revealed) return;
 
     if (timeLeft <= 0) {
@@ -295,23 +299,6 @@ function ProverbGame({
 
     return () => clearTimeout(timer);
   }, [timeLeft, revealed]);
-
-  function nextQuestion() {
-    let nextIndex = Math.floor(Math.random() * puzzles.length);
-    if (puzzles.length > 1) {
-      while (nextIndex === index) {
-        nextIndex = Math.floor(Math.random() * puzzles.length);
-      }
-    }
-
-    setIndex(nextIndex);
-    setTimeLeft(ROUND_TIME);
-    setRevealed(false);
-    setSide1Ready(false);
-    setSide2Ready(false);
-    setSide1Time(null);
-    setSide2Time(null);
-  }
 
   return (
     <GlassCard className="min-h-[780px] p-8 text-center">
@@ -397,14 +384,6 @@ function ProverbGame({
 
         <button
           type="button"
-          onClick={nextQuestion}
-          className="btn-secondary"
-        >
-          سؤال جديد
-        </button>
-
-        <button
-          type="button"
           onClick={onRoundEnd}
           className="btn-primary"
         >
@@ -433,11 +412,13 @@ function CategoriesGame({
   side1Name,
   side2Name,
   onRoundEnd,
+  roundKey,
 }: {
   mode: PlayMode;
   side1Name: string;
   side2Name: string;
   onRoundEnd: () => void;
+  roundKey: number;
 }) {
   const ROUND_TIME = 40;
   const letters = ["م", "س", "ب", "ر", "ن", "ل", "ك"];
@@ -459,6 +440,17 @@ function CategoriesGame({
       : 'فكر في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت" ثم يسجلها صاحب الجلسة';
 
   useEffect(() => {
+    const next = letters[Math.floor(Math.random() * letters.length)];
+    setLetter(next);
+    setTimeLeft(ROUND_TIME);
+    setRevealed(false);
+    setSide1Ready(false);
+    setSide2Ready(false);
+    setSide1Time(null);
+    setSide2Time(null);
+  }, [roundKey]);
+
+  useEffect(() => {
     if (revealed) return;
 
     if (side1Ready && side2Ready) {
@@ -477,17 +469,6 @@ function CategoriesGame({
 
     return () => clearTimeout(timer);
   }, [timeLeft, revealed, side1Ready, side2Ready]);
-
-  function nextLetter() {
-    const next = letters[Math.floor(Math.random() * letters.length)];
-    setLetter(next);
-    setTimeLeft(ROUND_TIME);
-    setRevealed(false);
-    setSide1Ready(false);
-    setSide2Ready(false);
-    setSide1Time(null);
-    setSide2Time(null);
-  }
 
   return (
     <GlassCard className="min-h-[780px] p-8 text-center">
@@ -570,14 +551,6 @@ function CategoriesGame({
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <button
           type="button"
-          onClick={nextLetter}
-          className="btn-secondary"
-        >
-          حرف جديد
-        </button>
-
-        <button
-          type="button"
           onClick={onRoundEnd}
           disabled={!revealed}
           className="btn-primary disabled:opacity-50"
@@ -603,6 +576,8 @@ export default function MatchPage() {
 
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
+  const [roundReady, setRoundReady] = useState(true);
+  const [roundSeed, setRoundSeed] = useState(1);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -618,6 +593,12 @@ export default function MatchPage() {
   const winnerQuestionLabel =
     mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
 
+  function getGameTitle(game: GameType) {
+    if (game === "word") return "وشي الكلمة؟";
+    if (game === "draw") return "خمن المثل من الإيموجي";
+    return "إنسان حيوان نبات جماد";
+  }
+
   function startGame() {
     if (!side1.trim() || !side2.trim()) return;
     setStarted(true);
@@ -625,6 +606,13 @@ export default function MatchPage() {
     setSide1Score(0);
     setSide2Score(0);
     setGameEnded(false);
+    setRoundReady(true);
+    setRoundSeed(1);
+  }
+
+  function beginRound() {
+    setRoundReady(false);
+    setRoundSeed((s) => s + 1);
   }
 
   function endRound() {
@@ -643,6 +631,7 @@ export default function MatchPage() {
     }
 
     setCurrentRound((r) => r + 1);
+    setRoundReady(true);
   }
 
   function resetGame() {
@@ -652,19 +641,22 @@ export default function MatchPage() {
     setSide2Score(0);
     setShowWinnerModal(false);
     setGameEnded(false);
+    setRoundReady(true);
+    setRoundSeed(1);
   }
 
   const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
 
   const currentGameBoard =
     selectedGame === "word" ? (
-      <WordGame onRoundEnd={endRound} />
+      <WordGame onRoundEnd={endRound} roundKey={roundSeed} />
     ) : selectedGame === "draw" ? (
       <ProverbGame
         mode={mode}
         side1Name={side1}
         side2Name={side2}
         onRoundEnd={endRound}
+        roundKey={roundSeed}
       />
     ) : (
       <CategoriesGame
@@ -672,6 +664,7 @@ export default function MatchPage() {
         side1Name={side1}
         side2Name={side2}
         onRoundEnd={endRound}
+        roundKey={roundSeed}
       />
     );
 
@@ -763,7 +756,34 @@ export default function MatchPage() {
 
         {started && !gameEnded && (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div>{currentGameBoard}</div>
+            <div>
+              {roundReady ? (
+                <GlassCard className="min-h-[780px] p-8 text-center">
+                  <div className="flex h-full min-h-[700px] flex-col items-center justify-center">
+                    <p className="text-sm text-white/70">الجولة القادمة</p>
+                    <h2 className="mt-2 text-4xl font-black">
+                      الجولة {currentRound}
+                    </h2>
+                    <p className="mt-4 text-xl text-white/80">
+                      اللعبة: {getGameTitle(selectedGame)}
+                    </p>
+                    <p className="mt-2 text-lg text-white/70">
+                      الدور على: {currentTurnName}
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={beginRound}
+                      className="btn-primary mt-8"
+                    >
+                      ابدأ الجولة
+                    </button>
+                  </div>
+                </GlassCard>
+              ) : (
+                currentGameBoard
+              )}
+            </div>
 
             <GlassCard className="p-6">
               <h3 className="text-xl font-black">لوحة التحدي</h3>
