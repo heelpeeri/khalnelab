@@ -1,12 +1,3 @@
-'use client';
-
-import { useEffect, useMemo, useState } from "react";
-import { GlassCard } from "@/components/GlassCard";
-import { Logo } from "@/components/Logo";
-
-type GameType = "word" | "draw" | "categories";
-type PlayMode = "solo" | "teams";
-
 function WordGame({
   onRoundEnd,
 }: {
@@ -53,26 +44,25 @@ function WordGame({
 
     const nextGuesses = [...guesses, guess];
 
-const newStatus = { ...keyStatus };
+    const newStatus = { ...keyStatus };
 
-guess.split("").forEach((letter, i) => {
-  if (answer[i] === letter) {
-    newStatus[letter] = "correct";
-  } else if (answer.includes(letter)) {
-    if (newStatus[letter] !== "correct") {
-      newStatus[letter] = "present";
-    }
-  } else {
-    if (!newStatus[letter]) {
-      newStatus[letter] = "absent";
-    }
-  }
-});
+    guess.split("").forEach((letter, i) => {
+      if (answer[i] === letter) {
+        newStatus[letter] = "correct";
+      } else if (answer.includes(letter)) {
+        if (newStatus[letter] !== "correct") {
+          newStatus[letter] = "present";
+        }
+      } else {
+        if (!newStatus[letter]) {
+          newStatus[letter] = "absent";
+        }
+      }
+    });
 
-setKeyStatus(newStatus);
-
-setGuesses(nextGuesses);
-setCurrent("");
+    setKeyStatus(newStatus);
+    setGuesses(nextGuesses);
+    setCurrent("");
 
     if (guess === answer) {
       setStatus("won");
@@ -94,10 +84,17 @@ setCurrent("");
     setAnswer(getRandomWord());
     setGuesses([]);
     setCurrent("");
+    setKeyStatus({});
     setStatus("playing");
   }
 
   const emptyRows = MAX_TRIES - guesses.length;
+
+  const keyboardRows = [
+    "ضصثقفغعهخحجد",
+    "شسيبلاتنمكط",
+    "ئءؤرلاىةوزظ",
+  ];
 
   return (
     <GlassCard className="p-6 text-center">
@@ -167,63 +164,59 @@ setCurrent("");
           </button>
         </div>
       </div>
-      const keyboardRows = [
-  "ضصثقفغعهخحجد",
-  "شسيبلاتنمكط",
-  "ئءؤرلاىةوزظ",
-];
 
-<div className="mt-6 space-y-2">
-  {keyboardRows.map((row, rowIndex) => (
-    <div
-      key={rowIndex}
-      className="flex flex-wrap justify-center gap-2"
-    >
-      {row.split("").map((key) => {
-        const keyColor = keyStatus[key];
-
-        let color = "bg-white/10";
-        if (keyColor === "correct") color = "bg-green-500";
-        if (keyColor === "present") color = "bg-yellow-400";
-        if (keyColor === "absent") color = "bg-gray-400";
-
-        return (
-          <button
-            key={key}
-            type="button"
-            onClick={() => {
-              if (current.length < answer.length) {
-                setCurrent((prev) => prev + key);
-              }
-            }}
-            className={`h-11 min-w-[42px] rounded-xl px-3 text-sm font-bold text-white transition active:scale-95 ${color}`}
+      <div className="mt-6 space-y-2">
+        {keyboardRows.map((row, rowIndex) => (
+          <div
+            key={rowIndex}
+            className="flex flex-wrap justify-center gap-2"
           >
-            {key}
+            {row.split("").map((key) => {
+              const keyColor = keyStatus[key];
+
+              let color = "bg-white/10";
+              if (keyColor === "correct") color = "bg-green-500";
+              if (keyColor === "present") color = "bg-yellow-400";
+              if (keyColor === "absent") color = "bg-gray-400";
+
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => {
+                    if (current.length < answer.length) {
+                      setCurrent((prev) => prev + key);
+                    }
+                  }}
+                  className={`h-11 min-w-[42px] rounded-xl px-3 text-sm font-bold text-white transition active:scale-95 ${color}`}
+                >
+                  {key}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+
+        <div className="mt-3 flex justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setCurrent((prev) => prev.slice(0, -1))}
+            className="btn-secondary min-w-[100px]"
+          >
+            حذف ⌫
           </button>
-        );
-      })}
-    </div>
-  ))}
 
-  <div className="mt-3 flex justify-center gap-2">
-    <button
-      type="button"
-      onClick={() => setCurrent((prev) => prev.slice(0, -1))}
-      className="btn-secondary min-w-[100px]"
-    >
-      حذف ⌫
-    </button>
+          <button
+            type="button"
+            onClick={submitGuess}
+            disabled={status !== "playing"}
+            className="btn-primary min-w-[100px] disabled:opacity-50"
+          >
+            إدخال
+          </button>
+        </div>
+      </div>
 
-    <button
-      type="button"
-      onClick={submitGuess}
-      disabled={status !== "playing"}
-      className="btn-primary min-w-[100px] disabled:opacity-50"
-    >
-      إدخال
-    </button>
-  </div>
-</div>
       {status === "won" && (
         <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
           <p className="text-lg font-black">🔥 ممتاز! عرفت الكلمة</p>
