@@ -43,7 +43,7 @@ function WordGame({
   const [keyStatus, setKeyStatus] = useState<Record<string, "correct" | "present" | "absent">>({});
 
   const keyboardRows = [
-    "جحخهعغفقثصض",
+    "ةجحخهعغفقثصض",
     "كمنتالبيسش",
     "ورزدذطظ",
   ];
