@@ -18,8 +18,8 @@ const games = [
   {
     href: "/match?game=categories",
     emoji: "🌍",
-    title: "إنسان حيوان نبات جماد",
-    desc: "ومعها بلاد أيضًا"
+    title: "إنسان حيوان نبات جماد بلاد",
+    desc: "المعروف لا يعرف"
   }
 ];
 
