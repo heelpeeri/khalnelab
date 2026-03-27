@@ -1,3 +1,19 @@
+@font-face {
+  font-family: 'Somar Sans';
+  src: url('/fonts/SomarSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Somar Sans';
+  src: url('/fonts/SomarSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,6 +27,7 @@ body {
   min-height: 100vh;
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 45%, #ec4899 100%);
   color: white;
+  font-family: 'Somar Sans', sans-serif;
 }
 
 * {
