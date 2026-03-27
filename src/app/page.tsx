@@ -25,7 +25,7 @@ const games = [
     href: "/match?game=scramble",
     emoji: "🧩",
     title: "حروف بالخلاط",
-    desc: "رتب الكلمة قبل غيرك"
+    desc: "حروف ملخبطه؟ رتبها!"
   },
 ];
 
