@@ -21,6 +21,12 @@ const games = [
     title: "إنسان حيوان نبات جماد بلاد",
     desc: "المعروف لا يعرف"
   }
+  {
+  href: "/match?game=scramble",
+  emoji: "🧩",
+  title: "حروف بالخلاط",
+  desc: "رتب الكلمة قبل غيرك"
+},
 ];
 
 export default function Home() {
