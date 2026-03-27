@@ -122,15 +122,21 @@ function WordGame({
         ))}
 
         {Array.from({ length: emptyRows }).map((_, rowIndex) => (
-          <div key={`empty-${rowIndex}`} className="flex justify-center gap-3">
-            {Array.from({ length: answer.length }).map((_, colIndex) => (
-              <div
-                key={colIndex}
-                className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/25 bg-white/10 text-2xl font-black text-white"
-              />
-            ))}
-          </div>
-        ))}
+  <div key={`empty-${rowIndex}`} className="flex justify-center gap-3">
+    {Array.from({ length: answer.length }).map((_, colIndex) => {
+      const previewLetter = rowIndex === 0 ? current[colIndex] ?? "" : "";
+
+      return (
+        <div
+          key={colIndex}
+          className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/25 bg-white/10 text-2xl font-black text-white"
+        >
+          {previewLetter}
+        </div>
+      );
+    })}
+  </div>
+))}
       </div>
 
       
