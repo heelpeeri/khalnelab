@@ -167,42 +167,63 @@ setCurrent("");
           </button>
         </div>
       </div>
-      <div className="mt-6 grid grid-cols-10 gap-2">
-  {"ابتثجحخدذرزسشصضطظعغفقكلمنهوي".split("").map((key) => {
-    const status = keyStatus[key];
+      const keyboardRows = [
+  "ضصثقفغعهخحجد",
+  "شسيبلاتنمكط",
+  "ئءؤرلاىةوزظ",
+];
 
-    let color = "bg-white/10";
-    if (status === "correct") color = "bg-green-500";
-    if (status === "present") color = "bg-yellow-400";
-    if (status === "absent") color = "bg-gray-400";
+<div className="mt-6 space-y-2">
+  {keyboardRows.map((row, rowIndex) => (
+    <div
+      key={rowIndex}
+      className="flex flex-wrap justify-center gap-2"
+    >
+      {row.split("").map((key) => {
+        const keyColor = keyStatus[key];
 
-    return (
-      <button
-        key={key}
-        type="button"
-        onClick={() => {
-          if (current.length < answer.length) {
-            setCurrent((prev) => prev + key);
-          }
-        }}
-        className={`h-10 rounded-lg text-sm font-bold text-white ${color}`}
-      >
-        {key}
-      </button>
-    );
-  })}
+        let color = "bg-white/10";
+        if (keyColor === "correct") color = "bg-green-500";
+        if (keyColor === "present") color = "bg-yellow-400";
+        if (keyColor === "absent") color = "bg-gray-400";
+
+        return (
+          <button
+            key={key}
+            type="button"
+            onClick={() => {
+              if (current.length < answer.length) {
+                setCurrent((prev) => prev + key);
+              }
+            }}
+            className={`h-11 min-w-[42px] rounded-xl px-3 text-sm font-bold text-white transition active:scale-95 ${color}`}
+          >
+            {key}
+          </button>
+        );
+      })}
+    </div>
+  ))}
+
+  <div className="mt-3 flex justify-center gap-2">
+    <button
+      type="button"
+      onClick={() => setCurrent((prev) => prev.slice(0, -1))}
+      className="btn-secondary min-w-[100px]"
+    >
+      حذف ⌫
+    </button>
+
+    <button
+      type="button"
+      onClick={submitGuess}
+      disabled={status !== "playing"}
+      className="btn-primary min-w-[100px] disabled:opacity-50"
+    >
+      إدخال
+    </button>
+  </div>
 </div>
-
-<div className="mt-3 flex justify-center gap-3">
-  <button
-    type="button"
-    onClick={() => setCurrent((prev) => prev.slice(0, -1))}
-    className="btn-secondary"
-  >
-    حذف ⌫
-  </button>
-</div>
-
       {status === "won" && (
         <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
           <p className="text-lg font-black">🔥 ممتاز! عرفت الكلمة</p>
