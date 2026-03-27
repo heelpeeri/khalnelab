@@ -41,10 +41,10 @@ function WordGame({
   const [keyStatus, setKeyStatus] = useState<Record<string, "correct" | "present" | "absent">>({});
 
   const keyboardRows = [
-    "ضصثقفغعهخحجد",
-    "شسيبلاتنمكط",
-    "ئءؤرلاىةوزظ",
-  ];
+  "ضصثقفغعهخحجد",
+  "شسيبلاتنمكط",
+  "ئءؤرلاىةوزظ",
+];
 
   function normalize(text: string) {
     return text.trim().replace(/\s+/g, "");
