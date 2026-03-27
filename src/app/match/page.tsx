@@ -264,7 +264,19 @@ function ProverbGame({
       </div>
 
       <div className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-sm font-black text-red-500">
-        الوقت: {timeLeft}
+        <div className="mt-4 w-full max-w-md mx-auto">
+  <div className="flex justify-between text-sm mb-1 text-white/80">
+    <span>الوقت</span>
+    <span>{timeLeft}</span>
+  </div>
+
+  <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden">
+    <div
+      className="h-full bg-white transition-all duration-1000"
+      style={{ width: `${(timeLeft / 20) * 100}%` }}
+    />
+  </div>
+</div>
       </div>
 
       <div className="mt-8 text-6xl">{current.emoji}</div>
