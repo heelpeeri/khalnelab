@@ -135,12 +135,12 @@ function WordGame({
 
       <div className="mt-6 flex flex-col items-center gap-3">
         <input
-          type="text"
-          value={current}
-          onChange={(e) => setCurrent(e.target.value)}
-          placeholder={`اكتب كلمة من ${answer.length} حروف`}
-          className="w-full max-w-sm rounded-2xl border border-white/20 bg-white px-4 py-3 text-center text-2xl font-black text-black outline-none"
-        />
+  type="text"
+  value={current}
+  readOnly
+  placeholder={`اكتب كلمة من ${answer.length} حروف`}
+  className="w-full max-w-sm rounded-2xl border border-white/20 bg-white px-4 py-3 text-center text-2xl font-black text-black outline-none"
+/>
 
         <div className="flex flex-wrap justify-center gap-3">
           
