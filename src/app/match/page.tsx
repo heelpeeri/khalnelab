@@ -16,7 +16,7 @@ function WordGame({
     "بيت", "باب", "بحر", "جمل", "جبل", "حبر", "حلم", "حوت",
     "خيل", "درب", "رمل", "ريح", "زهر", "سهم", "سور", "شمس",
     "صقر", "طير", "عين", "قمر", "قلم", "كلب", "ليل", "مطر",
-    "نار", "نجم", "نور", "نهر", "ورد", "وقت"
+    "نار", "نجم", "نور", "نهر", "ورد", "وقت",
   ];
 
   const WORDS_4 = [
@@ -24,7 +24,7 @@ function WordGame({
     "سحاب", "نجمة", "مكيف", "قهوة", "طريق", "ملعب", "موزة", "صحن",
     "سرير", "شباك", "حليب", "ورقة", "نخله", "ورده", "سمكه", "بيضه",
     "علبه", "شاحن", "لوحه", "مخده", "منبه", "فرشه", "ساعه", "غرفه",
-    "مطبخ", "شارع", "مدرس", "طالب"
+    "مطبخ", "شارع", "مدرس", "طالب",
   ];
 
   function getRandomWord() {
@@ -124,7 +124,7 @@ function WordGame({
             type="button"
             onClick={submitGuess}
             disabled={status !== "playing"}
-            className="rounded-full bg-white px-6 py-3 font-bold text-red-500 disabled:opacity-50"
+            className="btn-primary disabled:opacity-50"
           >
             تأكيد
           </button>
@@ -132,7 +132,7 @@ function WordGame({
           <button
             type="button"
             onClick={resetWordGame}
-            className="rounded-full border border-white/20 bg-white/10 px-6 py-3 font-bold"
+            className="btn-secondary"
           >
             كلمة جديدة
           </button>
@@ -141,7 +141,7 @@ function WordGame({
             type="button"
             onClick={onRoundEnd}
             disabled={status === "playing"}
-            className="rounded-full bg-white px-6 py-3 font-bold text-red-500 disabled:opacity-50"
+            className="btn-primary disabled:opacity-50"
           >
             إنهاء الجولة
           </button>
@@ -182,15 +182,15 @@ function ProverbGame({
     { emoji: "🐦✋🔟🌳", answer: "طير باليد ولا عشره بالشجره" },
     { emoji: "🚪💨🔒😌", answer: "الباب اللي يجي منه ريح سده واستريح" },
     { emoji: "🦵📏🛏️", answer: "مد رجلك على قد لحافك" },
-    { emoji: "👥🍯👅❌", answer: "اذا كان صاحبك عسل لا تلحسه كله" },
+    { emoji: "👤🍯👅❌", answer: "اذا كان صاحبك عسل لا تلحسه كله" },
     { emoji: "🌴📏🐐🧠", answer: "الطول طول نخله والعقل عقل صخله" },
-    { emoji: "👁️😒🪡", answer: "عين الحسود فيها عود" },
-    { emoji: "🍇🧗🏻‍♂️🙅‍♂️😖", answer: "اللي ما يطول العنب حامض عنه يقول" },
+    { emoji: "👁️😒🪵", answer: "عين الحسود فيها عود" },
+    { emoji: "🍇🙅‍♂️😖", answer: "اللي ما يطول العنب حامض عنه يقول" },
     { emoji: "🦅🤷‍♂️🔥🍗", answer: "اللي ما يعرف الصقر يشويه" },
     { emoji: "❤️👁️❌", answer: "الحب اعمى" },
     { emoji: "😴👑", answer: "النوم سلطان" },
     { emoji: "✋❌👏", answer: "يد وحده ما تصفق" },
-    { emoji: "👅🐎", answer: "لسانك حصانك ان صنته صانك" },
+    { emoji: "👅🐎", answer: "لسانك حصانك" },
     { emoji: "❓👨‍🔧✔️👨‍⚕️❌", answer: "اسال مجرب ولا تسال طبيب" },
     { emoji: "🔥➡️💨😡", answer: "لا تشب النار وتزعل من دخانها" },
   ];
@@ -207,15 +207,12 @@ function ProverbGame({
   const [side1Time, setSide1Time] = useState<number | null>(null);
   const [side2Time, setSide2Time] = useState<number | null>(null);
 
-  const side1ReadyButtonLabel =
-    mode === "teams" ? "تسجيل انتهاء الفريق 1" : "تسجيل انتهاء اللاعب 1";
-  const side2ReadyButtonLabel =
-    mode === "teams" ? "تسجيل انتهاء الفريق 2" : "تسجيل انتهاء اللاعب 2";
+  const readyLabel = mode === "teams" ? "خلصنا" : "خلصت";
 
   const instructionText =
     mode === "teams"
-      ? 'إذا انتهت المجموعة، تقول لصاحب الجلسة: "خلصنا"، ثم يسجل انتهاءها'
-      : 'إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت"، ثم يسجل انتهاءه';
+      ? 'إذا انتهى الفريق، يقول لصاحب الجلسة: "خلصنا" ثم يسجلها صاحب الجلسة'
+      : 'إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت" ثم يسجلها صاحب الجلسة';
 
   useEffect(() => {
     if (revealed) return;
@@ -239,7 +236,6 @@ function ProverbGame({
 
   function nextQuestion() {
     let nextIndex = Math.floor(Math.random() * puzzles.length);
-
     if (puzzles.length > 1) {
       while (nextIndex === index) {
         nextIndex = Math.floor(Math.random() * puzzles.length);
@@ -263,20 +259,17 @@ function ProverbGame({
         {instructionText}
       </div>
 
-      <div className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-sm font-black text-red-500">
-        <div className="mt-4 w-full max-w-md mx-auto">
-  <div className="flex justify-between text-sm mb-1 text-white/80">
-    <span>الوقت</span>
-    <span>{timeLeft}</span>
-  </div>
-
-  <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden">
-    <div
-      className="h-full bg-white transition-all duration-1000"
-      style={{ width: `${(timeLeft / 20) * 100}%` }}
-    />
-  </div>
-</div>
+      <div className="mt-4 w-full max-w-md mx-auto">
+        <div className="mb-1 flex justify-between text-sm text-white/80">
+          <span>الوقت</span>
+          <span>{timeLeft}</span>
+        </div>
+        <div className="h-3 w-full overflow-hidden rounded-full bg-white/20">
+          <div
+            className="h-full bg-white transition-all duration-1000"
+            style={{ width: `${(timeLeft / 20) * 100}%` }}
+          />
+        </div>
       </div>
 
       <div className="mt-8 text-6xl">{current.emoji}</div>
@@ -303,9 +296,9 @@ function ProverbGame({
               setSide1Time(ROUND_TIME - timeLeft);
             }}
             disabled={side1Ready || revealed}
-            className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
+            className="btn-primary mt-4 w-full disabled:opacity-50"
           >
-            {side1ReadyButtonLabel}
+            {readyLabel}
           </button>
         </div>
 
@@ -324,9 +317,9 @@ function ProverbGame({
               setSide2Time(ROUND_TIME - timeLeft);
             }}
             disabled={side2Ready || revealed}
-            className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
+            className="btn-primary mt-4 w-full disabled:opacity-50"
           >
-            {side2ReadyButtonLabel}
+            {readyLabel}
           </button>
         </div>
       </div>
@@ -334,7 +327,7 @@ function ProverbGame({
       {revealed && (
         <>
           <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
-            <p className="text-lg font-black">⏰ انتهى الوقت!</p>
+            <p className="text-lg font-black animate-pulse">⏰ انتهى الوقت!</p>
           </div>
 
           <div className="mt-4 rounded-2xl border border-white/20 bg-white/10 p-5">
@@ -348,7 +341,7 @@ function ProverbGame({
         <button
           type="button"
           onClick={nextQuestion}
-          className="rounded-full border border-white/20 bg-white/10 px-6 py-3 font-bold"
+          className="btn-secondary"
         >
           سؤال جديد
         </button>
@@ -357,7 +350,7 @@ function ProverbGame({
           type="button"
           onClick={onRoundEnd}
           disabled={!revealed}
-          className="rounded-full bg-white px-6 py-3 font-bold text-red-500 disabled:opacity-50"
+          className="btn-primary disabled:opacity-50"
         >
           إنهاء الجولة
         </button>
@@ -389,15 +382,12 @@ function CategoriesGame({
   const [side1Time, setSide1Time] = useState<number | null>(null);
   const [side2Time, setSide2Time] = useState<number | null>(null);
 
-  const side1ReadyButtonLabel =
-    mode === "teams" ? "تسجيل انتهاء الفريق 1" : "تسجيل انتهاء اللاعب 1";
-  const side2ReadyButtonLabel =
-    mode === "teams" ? "تسجيل انتهاء الفريق 2" : "تسجيل انتهاء اللاعب 2";
+  const readyLabel = mode === "teams" ? "خلصنا" : "خلصت";
 
   const instructionText =
     mode === "teams"
-      ? 'فكروا في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهت المجموعة، تقول لصاحب الجلسة: "خلصنا"، ثم يسجل انتهاءها'
-      : 'فكر في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت"، ثم يسجل انتهاءه';
+      ? 'فكروا في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى الفريق، يقول لصاحب الجلسة: "خلصنا" ثم يسجلها صاحب الجلسة'
+      : 'فكر في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت" ثم يسجلها صاحب الجلسة';
 
   useEffect(() => {
     if (revealed) return;
@@ -440,20 +430,17 @@ function CategoriesGame({
         </div>
       </div>
 
-      <div className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-sm font-black text-red-500">
-        <div className="mt-4 w-full max-w-md mx-auto">
-  <div className="flex justify-between text-sm mb-1 text-white/80">
-    <span>الوقت</span>
-    <span>{timeLeft}</span>
-  </div>
-
-  <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden">
-    <div
-      className="h-full bg-white transition-all duration-1000"
-      style={{ width: `${(timeLeft / 20) * 100}%` }}
-    />
-  </div>
-</div>
+      <div className="mt-4 w-full max-w-md mx-auto">
+        <div className="mb-1 flex justify-between text-sm text-white/80">
+          <span>الوقت</span>
+          <span>{timeLeft}</span>
+        </div>
+        <div className="h-3 w-full overflow-hidden rounded-full bg-white/20">
+          <div
+            className="h-full bg-white transition-all duration-1000"
+            style={{ width: `${(timeLeft / 40) * 100}%` }}
+          />
+        </div>
       </div>
 
       <div className="mt-6 rounded-3xl border border-white/20 bg-white/10 p-6 text-center">
@@ -477,9 +464,9 @@ function CategoriesGame({
               setSide1Time(ROUND_TIME - timeLeft);
             }}
             disabled={side1Ready || revealed}
-            className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
+            className="btn-primary mt-4 w-full disabled:opacity-50"
           >
-            {side1ReadyButtonLabel}
+            {readyLabel}
           </button>
         </div>
 
@@ -498,16 +485,16 @@ function CategoriesGame({
               setSide2Time(ROUND_TIME - timeLeft);
             }}
             disabled={side2Ready || revealed}
-            className="mt-4 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500 disabled:opacity-50"
+            className="btn-primary mt-4 w-full disabled:opacity-50"
           >
-            {side2ReadyButtonLabel}
+            {readyLabel}
           </button>
         </div>
       </div>
 
       {revealed && (
         <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
-          <p className="text-lg font-black">🚫 انتهى الوقت – وقت الإعلان</p>
+          <p className="text-lg font-black animate-pulse">🚫 انتهى الوقت – وقت الإعلان</p>
         </div>
       )}
 
@@ -515,7 +502,7 @@ function CategoriesGame({
         <button
           type="button"
           onClick={nextLetter}
-          className="rounded-full border border-white/20 bg-white/10 px-6 py-3 font-bold"
+          className="btn-secondary"
         >
           حرف جديد
         </button>
@@ -524,7 +511,7 @@ function CategoriesGame({
           type="button"
           onClick={onRoundEnd}
           disabled={!revealed}
-          className="rounded-full bg-white px-6 py-3 font-bold text-red-500 disabled:opacity-50"
+          className="btn-primary disabled:opacity-50"
         >
           إنهاء الجولة
         </button>
@@ -540,7 +527,7 @@ export default function MatchPage() {
   const [side2, setSide2] = useState("فريق 2");
 
   const [rounds, setRounds] = useState(3);
-  const [selectedGame, setSelectedGame] = useState<GameType>("word");
+  const [selectedGame, setSelectedGame] = useState<GameType>("draw");
 
   const [started, setStarted] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
@@ -646,7 +633,7 @@ export default function MatchPage() {
                     setSide1(nextMode === "teams" ? "فريق 1" : "لاعب 1");
                     setSide2(nextMode === "teams" ? "فريق 2" : "لاعب 2");
                   }}
-                  className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
+                  className="input"
                 >
                   <option value="teams">فريقين</option>
                   <option value="solo">فردي</option>
@@ -658,7 +645,7 @@ export default function MatchPage() {
                 <select
                   value={selectedGame}
                   onChange={(e) => setSelectedGame(e.target.value as GameType)}
-                  className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
+                  className="input"
                 >
                   <option value="word">وشي الكلمة؟</option>
                   <option value="draw">خمن المثل من الإيموجي</option>
@@ -673,7 +660,7 @@ export default function MatchPage() {
                 <input
                   value={side1}
                   onChange={(e) => setSide1(e.target.value)}
-                  className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
+                  className="input"
                   placeholder={mode === "teams" ? "مثال: الصقور" : "مثال: محمد"}
                 />
               </div>
@@ -683,7 +670,7 @@ export default function MatchPage() {
                 <input
                   value={side2}
                   onChange={(e) => setSide2(e.target.value)}
-                  className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
+                  className="input"
                   placeholder={mode === "teams" ? "مثال: الذئاب" : "مثال: خالد"}
                 />
               </div>
@@ -694,7 +681,7 @@ export default function MatchPage() {
               <select
                 value={rounds}
                 onChange={(e) => setRounds(Number(e.target.value))}
-                className="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 outline-none"
+                className="input"
               >
                 <option value={1}>1</option>
                 <option value={3}>3</option>
@@ -704,7 +691,7 @@ export default function MatchPage() {
 
             <button
               onClick={startGame}
-              className="mt-6 w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500"
+              className="btn-primary mt-6 w-full"
             >
               ابدأ اللعب
             </button>
@@ -751,7 +738,7 @@ export default function MatchPage() {
 
         {gameEnded && (
           <GlassCard className="p-8 text-center">
-            <h2 className="text-3xl font-black">انتهى التحدي</h2>
+            <h2 className="text-4xl font-black animate-bounce">🏆 انتهى التحدي</h2>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               <div className="rounded-3xl bg-white/10 p-5">
@@ -775,7 +762,7 @@ export default function MatchPage() {
 
             <button
               onClick={resetGame}
-              className="mt-8 rounded-full bg-white px-6 py-3 font-black text-red-500"
+              className="btn-primary mt-8"
             >
               إعادة اللعب
             </button>
@@ -786,27 +773,27 @@ export default function MatchPage() {
       {showWinnerModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
           <div className="w-full max-w-md rounded-[32px] border border-white/20 bg-[#7a001f] p-6 text-center shadow-2xl">
-            <h3 className="text-2xl font-black">مين فاز؟</h3>
+            <h3 className="text-3xl font-black animate-bounce">🏆 مين فاز؟</h3>
             <p className="mt-2 text-white/75">{winnerQuestionLabel}</p>
 
             <div className="mt-6 space-y-3">
               <button
                 onClick={() => chooseWinner("side1")}
-                className="w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500"
+                className="btn-primary w-full"
               >
                 {side1}
               </button>
 
               <button
                 onClick={() => chooseWinner("side2")}
-                className="w-full rounded-2xl bg-white px-5 py-3 font-black text-red-500"
+                className="btn-primary w-full"
               >
                 {side2}
               </button>
 
               <button
                 onClick={() => chooseWinner("none")}
-                className="w-full rounded-2xl border border-white/20 bg-white/10 px-5 py-3 font-black text-white"
+                className="btn-secondary w-full"
               >
                 لا أحد
               </button>
