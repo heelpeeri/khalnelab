@@ -36,9 +36,9 @@ export default function Home() {
         <Logo size={220} />
       </div>
 
-      <p className="mt-2 max-w-xl text-2x1 text-white/85">
-        منصة ألعاب عائلية سعودية وتجربة جماعية ممتعة داخل البيت.
-      </p>
+      <p className="mt-2 max-w-2xl text-2xl font-bold leading-relaxed text-white/90 md:text-3xl">
+  منصة ألعاب عائلية سعودية وتجربة جماعية ممتعة داخل البيت.
+</p>
 
       <div className="mt-10 grid w-full max-w-6xl gap-5 md:grid-cols-4">
         {games.map((game) => (
