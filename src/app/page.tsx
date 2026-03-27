@@ -36,11 +36,11 @@ export default function Home() {
         <Logo size={220} />
       </div>
 
-      <p className="mt-2 max-w-xl text-lg text-white/85">
-        منصة ألعاب عائلية عربية بتصميم موحد، وتجربة جماعية ممتعة داخل البيت.
+      <p className="mt-2 max-w-xl text-2x1 text-white/85">
+        منصة ألعاب عائلية سعودية وتجربة جماعية ممتعة داخل البيت.
       </p>
 
-      <div className="mt-10 grid w-full max-w-6xl gap-5 md:grid-cols-3">
+      <div className="mt-10 grid w-full max-w-6xl gap-5 md:grid-cols-4">
         {games.map((game) => (
           <Link key={game.title} href={game.href} className="block">
             <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
