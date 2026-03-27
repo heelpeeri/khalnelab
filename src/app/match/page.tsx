@@ -167,6 +167,41 @@ setCurrent("");
           </button>
         </div>
       </div>
+      <div className="mt-6 grid grid-cols-10 gap-2">
+  {"ابتثجحخدذرزسشصضطظعغفقكلمنهوي".split("").map((key) => {
+    const status = keyStatus[key];
+
+    let color = "bg-white/10";
+    if (status === "correct") color = "bg-green-500";
+    if (status === "present") color = "bg-yellow-400";
+    if (status === "absent") color = "bg-gray-400";
+
+    return (
+      <button
+        key={key}
+        type="button"
+        onClick={() => {
+          if (current.length < answer.length) {
+            setCurrent((prev) => prev + key);
+          }
+        }}
+        className={`h-10 rounded-lg text-sm font-bold text-white ${color}`}
+      >
+        {key}
+      </button>
+    );
+  })}
+</div>
+
+<div className="mt-3 flex justify-center gap-3">
+  <button
+    type="button"
+    onClick={() => setCurrent((prev) => prev.slice(0, -1))}
+    className="btn-secondary"
+  >
+    حذف ⌫
+  </button>
+</div>
 
       {status === "won" && (
         <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
