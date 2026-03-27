@@ -41,10 +41,10 @@ function WordGame({
   const [keyStatus, setKeyStatus] = useState<Record<string, "correct" | "present" | "absent">>({});
 
   const keyboardRows = [
-  "ضصثقفغعهخحجد",
-  "شسيبلاتنمكط",
-  "رزلاةوظ",
-];
+    "ضصثقفغعهخحجد",
+    "شسيبلاتنمكط",
+    "رزلاةوظ",
+  ];
 
   function normalize(text: string) {
     return text.trim().replace(/\s+/g, "");
@@ -103,7 +103,7 @@ function WordGame({
   const emptyRows = MAX_TRIES - guesses.length;
 
   return (
-    <GlassCard className="p-6 text-center">
+    <GlassCard className="min-h-[780px] p-8 text-center">
       <h2 className="text-2xl font-black">وشي الكلمة؟</h2>
       <p className="mt-2 text-white/80">خمن الكلمة من {answer.length} حروف</p>
 
@@ -133,35 +133,23 @@ function WordGame({
         ))}
       </div>
 
-      <div className="mt-6 flex flex-col items-center gap-3">
-        <input
-  type="text"
-  value={current}
-  readOnly
-  placeholder={`اكتب كلمة من ${answer.length} حروف`}
-  className="w-full max-w-sm rounded-2xl border border-white/20 bg-white px-4 py-3 text-center text-2xl font-black text-black outline-none"
-/>
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <button
+          type="button"
+          onClick={resetWordGame}
+          className="btn-secondary"
+        >
+          كلمة جديدة
+        </button>
 
-        <div className="flex flex-wrap justify-center gap-3">
-          
-
-          <button
-            type="button"
-            onClick={resetWordGame}
-            className="btn-secondary"
-          >
-            كلمة جديدة
-          </button>
-
-          <button
-            type="button"
-            onClick={onRoundEnd}
-            disabled={status === "playing"}
-            className="btn-primary disabled:opacity-50"
-          >
-            إنهاء الجولة
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onRoundEnd}
+          disabled={status === "playing"}
+          className="btn-primary disabled:opacity-50"
+        >
+          إنهاء الجولة
+        </button>
       </div>
 
       <div className="mt-6 space-y-2">
@@ -283,7 +271,6 @@ function ProverbGame({
     if (revealed) return;
 
     if (side1Ready || side2Ready) {
-      setRevealed(true);
       return;
     }
 
@@ -317,7 +304,7 @@ function ProverbGame({
   }
 
   return (
-    <GlassCard className="p-6 text-center">
+    <GlassCard className="min-h-[780px] p-8 text-center">
       <h2 className="text-2xl font-black">خمن المثل من الإيموجي</h2>
 
       <div className="mt-4 rounded-3xl border border-white/20 bg-white/10 p-4 text-sm leading-7 text-white/80">
@@ -486,7 +473,7 @@ function CategoriesGame({
   }
 
   return (
-    <GlassCard className="p-6 text-center">
+    <GlassCard className="min-h-[780px] p-8 text-center">
       <h2 className="text-2xl font-black">إنسان حيوان نبات جماد بلاد</h2>
 
       <div className="mt-6 flex justify-center">
@@ -673,7 +660,7 @@ export default function MatchPage() {
 
   return (
     <main className="min-h-screen px-4 py-8 text-white">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-[1600px]">
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm text-white/70">وضع اللعب</p>
@@ -758,7 +745,7 @@ export default function MatchPage() {
         )}
 
         {started && !gameEnded && (
-          <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
             <div>{currentGameBoard}</div>
 
             <GlassCard className="p-6">
