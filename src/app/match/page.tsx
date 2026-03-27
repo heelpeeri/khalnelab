@@ -107,13 +107,13 @@ function WordGame({
       <h2 className="text-2xl font-black">وشي الكلمة؟</h2>
       <p className="mt-2 text-white/80">خمن الكلمة من {answer.length} حروف</p>
 
-      <div className="mt-6 space-y-2">
+      <div className="mt-6 space-y-3">
         {guesses.map((guess, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center gap-2">
+          <div key={rowIndex} className="flex justify-center gap-3">
             {guess.split("").map((letter, colIndex) => (
               <div
                 key={colIndex}
-                className={`flex h-12 w-12 items-center justify-center rounded-2xl border text-lg font-black text-white ${getCellColor(letter, colIndex)}`}
+                className={`flex h-16 w-16 items-center justify-center rounded-2xl border text-2xl font-black text-white ${getCellColor(letter, colIndex)}`}
               >
                 {letter}
               </div>
@@ -122,18 +122,22 @@ function WordGame({
         ))}
 
         {Array.from({ length: emptyRows }).map((_, rowIndex) => (
-          <div key={`empty-${rowIndex}`} className="flex justify-center gap-2">
+          <div key={`empty-${rowIndex}`} className="flex justify-center gap-3">
             {Array.from({ length: answer.length }).map((_, colIndex) => (
               <div
                 key={colIndex}
-                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/25 bg-white/10 text-lg font-black text-white"
+                className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/25 bg-white/10 text-2xl font-black text-white"
               />
             ))}
           </div>
         ))}
       </div>
 
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
+      <div className="mt-5 min-h-[40px] text-2xl font-black tracking-[0.35em] text-white">
+        {current || " "}
+      </div>
+
+      <div className="mt-4 flex flex-wrap justify-center gap-3">
         <button
           type="button"
           onClick={resetWordGame}
@@ -145,8 +149,7 @@ function WordGame({
         <button
           type="button"
           onClick={onRoundEnd}
-          disabled={status === "playing"}
-          className="btn-primary disabled:opacity-50"
+          className="btn-primary"
         >
           إنهاء الجولة
         </button>
@@ -154,7 +157,12 @@ function WordGame({
 
       <div className="mt-6 space-y-2">
         {keyboardRows.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex flex-wrap justify-center gap-2">
+          <div
+            key={rowIndex}
+            className={`flex justify-center gap-2 ${
+              rowIndex === 1 ? "mr-6" : rowIndex === 2 ? "mr-10" : ""
+            }`}
+          >
             {row.split("").map((key) => {
               const keyColor = keyStatus[key];
 
@@ -168,11 +176,13 @@ function WordGame({
                   key={key}
                   type="button"
                   onClick={() => {
-                    if (current.length < answer.length && status === "playing") {
-                      setCurrent((prev) => prev + key);
-                    }
+                    if (status !== "playing") return;
+                    setCurrent((prev) => {
+                      if (prev.length >= answer.length) return prev;
+                      return prev + key;
+                    });
                   }}
-                  className={`h-11 min-w-[42px] rounded-xl px-3 text-sm font-bold text-white transition active:scale-95 ${color}`}
+                  className={`h-12 min-w-[48px] rounded-xl px-3 text-base font-bold text-white transition active:scale-95 ${color}`}
                 >
                   {key}
                 </button>
@@ -185,7 +195,7 @@ function WordGame({
           <button
             type="button"
             onClick={() => setCurrent((prev) => prev.slice(0, -1))}
-            className="btn-secondary min-w-[100px]"
+            className="btn-secondary min-w-[120px]"
           >
             حذف ⌫
           </button>
@@ -194,7 +204,7 @@ function WordGame({
             type="button"
             onClick={submitGuess}
             disabled={status !== "playing"}
-            className="btn-primary min-w-[100px] disabled:opacity-50"
+            className="btn-primary min-w-[120px] disabled:opacity-50"
           >
             إدخال
           </button>
@@ -270,10 +280,6 @@ function ProverbGame({
   useEffect(() => {
     if (revealed) return;
 
-    if (side1Ready || side2Ready) {
-      return;
-    }
-
     if (timeLeft <= 0) {
       setRevealed(true);
       return;
@@ -284,7 +290,7 @@ function ProverbGame({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, revealed, side1Ready, side2Ready]);
+  }, [timeLeft, revealed]);
 
   function nextQuestion() {
     let nextIndex = Math.floor(Math.random() * puzzles.length);
@@ -376,6 +382,32 @@ function ProverbGame({
         </div>
       </div>
 
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <button
+          type="button"
+          onClick={() => setRevealed(true)}
+          className="btn-primary"
+        >
+          إظهار المثل
+        </button>
+
+        <button
+          type="button"
+          onClick={nextQuestion}
+          className="btn-secondary"
+        >
+          سؤال جديد
+        </button>
+
+        <button
+          type="button"
+          onClick={onRoundEnd}
+          className="btn-primary"
+        >
+          إنهاء الجولة
+        </button>
+      </div>
+
       {revealed && (
         <>
           <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
@@ -388,25 +420,6 @@ function ProverbGame({
           </div>
         </>
       )}
-
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <button
-          type="button"
-          onClick={nextQuestion}
-          className="btn-secondary"
-        >
-          سؤال جديد
-        </button>
-
-        <button
-          type="button"
-          onClick={onRoundEnd}
-          disabled={!revealed}
-          className="btn-primary disabled:opacity-50"
-        >
-          إنهاء الجولة
-        </button>
-      </div>
     </GlassCard>
   );
 }
