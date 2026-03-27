@@ -193,7 +193,7 @@ function WordGame({
           </div>
         ))}
 
-        <div className="mt-3 flex justify-center gap-2">
+        <div className="mt-4 flex justify-center gap-3">
           <button
             type="button"
             onClick={() => setCurrent((prev) => prev.slice(0, -1))}
