@@ -43,9 +43,9 @@ function WordGame({
   const [keyStatus, setKeyStatus] = useState<Record<string, "correct" | "present" | "absent">>({});
 
   const keyboardRows = [
-    "ضصثقفغعهخحجد",
-    "شسيبلاتنمكط",
-    "رزلاةوظ",
+    "جحخهعغفقثصض",
+    "كمنتالبيسش",
+    "ورزدذطظ",
   ];
 
   useEffect(() => {
