@@ -133,9 +133,7 @@ function WordGame({
         ))}
       </div>
 
-      <div className="mt-5 min-h-[40px] text-2xl font-black tracking-[0.35em] text-white">
-        {current || " "}
-      </div>
+      
 
       <div className="mt-4 flex flex-wrap justify-center gap-3">
         <button
