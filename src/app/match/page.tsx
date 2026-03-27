@@ -43,7 +43,7 @@ function WordGame({
   const keyboardRows = [
   "ضصثقفغعهخحجد",
   "شسيبلتنمكط",
-  "ئءؤرزلاىةوظ",
+  "رزلاىةوظ",
 ];
 
   function normalize(text: string) {
