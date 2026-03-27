@@ -6,13 +6,13 @@ const games = [
   {
     href: "/match?game=word",
     emoji: "💬",
-    title: "وشي الكلمة؟",
+    title: "خمن الكلمة",
     desc: "خمن الكلمة بحروف عربية"
   },
   {
     href: "/match?game=draw",
     emoji: "✏️",
-    title: "وش المثل؟",
+    title: "خمن المثل",
     desc: "خمن المثل من الإيموجي"
   },
   {
