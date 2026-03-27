@@ -143,14 +143,7 @@ function WordGame({
         />
 
         <div className="flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={submitGuess}
-            disabled={status !== "playing"}
-            className="btn-primary disabled:opacity-50"
-          >
-            تأكيد
-          </button>
+          
 
           <button
             type="button"
