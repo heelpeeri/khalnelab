@@ -37,6 +37,7 @@ function WordGame({
   const [answer, setAnswer] = useState(getRandomWord);
   const [guesses, setGuesses] = useState<string[]>([]);
   const [current, setCurrent] = useState("");
+  const [keyStatus, setKeyStatus] = useState<{ [key: string]: string }>({});
   const [status, setStatus] = useState<"playing" | "won" | "lost">("playing");
 
   function normalize(text: string) {
@@ -51,8 +52,27 @@ function WordGame({
     if (guesses.length >= MAX_TRIES) return;
 
     const nextGuesses = [...guesses, guess];
-    setGuesses(nextGuesses);
-    setCurrent("");
+
+const newStatus = { ...keyStatus };
+
+guess.split("").forEach((letter, i) => {
+  if (answer[i] === letter) {
+    newStatus[letter] = "correct";
+  } else if (answer.includes(letter)) {
+    if (newStatus[letter] !== "correct") {
+      newStatus[letter] = "present";
+    }
+  } else {
+    if (!newStatus[letter]) {
+      newStatus[letter] = "absent";
+    }
+  }
+});
+
+setKeyStatus(newStatus);
+
+setGuesses(nextGuesses);
+setCurrent("");
 
     if (guess === answer) {
       setStatus("won");
