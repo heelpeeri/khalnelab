@@ -5,7 +5,7 @@ import { GlassCard } from "@/components/GlassCard";
 
 type WinnerType = "side1" | "side2" | "none";
 
-export function WordGame({
+export default function WordGame({
   onRoundEnd,
   roundKey,
 }: {
@@ -103,13 +103,13 @@ export function WordGame({
   const emptyRows = MAX_TRIES - guesses.length;
 
   return (
-    <GlassCard className="min-h-[780px] p-8 text-center">
-      <h2 className="text-2xl font-black">وشي الكلمة؟</h2>
+    <GlassCard className="panel-animated min-h-[780px] p-8 text-center">
+      <h2 className="text-2xl font-black">خمن الكلمة</h2>
       <p className="mt-2 text-white/80">خمن الكلمة من {answer.length} حروف</p>
 
       <div className="mt-6 space-y-3">
         {guesses.map((guess, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center gap-3">
+          <div key={rowIndex} className="animate-fade-in-up flex justify-center gap-3">
             {guess.split("").map((letter, colIndex) => (
               <div
                 key={colIndex}
@@ -206,13 +206,13 @@ export function WordGame({
       </div>
 
       {status === "won" && (
-        <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
+        <div className="winner-animated mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
           <p className="text-lg font-black">🔥 ممتاز! عرفت الكلمة</p>
         </div>
       )}
 
       {status === "lost" && (
-        <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
+        <div className="winner-animated mt-6 rounded-2xl border border-white/20 bg-white/10 p-4">
           <p className="text-lg font-black">انتهت المحاولات</p>
           <p className="mt-2 text-white/80">الكلمة الصحيحة: {answer}</p>
         </div>
