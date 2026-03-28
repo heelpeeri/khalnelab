@@ -1,7 +1,8 @@
 'use client';
 
-'use client';
-
+import { useEffect, useState } from "react";
+import { GlassCard } from "@/components/GlassCard";
+import { Logo } from "@/components/Logo";
 import WordGame from "@/components/match/WordGame";
 import ProverbGame from "@/components/match/ProverbGame";
 import CategoriesGame from "@/components/match/CategoriesGame";
