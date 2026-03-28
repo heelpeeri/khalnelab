@@ -46,7 +46,11 @@ export default function Home() {
       <div className="mt-12 w-full max-w-6xl space-y-10">
         <section>
           <h2 className="mb-4 text-2xl font-black text-white">ألعاب دور دور</h2>
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="relative">
+  {/* glow */}
+  <div className="pointer-events-none absolute -inset-6 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 opacity-40 blur-3xl"></div>
+
+  <div className="relative z-10 grid gap-5 md:grid-cols-2">
             {turnBasedGames.map((game) => (
               <Link key={game.title} href={game.href} className="block">
                 <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
