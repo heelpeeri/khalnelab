@@ -7,11 +7,13 @@ const turnBasedGames = [
     href: "/match?game=word",
     emoji: "💬",
     title: "خمن الكلمة",
+    desc: "خمن الكلمة بحروف عربية"
   },
   {
     href: "/match?game=categories",
     emoji: "🌍",
     title: "إنسان حيوان نبات جماد بلاد",
+    desc: "المعروف لا يعرف"
   },
 ];
 
@@ -20,60 +22,63 @@ const speedGames = [
     href: "/match?game=draw",
     emoji: "✏️",
     title: "خمن المثل",
+    desc: "أسرع واحد يفوز"
   },
   {
     href: "/match?game=scramble",
     emoji: "🧩",
     title: "حروف بالخلاط",
+    desc: "حروف ملخبطة؟ رتبها!"
   },
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen px-4 py-10 text-center text-white">
+    <main className="flex min-h-screen flex-col items-center justify-center px-4 py-10 text-center">
       <div className="mb-6 flex justify-center">
         <Logo size={220} />
       </div>
 
-      <p className="mx-auto max-w-2xl text-3xl font-bold leading-relaxed">
-        منصة ألعاب عائلية ممتعة داخل البيت
+      <p className="mt-2 max-w-2xl text-2xl font-bold leading-relaxed text-white/90 md:text-3xl">
+        منصة ألعاب عائلية سعودية وتجربة جماعية ممتعة داخل البيت.
       </p>
 
-      {/* عمودين */}
-      <div className="mt-12 grid gap-6 md:grid-cols-2 max-w-6xl mx-auto">
-
-        {/* دور دور */}
-        <GlassCard className="p-6">
-          <h2 className="text-2xl font-black mb-6">🎯 دور دور</h2>
-
-          <div className="space-y-4">
+      <div className="mt-12 w-full max-w-6xl space-y-10">
+        <section>
+          <h2 className="mb-4 text-2xl font-black text-white">ألعاب دور دور</h2>
+          <div className="grid gap-5 md:grid-cols-2">
             {turnBasedGames.map((game) => (
-              <Link key={game.title} href={game.href}>
-                <div className="flex items-center gap-4 rounded-2xl bg-white/10 p-4 hover:bg-white/20 transition">
-                  <span className="text-3xl">{game.emoji}</span>
-                  <span className="text-xl font-bold">{game.title}</span>
-                </div>
+              <Link key={game.title} href={game.href} className="block">
+                <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
+                  <div className="text-4xl">{game.emoji}</div>
+                  <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
+                  <p className="mt-2 text-sm text-white/75">{game.desc}</p>
+                </GlassCard>
               </Link>
             ))}
           </div>
-        </GlassCard>
+        </section>
 
-        {/* السرعة */}
-        <GlassCard className="p-6">
-          <h2 className="text-2xl font-black mb-6">⚡ أسرع واحد</h2>
-
-          <div className="space-y-4">
+        <section>
+          <h2 className="mb-4 text-2xl font-black text-white">ألعاب السرعة</h2>
+          <div className="grid gap-5 md:grid-cols-2">
             {speedGames.map((game) => (
-              <Link key={game.title} href={game.href}>
-                <div className="flex items-center gap-4 rounded-2xl bg-white/10 p-4 hover:bg-white/20 transition">
-                  <span className="text-3xl">{game.emoji}</span>
-                  <span className="text-xl font-bold">{game.title}</span>
-                </div>
+              <Link key={game.title} href={game.href} className="block">
+                <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
+                  <div className="text-4xl">{game.emoji}</div>
+                  <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
+                  <p className="mt-2 text-sm text-white/75">{game.desc}</p>
+                </GlassCard>
               </Link>
             ))}
           </div>
-        </GlassCard>
+        </section>
+      </div>
 
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <Link href="/match?game=word" className="btn-primary">
+          ابدأ التحدي
+        </Link>
       </div>
     </main>
   );
