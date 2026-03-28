@@ -6,7 +6,7 @@ import { GlassCard } from "@/components/GlassCard";
 type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
-export function ProverbGame({
+export default function ProverbGame({
   mode,
   side1Name,
   side2Name,
@@ -84,17 +84,19 @@ export function ProverbGame({
   }, [timeLeft, revealed]);
 
   return (
-    <GlassCard className="min-h-[780px] p-8 text-center">
-      <h2 className="text-2xl font-black">خمن المثل من الإيموجي</h2>
+    <GlassCard className="panel-animated min-h-[780px] p-8 text-center">
+      <h2 className="text-2xl font-black">خمن المثل</h2>
 
       <div className="mt-4 rounded-3xl border border-white/20 bg-white/10 p-4 text-sm leading-7 text-white/80">
         {instructionText}
       </div>
 
-      <div className="mt-4 w-full max-w-md mx-auto">
+      <div className="mx-auto mt-4 w-full max-w-md">
         <div className="mb-1 flex justify-between text-sm text-white/80">
           <span>الوقت</span>
-          <span>{timeLeft}</span>
+          <span className={timeLeft <= 5 ? "animate-pulse-soft font-black text-red-300" : "font-black"}>
+            {timeLeft}
+          </span>
         </div>
         <div className="h-3 w-full overflow-hidden rounded-full bg-white/20">
           <div
@@ -104,7 +106,7 @@ export function ProverbGame({
         </div>
       </div>
 
-      <div className="mt-8 text-6xl">{current.emoji}</div>
+      <div className="animate-fade-in-up mt-8 text-6xl">{current.emoji}</div>
 
       {!revealed && (
         <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-white/80">
@@ -176,11 +178,11 @@ export function ProverbGame({
 
       {revealed && (
         <>
-          <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
-            <p className="text-lg font-black animate-pulse">⏰ انتهى الوقت!</p>
+          <div className="winner-animated mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
+            <p className="text-lg font-black">⏰ انتهى الوقت!</p>
           </div>
 
-          <div className="mt-4 rounded-2xl border border-white/20 bg-white/10 p-5">
+          <div className="winner-animated mt-4 rounded-2xl border border-white/20 bg-white/10 p-5">
             <p className="text-sm text-white/70">الإجابة الصحيحة</p>
             <p className="mt-2 text-2xl font-black">{current.answer}</p>
           </div>
