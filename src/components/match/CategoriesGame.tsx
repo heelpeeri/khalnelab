@@ -6,7 +6,7 @@ import { GlassCard } from "@/components/GlassCard";
 type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
-export function CategoriesGame({
+export default function CategoriesGame({
   mode,
   side1Name,
   side2Name,
@@ -70,19 +70,21 @@ export function CategoriesGame({
   }, [timeLeft, revealed, side1Ready, side2Ready]);
 
   return (
-    <GlassCard className="min-h-[780px] p-8 text-center">
+    <GlassCard className="panel-animated min-h-[780px] p-8 text-center">
       <h2 className="text-2xl font-black">إنسان حيوان نبات جماد بلاد</h2>
 
       <div className="mt-6 flex justify-center">
-        <div className="rounded-[30px] bg-white px-12 py-8 text-7xl font-black text-red-500 shadow-xl">
+        <div className="animate-pop-in rounded-[30px] bg-white px-12 py-8 text-7xl font-black text-red-500 shadow-xl">
           {letter}
         </div>
       </div>
 
-      <div className="mt-4 w-full max-w-md mx-auto">
+      <div className="mx-auto mt-4 w-full max-w-md">
         <div className="mb-1 flex justify-between text-sm text-white/80">
           <span>الوقت</span>
-          <span>{timeLeft}</span>
+          <span className={timeLeft <= 5 ? "animate-pulse-soft font-black text-red-300" : "font-black"}>
+            {timeLeft}
+          </span>
         </div>
         <div className="h-3 w-full overflow-hidden rounded-full bg-white/20">
           <div
@@ -142,8 +144,8 @@ export function CategoriesGame({
       </div>
 
       {revealed && (
-        <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
-          <p className="text-lg font-black animate-pulse">🚫 انتهى الوقت – وقت الإعلان</p>
+        <div className="winner-animated mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 text-center">
+          <p className="text-lg font-black">🚫 انتهى الوقت – وقت الإعلان</p>
         </div>
       )}
 
