@@ -2,13 +2,10 @@
 
 'use client';
 
-import { useEffect, useState } from "react";
-import { GlassCard } from "@/components/GlassCard";
-import { Logo } from "@/components/Logo";
-import WordGame from "@/components/games/WordGame";
-import ProverbGame from "@/components/games/ProverbGame";
-import CategoriesGame from "@/components/games/CategoriesGame";
-import ScrambleGame from "@/components/games/ScrambleGame";
+import WordGame from "@/components/match/WordGame";
+import ProverbGame from "@/components/match/ProverbGame";
+import CategoriesGame from "@/components/match/CategoriesGame";
+import ScrambleGame from "@/components/match/ScrambleGame";
 
 type GameType = "word" | "draw" | "categories" | "scramble";
 type PlayMode = "solo" | "teams";
