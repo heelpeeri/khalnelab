@@ -40,11 +40,6 @@ export default function Home() {
           <Logo size={210} />
         </div>
 
-        <section className="mx-auto mt-6 max-w-4xl text-center">
-          <h1 className="text-4xl font-black leading-tight md:text-6xl">
-            ألعاب جماعية
-            <span className="block text-white/90">تولّع الجلسة</span>
-          </h1>
 
           <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
             منصة ألعاب عائلية سعودية بتجربة سريعة، واضحة، وممتعة داخل البيت.
