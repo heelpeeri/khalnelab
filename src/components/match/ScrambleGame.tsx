@@ -1,4 +1,12 @@
-function ScrambleGame({
+'use client';
+
+import { useEffect, useMemo, useState } from "react";
+import { GlassCard } from "@/components/GlassCard";
+
+type PlayMode = "solo" | "teams";
+type WinnerType = "side1" | "side2" | "none";
+
+export function ScrambleGame({
   mode,
   side1Name,
   side2Name,
@@ -33,7 +41,7 @@ function ScrambleGame({
   const ROUND_TIME = 15;
 
   const [index, setIndex] = useState(() => Math.floor(Math.random() * QUESTIONS.length));
-  const current = QUESTIONS[index];
+  const current = useMemo(() => QUESTIONS[index], [index]);
 
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
   const [winner, setWinner] = useState<"side1" | "side2" | null>(null);
@@ -60,7 +68,7 @@ function ScrambleGame({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, winner]);
+  }, [timeLeft, winner, onRoundEnd]);
 
   function handleWin(side: "side1" | "side2") {
     if (winner) return;
@@ -76,10 +84,8 @@ function ScrambleGame({
       <h2 className="text-3xl font-black">🧩 حروف بالخلاط</h2>
       <p className="mt-2 text-white/80">⚡ أول واحد يحلها يفوز!</p>
 
-      {/* الوقت */}
       <div className="mt-4 text-lg">⏳ {timeLeft}</div>
 
-      {/* السؤال */}
       <div className="mt-8">
         <p className="text-xl font-black">{current.prompt}</p>
         <div className="mt-6 text-6xl font-black tracking-[0.4em]">
@@ -87,14 +93,12 @@ function ScrambleGame({
         </div>
       </div>
 
-      {/* الفوز */}
       {winner && (
         <div className="mt-8 text-2xl font-black animate-bounce">
           🚀 الفائز: {winner === "side1" ? side1Name : side2Name}
         </div>
       )}
 
-      {/* الأزرار */}
       {!winner && (
         <div className="mt-10 grid grid-cols-2 gap-4">
           <button
