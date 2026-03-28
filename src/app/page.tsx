@@ -43,7 +43,7 @@ export default function Home() {
         منصة ألعاب عائلية سعودية وتجربة جماعية ممتعة داخل البيت.
       </p>
 
-      <div className="mt-12 w-full max-w-6xl space-y-10">
+      <div className="mt-12 w-full max-w-6xl space-y-12">
         <section>
           <h2 className="mb-5 text-2xl font-black text-white md:text-3xl">
             ألعاب دور دور
@@ -62,25 +62,21 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden rounded-[36px] border border-white/15 bg-black/20 px-4 py-8 backdrop-blur-sm">
-          <div className="pointer-events-none absolute -inset-8 bg-gradient-to-r from-yellow-400/15 via-red-500/15 to-pink-500/15 blur-3xl" />
+        <section className="rounded-[36px] bg-black/15 px-4 py-6 md:px-6">
+          <h2 className="mb-5 text-2xl font-black text-white md:text-3xl">
+            اسرع واحد يفوز
+          </h2>
 
-          <div className="relative z-10">
-            <h2 className="mb-5 text-2xl font-black text-white md:text-3xl">
-              اسرع واحد يفوز
-            </h2>
-
-            <div className="grid gap-5 md:grid-cols-2">
-              {speedGames.map((game) => (
-                <Link key={game.title} href={game.href} className="block">
-                  <GlassCard className="h-full cursor-pointer p-8 transition duration-200 hover:-translate-y-1 hover:bg-white/15">
-                    <div className="text-4xl">{game.emoji}</div>
-                    <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
-                    <p className="mt-2 text-sm text-white/80">{game.desc}</p>
-                  </GlassCard>
-                </Link>
-              ))}
-            </div>
+          <div className="grid gap-5 md:grid-cols-2">
+            {speedGames.map((game) => (
+              <Link key={game.title} href={game.href} className="block">
+                <GlassCard className="h-full cursor-pointer p-8 transition duration-200 hover:-translate-y-1 hover:bg-white/15">
+                  <div className="text-4xl">{game.emoji}</div>
+                  <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
+                  <p className="mt-2 text-sm text-white/80">{game.desc}</p>
+                </GlassCard>
+              </Link>
+            ))}
           </div>
         </section>
       </div>
