@@ -63,7 +63,11 @@ export default function Home() {
           <h2 className="mb-4 text-2xl font-black text-white">اسرع واحد يفوز</h2>
 
           <div className="relative">
-            <div className="pointer-events-none absolute -inset-6 rounded-[40px] bg-gradient-to-r from-yellow-400/35 via-red-500/35 to-pink-500/35 blur-3xl"></div>
+  {/* طبقة تغميق */}
+  <div className="pointer-events-none absolute inset-0 rounded-[40px] bg-black/40 backdrop-blur-sm"></div>
+
+  {/* glow خفيف */}
+  <div className="pointer-events-none absolute -inset-6 rounded-[40px] bg-gradient-to-r from-yellow-400/20 via-red-500/20 to-pink-500/20 blur-3xl"></div>
 
             <div className="relative z-10 grid gap-5 md:grid-cols-2">
               {speedGames.map((game) => (
