@@ -7,13 +7,13 @@ const turnBasedGames = [
     href: "/match?game=word",
     emoji: "💬",
     title: "خمن الكلمة",
-    desc: "خمن الكلمة بحروف عربية",
+    desc: "خمن الكلمة بحروف عربية"
   },
   {
     href: "/match?game=categories",
     emoji: "🌍",
     title: "إنسان حيوان نبات جماد بلاد",
-    desc: "المعروف لا يعرف",
+    desc: "المعروف لا يعرف"
   },
 ];
 
@@ -22,69 +22,124 @@ const speedGames = [
     href: "/match?game=draw",
     emoji: "✏️",
     title: "خمن المثل",
-    desc: "خمن المثل من الإيموجي",
+    desc: "خمن المثل من الإيموجي"
   },
   {
     href: "/match?game=scramble",
     emoji: "🧩",
     title: "حروف بالخلاط",
-    desc: "حروف ملخبطة؟ رتبها!",
+    desc: "حروف ملخبطة؟ رتبها!"
   },
 ];
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center px-4 py-10 text-center">
-      <div className="mb-6 flex justify-center">
-        <Logo size={220} />
-      </div>
+    <main className="min-h-screen px-4 py-8 text-white">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex justify-center">
+          <Logo size={210} />
+        </div>
 
-      <p className="mt-2 max-w-2xl text-2xl font-bold leading-relaxed text-white/90 md:text-3xl">
-        منصة ألعاب عائلية سعودية وتجربة جماعية ممتعة داخل البيت.
-      </p>
+        <section className="mx-auto mt-6 max-w-4xl text-center">
+          <h1 className="text-4xl font-black leading-tight md:text-6xl">
+            ألعاب جماعية
+            <span className="block text-white/90">تولّع الجلسة</span>
+          </h1>
 
-      <div className="mt-12 w-full max-w-6xl space-y-12">
-        <section>
-          <h2 className="mb-5 text-2xl font-black text-white md:text-3xl">
-            ألعاب دور دور
-          </h2>
+          <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
+            منصة ألعاب عائلية سعودية بتجربة سريعة، واضحة، وممتعة داخل البيت.
+          </p>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            {turnBasedGames.map((game) => (
-              <Link key={game.title} href={game.href} className="block">
-                <GlassCard className="h-full cursor-pointer p-8 transition duration-200 hover:-translate-y-1 hover:bg-white/15">
-                  <div className="text-4xl">{game.emoji}</div>
-                  <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
-                  <p className="mt-2 text-sm text-white/80">{game.desc}</p>
-                </GlassCard>
-              </Link>
-            ))}
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link href="/match?game=word" className="btn-primary">
+              ابدأ التحدي
+            </Link>
           </div>
         </section>
 
-        <section className="rounded-[36px] bg-black/15 px-4 py-6 md:px-6">
-          <h2 className="mb-5 text-2xl font-black text-white md:text-3xl">
-            اسرع واحد يفوز
-          </h2>
+        <section className="mt-14 grid gap-8 xl:grid-cols-2">
+          <GlassCard className="rounded-[32px] p-7 md:p-8">
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-right">
+                <p className="text-sm font-bold text-white/60">نمط اللعب</p>
+                <h2 className="mt-1 text-3xl font-black md:text-4xl">
+                  دور دور
+                </h2>
+                <p className="mt-2 text-sm leading-7 text-white/70 md:text-base">
+                  الوضع هدااووه.
+                </p>
+              </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            {speedGames.map((game) => (
-              <Link key={game.title} href={game.href} className="block">
-                <GlassCard className="h-full cursor-pointer p-8 transition duration-200 hover:-translate-y-1 hover:bg-white/15">
-                  <div className="text-4xl">{game.emoji}</div>
-                  <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
-                  <p className="mt-2 text-sm text-white/80">{game.desc}</p>
-                </GlassCard>
-              </Link>
-            ))}
+              <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15 text-3xl">
+                🎯
+              </div>
+            </div>
+
+            <div className="mt-8 grid gap-5">
+              {turnBasedGames.map((game) => (
+                <Link key={game.title} href={game.href} className="block">
+                  <div className="rounded-[28px] border border-white/15 bg-white/8 p-6 text-right transition duration-200 hover:-translate-y-1 hover:bg-white/14">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-3xl">
+                        {game.emoji}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-2xl font-black">{game.title}</h3>
+                        <p className="mt-2 text-sm text-white/75 md:text-base">
+                          {game.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </GlassCard>
+
+          <div className="relative overflow-hidden rounded-[32px] border border-white/15 bg-black/20 p-7 md:p-8">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/10" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between gap-4">
+                <div className="text-right">
+                  <p className="text-sm font-bold text-white/60">نمط اللعب</p>
+                  <h2 className="mt-1 text-3xl font-black md:text-4xl">
+                    أسرع واحد يفوز
+                  </h2>
+                  <p className="mt-2 text-sm leading-7 text-white/70 md:text-base">
+                    ردات الفعل السريعة تفوزك بس لاتنكب عمرك.
+                  </p>
+                </div>
+
+                <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15 text-3xl">
+                  ⚡
+                </div>
+              </div>
+
+              <div className="mt-8 grid gap-5">
+                {speedGames.map((game) => (
+                  <Link key={game.title} href={game.href} className="block">
+                    <div className="rounded-[28px] border border-white/15 bg-white/8 p-6 text-right transition duration-200 hover:-translate-y-1 hover:bg-white/14">
+                      <div className="flex items-start gap-4">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-3xl">
+                          {game.emoji}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-2xl font-black">{game.title}</h3>
+                          <p className="mt-2 text-sm text-white/75 md:text-base">
+                            {game.desc}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
-      </div>
-
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link href="/match?game=word" className="btn-primary">
-          ابدأ التحدي
-        </Link>
       </div>
     </main>
   );
