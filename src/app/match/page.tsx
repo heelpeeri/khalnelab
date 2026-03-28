@@ -105,7 +105,12 @@ export default function MatchPage() {
     setRoundSeed(1);
   }
 
-  const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
+  const currentTurnName =
+  selectedGame === "scramble"
+    ? "تنافس مباشر"
+    : currentRound % 2 === 1
+    ? side1
+    : side2;
 
   const currentGameBoard =
     selectedGame === "word" ? (
