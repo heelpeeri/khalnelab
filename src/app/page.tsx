@@ -36,11 +36,13 @@ export default function Home() {
   return (
     <main className="min-h-screen px-4 py-8 text-white">
       <div className="mx-auto max-w-7xl">
+        
         <div className="flex justify-center">
           <Logo size={210} />
         </div>
 
-
+        {/* 🔥 هذا كان ناقص */}
+        <section className="mx-auto mt-6 max-w-3xl text-center">
           <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
             منصة ألعاب عائلية سعودية بتجربة سريعة، واضحة، وممتعة داخل البيت.
           </p>
@@ -52,7 +54,10 @@ export default function Home() {
           </div>
         </section>
 
+        {/* الأقسام */}
         <section className="mt-14 grid gap-8 xl:grid-cols-2">
+
+          {/* دور دور */}
           <GlassCard className="rounded-[32px] p-7 md:p-8">
             <div className="flex items-center justify-between gap-4">
               <div className="text-right">
@@ -92,49 +97,48 @@ export default function Home() {
             </div>
           </GlassCard>
 
-          <div className="relative overflow-hidden rounded-[32px] border border-white/15 bg-black/20 p-7 md:p-8">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/10" />
-
-            <div className="relative z-10">
-              <div className="flex items-center justify-between gap-4">
-                <div className="text-right">
-                  <p className="text-sm font-bold text-white/60">نمط اللعب</p>
-                  <h2 className="mt-1 text-3xl font-black md:text-4xl">
-                    أسرع واحد يفوز
-                  </h2>
-                  <p className="mt-2 text-sm leading-7 text-white/70 md:text-base">
-                    ردات الفعل السريعة تفوزك بس لاتنكب عمرك.
-                  </p>
-                </div>
-
-                <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15 text-3xl">
-                  ⚡
-                </div>
+          {/* أسرع واحد */}
+          <GlassCard className="rounded-[32px] border border-white/15 bg-black/20 p-7 md:p-8">
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-right">
+                <p className="text-sm font-bold text-white/60">نمط اللعب</p>
+                <h2 className="mt-1 text-3xl font-black md:text-4xl">
+                  أسرع واحد يفوز
+                </h2>
+                <p className="mt-2 text-sm leading-7 text-white/70 md:text-base">
+                  ردات الفعل السريعة تفوزك بس لاتنكب عمرك.
+                </p>
               </div>
 
-              <div className="mt-8 grid gap-5">
-                {speedGames.map((game) => (
-                  <Link key={game.title} href={game.href} className="block">
-                    <div className="rounded-[28px] border border-white/15 bg-white/8 p-6 text-right transition duration-200 hover:-translate-y-1 hover:bg-white/14">
-                      <div className="flex items-start gap-4">
-                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-3xl">
-                          {game.emoji}
-                        </div>
-
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-2xl font-black">{game.title}</h3>
-                          <p className="mt-2 text-sm text-white/75 md:text-base">
-                            {game.desc}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+              <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15 text-3xl">
+                ⚡
               </div>
             </div>
-          </div>
+
+            <div className="mt-8 grid gap-5">
+              {speedGames.map((game) => (
+                <Link key={game.title} href={game.href} className="block">
+                  <div className="rounded-[28px] border border-white/15 bg-white/8 p-6 text-right transition duration-200 hover:-translate-y-1 hover:bg-white/14">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-3xl">
+                        {game.emoji}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-2xl font-black">{game.title}</h3>
+                        <p className="mt-2 text-sm text-white/75 md:text-base">
+                          {game.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </GlassCard>
+
         </section>
+
       </div>
     </main>
   );
