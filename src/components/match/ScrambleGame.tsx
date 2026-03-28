@@ -20,14 +20,33 @@ export function ScrambleGame({
   roundKey: number;
 }) {
   const QUESTIONS = [
-    { prompt: "طلع لي اسم أكلة", answer: "شاورما" },
-    { prompt: "طلع لي اسم براند", answer: "ابل" },
-    { prompt: "طلع لي اسم مدينة", answer: "الرياض" },
-    { prompt: "طلع لي اسم سيارة", answer: "تويوتا" },
-    { prompt: "طلع لي اسم بنت", answer: "نورة" },
-    { prompt: "طلع لي اسم تطبيق", answer: "سناب" },
-    { prompt: "طلع لي اسم لاعب", answer: "ميسي" },
-  ];
+  { prompt: "طلع لي اسم أكلة", answer: "شاورما" },
+  { prompt: "طلع لي اسم أكلة", answer: "كبسة" },
+  { prompt: "طلع لي اسم أكلة", answer: "بيتزا" },
+
+  { prompt: "طلع لي اسم براند", answer: "ابل" },
+  { prompt: "طلع لي اسم براند", answer: "سامسونج" },
+  { prompt: "طلع لي اسم براند", answer: "نايكي" },
+
+  { prompt: "طلع لي اسم مدينة", answer: "الرياض" },
+  { prompt: "طلع لي اسم مدينة", answer: "جدة" },
+  { prompt: "طلع لي اسم مدينة", answer: "دبي" },
+
+  { prompt: "طلع لي اسم سيارة", answer: "تويوتا" },
+  { prompt: "طلع لي اسم سيارة", answer: "نيسان" },
+  { prompt: "طلع لي اسم سيارة", answer: "مرسيدس" },
+
+  { prompt: "طلع لي اسم بنت", answer: "نورة" },
+  { prompt: "طلع لي اسم بنت", answer: "سارة" },
+  { prompt: "طلع لي اسم بنت", answer: "ريم" },
+
+  { prompt: "طلع لي اسم تطبيق", answer: "سناب" },
+  { prompt: "طلع لي اسم تطبيق", answer: "تيكتوك" },
+  { prompt: "طلع لي اسم تطبيق", answer: "انستقرام" },
+
+  { prompt: "طلع لي اسم لاعب", answer: "ميسي" },
+  { prompt: "طلع لي اسم لاعب", answer: "رونالدو" },
+];
 
   function shuffleWord(word: string) {
     const chars = word.split("");
