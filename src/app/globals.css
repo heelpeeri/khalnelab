@@ -3,13 +3,163 @@
 @tailwind utilities;
 
 :root {
+  --bg-start: #4b0013;
+  --bg-end: #8b0f2a;
+  --panel: rgba(255, 255, 255, 0.1);
+  --panel-border: rgba(255, 255, 255, 0.18);
+  --text-main: #ffffff;
+  --text-soft: rgba(255, 255, 255, 0.78);
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 body {
   direction: rtl;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 30%),
+    linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
+/* ========== Base Helpers ========== */
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+select,
+input,
+button,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(255,255,255,0.18);
+  color: white;
+}
+
+/* ========== Glass Style ========== */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* ========== Buttons ========== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: white;
+  color: #7a001f;
+  padding: 0.9rem 1.4rem;
+  font-weight: 900;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  transition:
+    transform 0.18s var(--ease-smooth),
+    box-shadow 0.22s var(--ease-smooth),
+    opacity 0.18s var(--ease-smooth),
+    background-color 0.22s var(--ease-smooth);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  padding: 0.9rem 1.4rem;
+  font-weight: 900;
+  transition:
+    transform 0.18s var(--ease-smooth),
+    background-color 0.22s var(--ease-smooth),
+    opacity 0.18s var(--ease-smooth);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.14);
+}
+
+.btn-secondary:active {
+  transform: scale(0.96);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* fallback any raw button */
+button {
+  transition:
+    transform 0.18s var(--ease-smooth),
+    opacity 0.18s var(--ease-smooth),
+    box-shadow 0.22s var(--ease-smooth),
+    background-color 0.22s var(--ease-smooth);
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+/* ========== Inputs ========== */
+.input {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  padding: 0.95rem 1rem;
+  outline: none;
+  transition:
+    border-color 0.2s var(--ease-smooth),
+    background-color 0.2s var(--ease-smooth),
+    box-shadow 0.2s var(--ease-smooth);
+}
+
+.input::placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
+.input:focus {
+  border-color: rgba(255,255,255,0.34);
+  background: rgba(255,255,255,0.13);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.08);
+}
+
+/* ========== Animation Keyframes ========== */
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -80,7 +230,7 @@ body {
     box-shadow: 0 0 0 rgba(255,255,255,0);
   }
   50% {
-    box-shadow: 0 0 24px rgba(255,255,255,0.18);
+    box-shadow: 0 0 24px rgba(255,255,255,0.16);
   }
 }
 
@@ -98,6 +248,7 @@ body {
   }
 }
 
+/* ========== Animation Utility Classes ========== */
 .animate-fade-in-up {
   animation: fade-in-up 0.45s var(--ease-smooth) both;
 }
@@ -126,23 +277,6 @@ body {
   animation: winner-pop 0.45s var(--ease-smooth) both;
 }
 
-/* عناصر تفاعلية موحدة */
-.btn-primary,
-.btn-secondary,
-button {
-  transition:
-    transform 0.18s var(--ease-smooth),
-    opacity 0.18s var(--ease-smooth),
-    box-shadow 0.22s var(--ease-smooth),
-    background-color 0.22s var(--ease-smooth);
-}
-
-button:active,
-.btn-primary:active,
-.btn-secondary:active {
-  transform: scale(0.96);
-}
-
 .card-animated {
   animation: fade-in-up 0.45s var(--ease-smooth) both;
 }
@@ -153,4 +287,23 @@ button:active,
 
 .winner-animated {
   animation: winner-pop 0.45s var(--ease-smooth) both;
+}
+
+/* ========== Scrollbars (optional nice touch) ========== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.06);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.28);
 }
