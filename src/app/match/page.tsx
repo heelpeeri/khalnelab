@@ -39,7 +39,12 @@ export default function MatchPage() {
 
   const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
   const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
-  const currentTurnLabel = mode === "teams" ? "دور الفريق" : "دور اللاعب";
+ const currentTurnLabel =
+  selectedGame === "scramble"
+    ? "نمط الجولة"
+    : mode === "teams"
+    ? "دور الفريق"
+    : "دور اللاعب";
   const winnerQuestionLabel =
     mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
 
