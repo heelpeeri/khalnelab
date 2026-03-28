@@ -22,7 +22,7 @@ const speedGames = [
     href: "/match?game=draw",
     emoji: "✏️",
     title: "خمن المثل",
-    desc: "أسرع واحد يفوز"
+    desc: "خمن المتل من الإيموجي"
   },
   {
     href: "/match?game=scramble",
@@ -60,7 +60,7 @@ export default function Home() {
         </section>
 
         <section>
-          <h2 className="mb-4 text-2xl font-black text-white">ألعاب السرعة</h2>
+          <h2 className="mb-4 text-2xl font-black text-white">اسرع واحد يف،ز</h2>
           <div className="grid gap-5 md:grid-cols-2">
             {speedGames.map((game) => (
               <Link key={game.title} href={game.href} className="block">
