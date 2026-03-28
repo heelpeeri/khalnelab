@@ -22,7 +22,7 @@ const speedGames = [
     href: "/match?game=draw",
     emoji: "✏️",
     title: "خمن المثل",
-    desc: "خمن المتل من الإيموجي"
+    desc: "خمن المثل من الإيموجي"
   },
   {
     href: "/match?game=scramble",
@@ -46,11 +46,7 @@ export default function Home() {
       <div className="mt-12 w-full max-w-6xl space-y-10">
         <section>
           <h2 className="mb-4 text-2xl font-black text-white">ألعاب دور دور</h2>
-          <div className="relative">
-  {/* glow */}
-  <div className="pointer-events-none absolute -inset-6 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 opacity-40 blur-3xl"></div>
-
-  <div className="relative z-10 grid gap-5 md:grid-cols-2">
+          <div className="grid gap-5 md:grid-cols-2">
             {turnBasedGames.map((game) => (
               <Link key={game.title} href={game.href} className="block">
                 <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
@@ -64,25 +60,25 @@ export default function Home() {
         </section>
 
         <section>
-  <h2 className="mb-4 text-2xl font-black text-white">اسرع واحد يفوز</h2>
+          <h2 className="mb-4 text-2xl font-black text-white">اسرع واحد يفوز</h2>
 
-  <div className="relative">
-    {/* glow */}
-    <div className="pointer-events-none absolute -inset-6 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 opacity-40 blur-3xl"></div>
+          <div className="relative">
+            <div className="pointer-events-none absolute -inset-6 rounded-[40px] bg-gradient-to-r from-yellow-400/35 via-red-500/35 to-pink-500/35 blur-3xl"></div>
 
-    <div className="relative z-10 grid gap-5 md:grid-cols-2">
-      {speedGames.map((game) => (
-        <Link key={game.title} href={game.href} className="block">
-          <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
-            <div className="text-4xl">{game.emoji}</div>
-            <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
-            <p className="mt-2 text-sm text-white/75">{game.desc}</p>
-          </GlassCard>
-        </Link>
-      ))}
-    </div>
-  </div>
-</section>
+            <div className="relative z-10 grid gap-5 md:grid-cols-2">
+              {speedGames.map((game) => (
+                <Link key={game.title} href={game.href} className="block">
+                  <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
+                    <div className="text-4xl">{game.emoji}</div>
+                    <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
+                    <p className="mt-2 text-sm text-white/75">{game.desc}</p>
+                  </GlassCard>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link href="/match?game=word" className="btn-primary">
