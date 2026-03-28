@@ -64,20 +64,25 @@ export default function Home() {
         </section>
 
         <section>
-          <h2 className="mb-4 text-2xl font-black text-white">اسرع واحد يفوز</h2>
-          <div className="grid gap-5 md:grid-cols-2">
-            {speedGames.map((game) => (
-              <Link key={game.title} href={game.href} className="block">
-                <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
-                  <div className="text-4xl">{game.emoji}</div>
-                  <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
-                  <p className="mt-2 text-sm text-white/75">{game.desc}</p>
-                </GlassCard>
-              </Link>
-            ))}
-          </div>
-        </section>
-      </div>
+  <h2 className="mb-4 text-2xl font-black text-white">اسرع واحد يفوز</h2>
+
+  <div className="relative">
+    {/* glow */}
+    <div className="pointer-events-none absolute -inset-6 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 opacity-40 blur-3xl"></div>
+
+    <div className="relative z-10 grid gap-5 md:grid-cols-2">
+      {speedGames.map((game) => (
+        <Link key={game.title} href={game.href} className="block">
+          <GlassCard className="h-full cursor-pointer p-6 transition hover:-translate-y-1">
+            <div className="text-4xl">{game.emoji}</div>
+            <h3 className="mt-4 text-2xl font-black">{game.title}</h3>
+            <p className="mt-2 text-sm text-white/75">{game.desc}</p>
+          </GlassCard>
+        </Link>
+      ))}
+    </div>
+  </div>
+</section>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link href="/match?game=word" className="btn-primary">
