@@ -37,14 +37,18 @@ export default function MatchPage() {
     }
   }, []);
 
+  const isRealtimeGame =
+    selectedGame === "scramble" || selectedGame === "draw";
+
   const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
   const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
- const currentTurnLabel =
-  selectedGame === "scramble"
+
+  const currentTurnLabel = isRealtimeGame
     ? "نمط الجولة"
     : mode === "teams"
     ? "دور الفريق"
     : "دور اللاعب";
+
   const winnerQuestionLabel =
     mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
 
@@ -105,9 +109,8 @@ export default function MatchPage() {
     setRoundSeed(1);
   }
 
-  const currentTurnName =
-  selectedGame === "scramble"
-    ? "تنافس مباشر"
+  const currentTurnName = isRealtimeGame
+    ? "أسرع واحد يفوز"
     : currentRound % 2 === 1
     ? side1
     : side2;
@@ -242,7 +245,7 @@ export default function MatchPage() {
                       اللعبة: {getGameTitle(selectedGame)}
                     </p>
                     <p className="mt-2 text-lg text-white/70">
-                      الدور على: {currentTurnName}
+                      {isRealtimeGame ? "النمط: أسرع واحد يفوز" : `الدور على: ${currentTurnName}`}
                     </p>
 
                     <button
