@@ -1,51 +1,156 @@
-@font-face {
-  font-family: 'Somar Sans';
-  src: url('/fonts/SomarSans-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Somar Sans';
-  src: url('/fonts/SomarSans-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html {
-  direction: rtl;
+:root {
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 45%, #ec4899 100%);
-  color: white;
-  font-family: 'Somar Sans', sans-serif;
+  direction: rtl;
 }
 
-* {
-  box-sizing: border-box;
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.glass {
-  @apply border border-white/20 bg-white/10 backdrop-blur-xl shadow-glass;
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.input {
-  @apply w-full rounded-2xl border border-white/20 bg-white/15 px-4 py-3 text-white outline-none placeholder:text-white/60 focus:border-white/40;
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
-.btn-primary {
-  @apply rounded-full bg-white px-6 py-3 font-bold text-red-500 transition hover:scale-[1.02];
+@keyframes pulse-soft {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 0.92;
+  }
 }
 
-.btn-secondary {
-  @apply rounded-full border border-white/30 bg-white/10 px-6 py-3 font-bold text-white transition hover:bg-white/20;
+@keyframes shake-soft {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-2px);
+  }
+  40% {
+    transform: translateX(2px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes glow-soft {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(255,255,255,0);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(255,255,255,0.18);
+  }
+}
+
+@keyframes winner-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(10px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.04) translateY(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.45s var(--ease-smooth) both;
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.35s var(--ease-smooth) both;
+}
+
+.animate-pop-in {
+  animation: pop-in 0.35s var(--ease-smooth) both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 1.6s ease-in-out infinite;
+}
+
+.animate-shake-soft {
+  animation: shake-soft 0.35s ease-in-out;
+}
+
+.animate-glow-soft {
+  animation: glow-soft 1.8s ease-in-out infinite;
+}
+
+.animate-winner-pop {
+  animation: winner-pop 0.45s var(--ease-smooth) both;
+}
+
+/* عناصر تفاعلية موحدة */
+.btn-primary,
+.btn-secondary,
+button {
+  transition:
+    transform 0.18s var(--ease-smooth),
+    opacity 0.18s var(--ease-smooth),
+    box-shadow 0.22s var(--ease-smooth),
+    background-color 0.22s var(--ease-smooth);
+}
+
+button:active,
+.btn-primary:active,
+.btn-secondary:active {
+  transform: scale(0.96);
+}
+
+.card-animated {
+  animation: fade-in-up 0.45s var(--ease-smooth) both;
+}
+
+.panel-animated {
+  animation: fade-in-scale 0.35s var(--ease-smooth) both;
+}
+
+.winner-animated {
+  animation: winner-pop 0.45s var(--ease-smooth) both;
 }
