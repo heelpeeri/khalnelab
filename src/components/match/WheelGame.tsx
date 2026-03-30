@@ -6,6 +6,7 @@ import { GlassCard } from "@/components/GlassCard";
 type WinnerType = "side1" | "side2";
 type TurnType = "side1" | "side2";
 type SegmentValue = number | "bankrupt" | "lose";
+type Phase = "spin" | "guess" | "celebrate";
 
 type Segment = {
   label: string;
@@ -48,27 +49,29 @@ function normalizeArabic(text: string) {
     .replace(/ة/g, "ه");
 }
 
-function formatSpinResult(result: SegmentValue | null) {
-  if (result === null) return "لف العجلة أول";
-  if (result === "bankrupt") return "💸 إفلاس";
-  if (result === "lose") return "❌ خسارة الدور";
-  return `+${result}`;
+function formatSpinValue(value: SegmentValue | null) {
+  if (value === null) return "لف العجلة";
+  if (value === "bankrupt") return "💸 إفلاس";
+  if (value === "lose") return "❌ خسارة الدور";
+  return `+${value}`;
 }
 
-function buildBannerText(
+function buildBanner(
   turn: TurnType,
   side1Name: string,
   side2Name: string,
-  spinResult: SegmentValue | null,
+  phase: Phase,
   spinning: boolean,
-  isCelebrating: boolean,
+  currentSpinValue: SegmentValue | null,
 ) {
   const currentName = turn === "side1" ? side1Name : side2Name;
 
-  if (isCelebrating) return "🏆 ممتاز! انتهت الجولة";
+  if (phase === "celebrate") return "🏆 انتهت الجولة!";
   if (spinning) return "🎡 العجلة تدور...";
-  if (spinResult === null) return `🎯 الدور على: ${currentName} — لف العجلة`;
-  if (typeof spinResult === "number") return "✍️ اختر حرفًا — وإذا جاوبت صح كمل لين تغلط";
+  if (phase === "spin") return `🎯 الدور على: ${currentName} — لف العجلة`;
+  if (typeof currentSpinValue === "number") {
+    return `✍️ اختر حرفًا — وإذا جاوبت صح كمل لين تغلط`;
+  }
   return `🎯 الدور على: ${currentName}`;
 }
 
@@ -85,7 +88,7 @@ export function WheelGame({
 }) {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
-  const [spinResult, setSpinResult] = useState<SegmentValue | null>(null);
+  const [phase, setPhase] = useState<Phase>("spin");
 
   const [turn, setTurn] = useState<TurnType>("side1");
 
@@ -99,14 +102,13 @@ export function WheelGame({
 
   const [solveInput, setSolveInput] = useState("");
   const [winnerName, setWinnerName] = useState("");
-  const [isCelebrating, setIsCelebrating] = useState(false);
+
+  const [currentSpinValue, setCurrentSpinValue] = useState<SegmentValue | null>(null);
+  const [lastLandedIndex, setLastLandedIndex] = useState<number | null>(null);
 
   const normalizedAnswer = useMemo(() => normalizeArabic(answer), [answer]);
   const currentName = turn === "side1" ? side1Name : side2Name;
   const segmentAngle = 360 / SEGMENTS.length;
-
-  const showWheelArea = !isCelebrating && (spinning || spinResult === null);
-  const showKeyboardArea = !isCelebrating && !spinning && typeof spinResult === "number";
 
   useEffect(() => {
     const i = Math.floor(Math.random() * PUZZLES.length);
@@ -116,12 +118,14 @@ export function WheelGame({
     setCategory(puzzle.category);
     setRevealed(Array(puzzle.answer.length).fill(""));
     setUsedLetters([]);
-    setSpinResult(null);
     setTurn("side1");
     setSolveInput("");
     setWinnerName("");
-    setIsCelebrating(false);
-    setRotation(Math.floor(Math.random() * 360));
+    setCurrentSpinValue(null);
+    setLastLandedIndex(null);
+    setSpinning(false);
+    setPhase("spin");
+    setRotation(0);
   }, [roundKey]);
 
   function nextTurn() {
@@ -135,7 +139,7 @@ export function WheelGame({
   function finishRound(winner: WinnerType) {
     const name = winner === "side1" ? side1Name : side2Name;
     setWinnerName(name);
-    setIsCelebrating(true);
+    setPhase("celebrate");
 
     window.setTimeout(() => {
       onRoundEnd(winner);
@@ -143,40 +147,58 @@ export function WheelGame({
   }
 
   function spinWheel() {
-    if (spinning || spinResult !== null || isCelebrating) return;
+    if (spinning || phase !== "spin") return;
 
     setSpinning(true);
+    setCurrentSpinValue(null);
+    setLastLandedIndex(null);
 
-    const extraTurns = 5 + Math.floor(Math.random() * 3);
     const targetIndex = Math.floor(Math.random() * SEGMENTS.length);
-    const targetCenter = targetIndex * segmentAngle + segmentAngle / 2;
 
-    const newRotation = rotation + extraTurns * 360 + (360 - targetCenter);
+    // نخلي مركز القطاع المختار يوقف تحت المؤشر العلوي بالضبط
+    const targetCenterAngle = targetIndex * segmentAngle + segmentAngle / 2;
+    const extraTurns = 5 + Math.floor(Math.random() * 3);
+    const newRotation = rotation + extraTurns * 360 + (360 - targetCenterAngle);
+
     setRotation(newRotation);
 
     window.setTimeout(() => {
-      const result = SEGMENTS[targetIndex].value;
-      setSpinResult(result);
+      const landedSegment = SEGMENTS[targetIndex];
+      const landedValue = landedSegment.value;
+
+      setLastLandedIndex(targetIndex);
+      setCurrentSpinValue(landedValue);
       setSpinning(false);
 
-      if (result === "bankrupt") {
+      if (landedValue === "bankrupt") {
         if (turn === "side1") {
           setSide1Score(0);
         } else {
           setSide2Score(0);
         }
-        setSpinResult(null);
+
+        setCurrentSpinValue(null);
+        setLastLandedIndex(null);
         nextTurn();
-      } else if (result === "lose") {
-        setSpinResult(null);
-        nextTurn();
+        setPhase("spin");
+        return;
       }
+
+      if (landedValue === "lose") {
+        setCurrentSpinValue(null);
+        setLastLandedIndex(null);
+        nextTurn();
+        setPhase("spin");
+        return;
+      }
+
+      setPhase("guess");
     }, 2200);
   }
 
   function pickLetter(letter: string) {
-    if (spinning || isCelebrating) return;
-    if (typeof spinResult !== "number") return;
+    if (spinning || phase !== "guess") return;
+    if (typeof currentSpinValue !== "number") return;
     if (usedLetters.includes(letter)) return;
 
     setUsedLetters((prev) => [...prev, letter]);
@@ -194,7 +216,7 @@ export function WheelGame({
     setRevealed(updated);
 
     if (count > 0) {
-      const gained = count * spinResult;
+      const gained = count * currentSpinValue;
 
       if (turn === "side1") {
         setSide1Score((s) => s + gained);
@@ -207,15 +229,19 @@ export function WheelGame({
         return;
       }
 
+      // مهم جدًا: إذا صح، يبقى في نفس الدور ونفس قيمة اللفة
       return;
     }
 
-    setSpinResult(null);
+    // إذا غلط فقط هنا ينتهي الدور
+    setCurrentSpinValue(null);
+    setLastLandedIndex(null);
     nextTurn();
+    setPhase("spin");
   }
 
   function solveWord() {
-    if (isCelebrating) return;
+    if (phase === "celebrate") return;
 
     const guess = normalizeArabic(solveInput);
     if (!guess) return;
@@ -226,8 +252,10 @@ export function WheelGame({
     }
 
     setSolveInput("");
-    setSpinResult(null);
+    setCurrentSpinValue(null);
+    setLastLandedIndex(null);
     nextTurn();
+    setPhase("spin");
   }
 
   return (
@@ -237,7 +265,7 @@ export function WheelGame({
         <p className="mt-2 text-white/75">الفئة: {category}</p>
 
         <div className="mt-4 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
-          {buildBannerText(turn, side1Name, side2Name, spinResult, spinning, isCelebrating)}
+          {buildBanner(turn, side1Name, side2Name, phase, spinning, currentSpinValue)}
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -263,7 +291,7 @@ export function WheelGame({
           ))}
         </div>
 
-        {isCelebrating && (
+        {phase === "celebrate" && (
           <div className="mt-8">
             <div className="animate-bounce rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-2xl">
               <p className="text-5xl">🏆</p>
@@ -273,12 +301,10 @@ export function WheelGame({
           </div>
         )}
 
-        {showWheelArea && (
+        {phase === "spin" && (
           <div className="mt-8 flex flex-col items-center gap-4">
             <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-base font-bold">
-              {showWheelArea && !spinning && spinResult === null
-                ? `الدور الحالي: ${currentName}`
-                : formatSpinResult(spinResult)}
+              الدور الحالي: {currentName}
             </div>
 
             <div className="relative h-72 w-72">
@@ -302,6 +328,8 @@ export function WheelGame({
               >
                 {SEGMENTS.map((segment, i) => {
                   const angle = i * segmentAngle + segmentAngle / 2;
+                  const isActive = lastLandedIndex === i;
+
                   return (
                     <div
                       key={segment.label + i}
@@ -310,7 +338,11 @@ export function WheelGame({
                         transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-105px) rotate(${-angle}deg)`,
                       }}
                     >
-                      <div className="w-20 text-center text-xs font-black leading-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
+                      <div
+                        className={`w-20 text-center text-xs font-black leading-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)] ${
+                          isActive ? "scale-110" : ""
+                        }`}
+                      >
                         {segment.label}
                       </div>
                     </div>
@@ -325,7 +357,7 @@ export function WheelGame({
 
             <button
               onClick={spinWheel}
-              disabled={spinning || spinResult !== null || isCelebrating}
+              disabled={spinning}
               className="btn-primary min-w-[160px] disabled:opacity-50"
             >
               {spinning ? "العجلة تدور..." : "لف العجلة"}
@@ -333,10 +365,10 @@ export function WheelGame({
           </div>
         )}
 
-        {showKeyboardArea && (
+        {phase === "guess" && (
           <>
             <div className="mt-8 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
-              النتيجة: {formatSpinResult(spinResult)} — اختر حرفًا، وإذا كان صح كمل
+              النتيجة: {formatSpinValue(currentSpinValue)} — اختر حرفًا، وإذا كان صح كمل
             </div>
 
             <div className="mt-6 space-y-2">
@@ -349,11 +381,12 @@ export function WheelGame({
                 >
                   {row.split("").map((letter) => {
                     const isUsed = usedLetters.includes(letter);
+
                     return (
                       <button
                         key={letter}
                         onClick={() => pickLetter(letter)}
-                        disabled={isUsed || isCelebrating}
+                        disabled={isUsed}
                         className={`h-12 min-w-[46px] rounded-xl px-3 text-base font-bold transition ${
                           isUsed
                             ? "bg-white/5 text-white/25"
@@ -370,7 +403,7 @@ export function WheelGame({
           </>
         )}
 
-        {!isCelebrating && (
+        {phase !== "celebrate" && (
           <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-4">
             <p className="text-sm text-white/70">إذا عرفت الكلمة، اكتبها هنا</p>
 
