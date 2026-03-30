@@ -5,6 +5,15 @@ import { GlassCard } from "@/components/GlassCard";
 
 type WinnerType = "side1" | "side2";
 
+const segments = [
+  { label: "100", value: 100 },
+  { label: "200", value: 200 },
+  { label: "300", value: 300 },
+  { label: "💸", value: "bankrupt" },
+  { label: "500", value: 500 },
+  { label: "❌", value: "lose" },
+];
+
 export function WheelGame({
   side1Name,
   side2Name,
@@ -16,7 +25,6 @@ export function WheelGame({
   onRoundEnd: (winner?: WinnerType) => void;
   roundKey: number;
 }) {
-
   const WORDS = [
     { category: "أكلة", answer: "شاورما" },
     { category: "مدينة", answer: "الرياض" },
@@ -25,17 +33,16 @@ export function WheelGame({
     { category: "مشروب", answer: "قهوة" },
   ];
 
-  const WHEEL = [100, 200, 300, 500, "bankrupt", "lose"];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answer, setAnswer] = useState("");
-  const [category, setCategory] = useState("");
-
-  const [revealed, setRevealed] = useState<string[]>([]);
-  const [usedLetters, setUsedLetters] = useState<string[]>([]);
+  const [rotation, setRotation] = useState(0);
+  const [spinning, setSpinning] = useState(false);
+  const [spinResult, setSpinResult] = useState<any>(null);
 
   const [turn, setTurn] = useState<"side1" | "side2">("side1");
-  const [spinResult, setSpinResult] = useState<number | string | null>(null);
+
+  const [answer, setAnswer] = useState("");
+  const [category, setCategory] = useState("");
+  const [revealed, setRevealed] = useState<string[]>([]);
+  const [usedLetters, setUsedLetters] = useState<string[]>([]);
 
   const [side1Score, setSide1Score] = useState(0);
   const [side2Score, setSide2Score] = useState(0);
@@ -44,29 +51,46 @@ export function WheelGame({
 
   useEffect(() => {
     const i = Math.floor(Math.random() * WORDS.length);
-    setCurrentIndex(i);
-    setAnswer(WORDS[i].answer);
+    const word = WORDS[i].answer;
+
+    setAnswer(word);
     setCategory(WORDS[i].category);
-    setRevealed(Array(WORDS[i].answer.length).fill(""));
+    setRevealed(Array(word.length).fill(""));
     setUsedLetters([]);
     setSpinResult(null);
     setTurn("side1");
   }, [roundKey]);
 
   function spinWheel() {
-    const result = WHEEL[Math.floor(Math.random() * WHEEL.length)];
-    setSpinResult(result);
+    if (spinning) return;
 
-    if (result === "bankrupt") {
-      if (turn === "side1") setSide1Score(0);
-      else setSide2Score(0);
+    setSpinning(true);
 
-      setTurn(turn === "side1" ? "side2" : "side1");
-    }
+    const randomDeg = Math.floor(2000 + Math.random() * 2000);
+    const newRotation = rotation + randomDeg;
 
-    if (result === "lose") {
-      setTurn(turn === "side1" ? "side2" : "side1");
-    }
+    setRotation(newRotation);
+
+    setTimeout(() => {
+      const segmentAngle = 360 / segments.length;
+      const normalized = newRotation % 360;
+      const index = Math.floor((360 - normalized) / segmentAngle) % segments.length;
+
+      const result = segments[index];
+      setSpinResult(result.value);
+
+      if (result.value === "bankrupt") {
+        if (turn === "side1") setSide1Score(0);
+        else setSide2Score(0);
+        setTurn(turn === "side1" ? "side2" : "side1");
+      }
+
+      if (result.value === "lose") {
+        setTurn(turn === "side1" ? "side2" : "side1");
+      }
+
+      setSpinning(false);
+    }, 2000);
   }
 
   function pickLetter(letter: string) {
@@ -92,7 +116,6 @@ export function WheelGame({
 
       if (turn === "side1") setSide1Score((s) => s + gained);
       else setSide2Score((s) => s + gained);
-
     } else {
       setTurn(turn === "side1" ? "side2" : "side1");
     }
@@ -112,44 +135,61 @@ export function WheelGame({
   }
 
   return (
-    <GlassCard className="min-h-[750px] p-6 text-center">
+    <GlassCard className="p-6 text-center">
 
       <h2 className="text-3xl font-black">🎡 لف وخمّن</h2>
-      <p className="mt-2 text-white/70">الفئة: {category}</p>
+      <p className="text-white/70 mt-2">الفئة: {category}</p>
 
       {/* الكلمة */}
       <div className="mt-6 flex justify-center gap-2 flex-wrap">
         {revealed.map((l, i) => (
-          <div
-            key={i}
-            className="h-14 w-14 flex items-center justify-center rounded-xl bg-white/10 text-2xl font-black"
-          >
+          <div key={i} className="h-14 w-14 flex items-center justify-center bg-white/10 rounded-xl text-2xl font-black">
             {l || "_"}
           </div>
         ))}
       </div>
 
       {/* الدور */}
-      <p className="mt-4 text-lg">
-        الدور على: {turn === "side1" ? side1Name : side2Name}
-      </p>
-
-      {/* العجلة */}
-      <div className="mt-4">
-        <button onClick={spinWheel} className="btn-primary">
-          لف العجلة
-        </button>
-
-        {spinResult && (
-          <p className="mt-3 text-xl font-black">
-            {spinResult === "bankrupt"
-              ? "💸 إفلاس!"
-              : spinResult === "lose"
-              ? "❌ خسارة الدور"
-              : `+${spinResult}`}
-          </p>
-        )}
+      <div className="mt-4 bg-white/10 rounded-xl py-2 font-bold">
+        🎯 الدور: {turn === "side1" ? side1Name : side2Name}
       </div>
+
+      {/* 🎡 العجلة */}
+      <div className="mt-6 flex justify-center relative">
+        
+        {/* المؤشر */}
+        <div className="absolute -top-3 text-2xl">🔻</div>
+
+        <div
+          className="h-52 w-52 rounded-full border-4 border-white/20 flex items-center justify-center"
+          style={{
+            transform: `rotate(${rotation}deg)`,
+            transition: spinning ? "transform 2s ease-out" : "none",
+          }}
+        >
+          <div className="absolute inset-0 rounded-full">
+            {segments.map((seg, i) => (
+              <div
+                key={i}
+                className="absolute left-1/2 top-1/2 origin-bottom text-sm"
+                style={{
+                  transform: `rotate(${i * (360 / segments.length)}deg) translate(-50%, -100%)`,
+                }}
+              >
+                {seg.label}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={spinWheel}
+        disabled={spinning}
+        className="btn-primary mt-4"
+      >
+        لف العجلة
+      </button>
 
       {/* الحروف */}
       <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -158,26 +198,26 @@ export function WheelGame({
             key={l}
             onClick={() => pickLetter(l)}
             disabled={usedLetters.includes(l) || !spinResult}
-            className="px-3 py-2 bg-white/10 rounded-lg disabled:opacity-30"
+            className={`px-3 py-2 rounded-lg ${
+              usedLetters.includes(l)
+                ? "bg-white/5 text-white/30"
+                : "bg-white/10 hover:bg-white/20"
+            }`}
           >
             {l}
           </button>
         ))}
       </div>
 
-      {/* حل الكلمة */}
+      {/* حل */}
       <div className="mt-6 flex justify-center gap-3">
         <button onClick={solveWord} className="btn-primary">
           حل الكلمة
         </button>
-
-        <button onClick={() => onRoundEnd()} className="btn-secondary">
-          إنهاء الجولة
-        </button>
       </div>
 
       {/* النقاط */}
-      <div className="mt-6 flex justify-between text-lg">
+      <div className="mt-6 flex justify-between">
         <div>{side1Name}: {side1Score}</div>
         <div>{side2Name}: {side2Score}</div>
       </div>
