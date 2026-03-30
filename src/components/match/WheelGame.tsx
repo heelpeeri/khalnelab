@@ -66,7 +66,7 @@ function buildBannerText(
 
   if (spinning) return "🎡 العجلة تدور...";
   if (spinResult === null) return `🎯 الدور على: ${currentName} — لف العجلة`;
-  if (typeof spinResult === "number") return `✍️ اختر حرفًا لفريق: ${currentName}`;
+  if (typeof spinResult === "number") return "✍️ اختر حرفًا — وإذا جاوبت صح كمل لين تغلط";
   return `🎯 الدور على: ${currentName}`;
 }
 
@@ -122,6 +122,10 @@ export function WheelGame({
     setTurn((prev) => (prev === "side1" ? "side2" : "side1"));
   }
 
+  function isPuzzleSolved(nextRevealed: string[]) {
+    return nextRevealed.every((letter) => letter !== "");
+  }
+
   function spinWheel() {
     if (spinning || spinResult !== null) return;
 
@@ -175,16 +179,23 @@ export function WheelGame({
 
     if (count > 0) {
       const gained = count * spinResult;
+
       if (turn === "side1") {
         setSide1Score((s) => s + gained);
       } else {
         setSide2Score((s) => s + gained);
       }
-    } else {
-      nextTurn();
+
+      if (isPuzzleSolved(updated)) {
+        onRoundEnd(turn);
+        return;
+      }
+
+      return;
     }
 
     setSpinResult(null);
+    nextTurn();
   }
 
   function solveWord() {
@@ -302,7 +313,7 @@ export function WheelGame({
         {showKeyboardArea && (
           <>
             <div className="mt-8 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
-              النتيجة: {formatSpinResult(spinResult)} — اختر حرفًا
+              النتيجة: {formatSpinResult(spinResult)} — اختر حرفًا، وإذا كان صح كمل
             </div>
 
             <div className="mt-6 space-y-2">
