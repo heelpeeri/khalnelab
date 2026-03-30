@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 
 type WinnerType = "side1" | "side2";
-
+type TurnType = "side1" | "side2";
 type SegmentValue = number | "bankrupt" | "lose";
 
 type Segment = {
@@ -30,6 +30,7 @@ const PUZZLES = [
   { category: "مشروب", answer: "قهوة" },
   { category: "لاعب", answer: "ميسي" },
   { category: "تطبيق", answer: "سناب" },
+  { category: "مطعم", answer: "البيك" },
 ];
 
 const KEYBOARD_ROWS = [
@@ -54,8 +55,8 @@ function formatSpinResult(result: SegmentValue | null) {
   return `+${result}`;
 }
 
-function getBannerText(
-  turn: "side1" | "side2",
+function buildBannerText(
+  turn: TurnType,
   side1Name: string,
   side2Name: string,
   spinResult: SegmentValue | null,
@@ -63,11 +64,10 @@ function getBannerText(
 ) {
   const currentName = turn === "side1" ? side1Name : side2Name;
 
-  if (spinning) return `🎡 العجلة تدور...`;
+  if (spinning) return "🎡 العجلة تدور...";
   if (spinResult === null) return `🎯 الدور على: ${currentName} — لف العجلة`;
-  if (spinResult === "bankrupt") return `💸 إفلاس! الدور ينتقل`;
-  if (spinResult === "lose") return `❌ خسارة الدور!`;
-  return `✍️ اختر حرفًا أو جرّب حل الكلمة`;
+  if (typeof spinResult === "number") return `✍️ اختر حرفًا لفريق: ${currentName}`;
+  return `🎯 الدور على: ${currentName}`;
 }
 
 export function WheelGame({
@@ -85,7 +85,7 @@ export function WheelGame({
   const [spinning, setSpinning] = useState(false);
   const [spinResult, setSpinResult] = useState<SegmentValue | null>(null);
 
-  const [turn, setTurn] = useState<"side1" | "side2">("side1");
+  const [turn, setTurn] = useState<TurnType>("side1");
 
   const [answer, setAnswer] = useState("");
   const [category, setCategory] = useState("");
@@ -98,6 +98,11 @@ export function WheelGame({
   const [solveInput, setSolveInput] = useState("");
 
   const normalizedAnswer = useMemo(() => normalizeArabic(answer), [answer]);
+  const currentName = turn === "side1" ? side1Name : side2Name;
+  const segmentAngle = 360 / SEGMENTS.length;
+
+  const showWheelArea = spinning || spinResult === null;
+  const showKeyboardArea = !spinning && typeof spinResult === "number";
 
   useEffect(() => {
     const i = Math.floor(Math.random() * PUZZLES.length);
@@ -118,23 +123,15 @@ export function WheelGame({
   }
 
   function spinWheel() {
-    if (spinning) return;
-    if (spinResult !== null) return;
+    if (spinning || spinResult !== null) return;
 
     setSpinning(true);
 
     const extraTurns = 5 + Math.floor(Math.random() * 3);
-    const segmentAngle = 360 / SEGMENTS.length;
     const targetIndex = Math.floor(Math.random() * SEGMENTS.length);
+    const targetCenter = targetIndex * segmentAngle + segmentAngle / 2;
 
-    const targetCenter =
-      targetIndex * segmentAngle + segmentAngle / 2;
-
-    const newRotation =
-      rotation +
-      extraTurns * 360 +
-      (360 - targetCenter);
-
+    const newRotation = rotation + extraTurns * 360 + (360 - targetCenter);
     setRotation(newRotation);
 
     window.setTimeout(() => {
@@ -143,9 +140,11 @@ export function WheelGame({
       setSpinning(false);
 
       if (result === "bankrupt") {
-        if (turn === "side1") setSide1Score(0);
-        else setSide2Score(0);
-
+        if (turn === "side1") {
+          setSide1Score(0);
+        } else {
+          setSide2Score(0);
+        }
         setSpinResult(null);
         nextTurn();
       } else if (result === "lose") {
@@ -157,7 +156,7 @@ export function WheelGame({
 
   function pickLetter(letter: string) {
     if (spinning) return;
-    if (spinResult === null || typeof spinResult !== "number") return;
+    if (typeof spinResult !== "number") return;
     if (usedLetters.includes(letter)) return;
 
     setUsedLetters((prev) => [...prev, letter]);
@@ -176,9 +175,11 @@ export function WheelGame({
 
     if (count > 0) {
       const gained = count * spinResult;
-
-      if (turn === "side1") setSide1Score((s) => s + gained);
-      else setSide2Score((s) => s + gained);
+      if (turn === "side1") {
+        setSide1Score((s) => s + gained);
+      } else {
+        setSide2Score((s) => s + gained);
+      }
     } else {
       nextTurn();
     }
@@ -200,9 +201,6 @@ export function WheelGame({
     nextTurn();
   }
 
-  const currentName = turn === "side1" ? side1Name : side2Name;
-  const segmentAngle = 360 / SEGMENTS.length;
-
   return (
     <GlassCard className="min-h-[820px] p-6 text-center md:p-8">
       <div className="mx-auto max-w-5xl">
@@ -210,27 +208,27 @@ export function WheelGame({
         <p className="mt-2 text-white/75">الفئة: {category}</p>
 
         <div className="mt-4 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm leading-7 text-white/80">
-          لف العجلة أولًا، وبعدها اختر حرف. إذا كان الحرف موجود تكسب نقاط وتنكشف الكلمة،
-          وإذا ما كان موجود يروح الدور على الفريق الثاني. وتقدر في أي وقت تحاول تحل الكلمة.
+          لف العجلة أولًا، وإذا طلع رقم اختر حرف. إذا الحرف موجود تكسب نقاط
+          وتنفتح الخانات. وإذا ما كان موجود يروح الدور للفريق الثاني.
         </div>
 
         <div className="mt-4 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
-          {getBannerText(turn, side1Name, side2Name, spinResult, spinning)}
+          {buildBannerText(turn, side1Name, side2Name, spinResult, spinning)}
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-right">
-            <p className="text-xs text-white/60">الدور الحالي</p>
-            <p className="text-lg font-black">{currentName}</p>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="rounded-3xl border border-white/15 bg-white/10 p-5 text-right">
+            <p className="text-sm text-white/60">{side1Name}</p>
+            <p className="mt-2 text-4xl font-black text-white">{side1Score}</p>
           </div>
 
-          <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-right">
-            <p className="text-xs text-white/60">نتيجة اللفة</p>
-            <p className="text-lg font-black">{formatSpinResult(spinResult)}</p>
+          <div className="rounded-3xl border border-white/15 bg-white/10 p-5 text-right">
+            <p className="text-sm text-white/60">{side2Name}</p>
+            <p className="mt-2 text-4xl font-black text-white">{side2Score}</p>
           </div>
         </div>
 
-        <div className="mt-6 flex justify-center gap-2">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
           {revealed.map((letter, i) => (
             <div
               key={i}
@@ -241,92 +239,102 @@ export function WheelGame({
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col items-center gap-4">
-          <div className="relative h-72 w-72">
-            <div className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-3 text-3xl">
-              🔻
+        {showWheelArea && (
+          <div className="mt-8 flex flex-col items-center gap-4">
+            <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-base font-bold">
+              {showWheelArea && !spinning && spinResult === null
+                ? `الدور الحالي: ${currentName}`
+                : formatSpinResult(spinResult)}
             </div>
 
-            <div
-              className="relative h-full w-full rounded-full border-4 border-white/30 shadow-2xl"
-              style={{
-                background: `conic-gradient(${SEGMENTS.map((s, i) => {
-                  const start = i * segmentAngle;
-                  const end = (i + 1) * segmentAngle;
-                  return `${s.color} ${start}deg ${end}deg`;
-                }).join(", ")})`,
-                transform: `rotate(${rotation}deg)`,
-                transition: spinning ? "transform 2.2s cubic-bezier(0.2, 0.9, 0.2, 1)" : "none",
-              }}
-            >
-              {SEGMENTS.map((segment, i) => {
-                const angle = i * segmentAngle + segmentAngle / 2;
-                return (
-                  <div
-                    key={segment.label + i}
-                    className="absolute left-1/2 top-1/2 origin-center"
-                    style={{
-                      transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-105px) rotate(${-angle}deg)`,
-                    }}
-                  >
-                    <div className="w-16 text-center text-xs font-black leading-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
-                      {segment.label}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="relative h-72 w-72">
+              <div className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-3 text-3xl">
+                🔻
+              </div>
 
-              <div className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-white/30 bg-[#7a001f] text-lg font-black shadow-lg">
-                🎡
+              <div
+                className="relative h-full w-full rounded-full border-4 border-white/30 shadow-2xl"
+                style={{
+                  background: `conic-gradient(${SEGMENTS.map((s, i) => {
+                    const start = i * segmentAngle;
+                    const end = (i + 1) * segmentAngle;
+                    return `${s.color} ${start}deg ${end}deg`;
+                  }).join(", ")})`,
+                  transform: `rotate(${rotation}deg)`,
+                  transition: spinning
+                    ? "transform 2.2s cubic-bezier(0.2, 0.9, 0.2, 1)"
+                    : "none",
+                }}
+              >
+                {SEGMENTS.map((segment, i) => {
+                  const angle = i * segmentAngle + segmentAngle / 2;
+                  return (
+                    <div
+                      key={segment.label + i}
+                      className="absolute left-1/2 top-1/2 origin-center"
+                      style={{
+                        transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-105px) rotate(${-angle}deg)`,
+                      }}
+                    >
+                      <div className="w-20 text-center text-xs font-black leading-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
+                        {segment.label}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                <div className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-white/30 bg-[#7a001f] text-lg font-black shadow-lg">
+                  🎡
+                </div>
               </div>
             </div>
-          </div>
 
-          <button
-            onClick={spinWheel}
-            disabled={spinning || spinResult !== null}
-            className="btn-primary min-w-[160px] disabled:opacity-50"
-          >
-            {spinning ? "العجلة تدور..." : "لف العجلة"}
-          </button>
-        </div>
-
-        <div className="mt-8 space-y-2">
-          {KEYBOARD_ROWS.map((row, rowIndex) => (
-            <div
-              key={rowIndex}
-              className={`flex justify-center gap-2 ${
-                rowIndex === 1 ? "mr-6" : rowIndex === 2 ? "mr-10" : ""
-              }`}
+            <button
+              onClick={spinWheel}
+              disabled={spinning || spinResult !== null}
+              className="btn-primary min-w-[160px] disabled:opacity-50"
             >
-              {row.split("").map((letter) => {
-                const isUsed = usedLetters.includes(letter);
-                const isEnabled =
-                  !spinning &&
-                  spinResult !== null &&
-                  typeof spinResult === "number" &&
-                  !isUsed;
+              {spinning ? "العجلة تدور..." : "لف العجلة"}
+            </button>
+          </div>
+        )}
 
-                return (
-                  <button
-                    key={letter}
-                    onClick={() => pickLetter(letter)}
-                    disabled={!isEnabled}
-                    className={`h-12 min-w-[46px] rounded-xl px-3 text-base font-bold transition ${
-                      isUsed
-                        ? "bg-white/5 text-white/25"
-                        : isEnabled
-                        ? "bg-white/10 text-white hover:bg-white/20 active:scale-95"
-                        : "bg-white/10 text-white/45 opacity-60"
-                    }`}
-                  >
-                    {letter}
-                  </button>
-                );
-              })}
+        {showKeyboardArea && (
+          <>
+            <div className="mt-8 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
+              النتيجة: {formatSpinResult(spinResult)} — اختر حرفًا
             </div>
-          ))}
-        </div>
+
+            <div className="mt-6 space-y-2">
+              {KEYBOARD_ROWS.map((row, rowIndex) => (
+                <div
+                  key={rowIndex}
+                  className={`flex justify-center gap-2 ${
+                    rowIndex === 1 ? "mr-6" : rowIndex === 2 ? "mr-10" : ""
+                  }`}
+                >
+                  {row.split("").map((letter) => {
+                    const isUsed = usedLetters.includes(letter);
+                    return (
+                      <button
+                        key={letter}
+                        onClick={() => pickLetter(letter)}
+                        disabled={isUsed}
+                        className={`h-12 min-w-[46px] rounded-xl px-3 text-base font-bold transition ${
+                          isUsed
+                            ? "bg-white/5 text-white/25"
+                            : "bg-white/10 text-white hover:bg-white/20 active:scale-95"
+                        }`}
+                      >
+                        {letter}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-4">
           <p className="text-sm text-white/70">إذا عرفت الكلمة، اكتبها هنا</p>
@@ -345,18 +353,6 @@ export function WheelGame({
             >
               حل الكلمة
             </button>
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <div className="rounded-3xl border border-white/15 bg-white/10 p-5 text-right">
-            <p className="text-sm text-white/60">{side1Name}</p>
-            <p className="mt-2 text-3xl font-black">{side1Score}</p>
-          </div>
-
-          <div className="rounded-3xl border border-white/15 bg-white/10 p-5 text-right">
-            <p className="text-sm text-white/60">{side2Name}</p>
-            <p className="mt-2 text-3xl font-black">{side2Score}</p>
           </div>
         </div>
       </div>
