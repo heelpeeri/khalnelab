@@ -15,6 +15,12 @@ const turnBasedGames = [
     title: "إنسان حيوان نبات جماد بلاد",
     desc: "المعروف لا يعرف"
   },
+  {
+    href: "/match?game=wheel",
+    emoji: "🎡",
+    title: "لف وخمن",
+    desc: "لف العجلة وجرب حظك 😏"
+  },
 ];
 
 const speedGames = [
@@ -41,14 +47,14 @@ export default function Home() {
           <Logo size={210} />
         </div>
 
-        {/* 🔥 هذا كان ناقص */}
+        {/* الوصف */}
         <section className="mx-auto mt-6 max-w-3xl text-center">
           <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
             منصة ألعاب عائلية سعودية بتجربة سريعة، واضحة، وممتعة داخل البيت.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/match?game=word" className="btn-primary">
+            <Link href="/match?game=word" className="btn-primary active:scale-95">
               ابدأ التحدي
             </Link>
           </div>
@@ -75,7 +81,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-8 grid gap-5">
+            {/* 🔥 هنا التعديل */}
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
               {turnBasedGames.map((game) => (
                 <Link key={game.title} href={game.href} className="block">
                   <div className="rounded-[28px] border border-white/15 bg-white/8 p-6 text-right transition duration-200 hover:-translate-y-1 hover:bg-white/14">
@@ -115,7 +122,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-8 grid gap-5">
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
               {speedGames.map((game) => (
                 <Link key={game.title} href={game.href} className="block">
                   <div className="rounded-[28px] border border-white/15 bg-white/8 p-6 text-right transition duration-200 hover:-translate-y-1 hover:bg-white/14">
