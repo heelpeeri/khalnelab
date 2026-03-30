@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 
 import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
@@ -143,11 +142,7 @@ export default function MatchPage() {
     );
 
   return (
-    <motion.main
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen px-4 py-8 text-white"
-    >
+    <main className="min-h-screen px-4 py-8 text-white">
       <div className="mx-auto max-w-7xl">
 
         {!started && (
@@ -181,13 +176,9 @@ export default function MatchPage() {
 
             {roundReady ? (
               <GlassCard className="p-8 text-center">
-                <motion.h2
-                  initial={{ scale: 0.7 }}
-                  animate={{ scale: 1 }}
-                  className="text-4xl font-black"
-                >
+                <h2 className="text-4xl font-black">
                   الجولة {currentRound}
-                </motion.h2>
+                </h2>
 
                 <p className="mt-4">{getGameTitle(selectedGame)}</p>
 
@@ -209,13 +200,9 @@ export default function MatchPage() {
         {gameEnded && (
           <GlassCard className="p-8 text-center">
 
-            <motion.h2
-              initial={{ scale: 0.6 }}
-              animate={{ scale: 1 }}
-              className="text-4xl font-black"
-            >
+            <h2 className="text-4xl font-black">
               🏆 انتهى التحدي
-            </motion.h2>
+            </h2>
 
             <p className="mt-4 text-2xl font-black">
               {side1Score > side2Score ? side1 : side2}
@@ -229,6 +216,6 @@ export default function MatchPage() {
         )}
 
       </div>
-    </motion.main>
+    </main>
   );
 }
