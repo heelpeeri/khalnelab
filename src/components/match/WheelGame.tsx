@@ -61,9 +61,11 @@ function buildBannerText(
   side2Name: string,
   spinResult: SegmentValue | null,
   spinning: boolean,
+  isCelebrating: boolean,
 ) {
   const currentName = turn === "side1" ? side1Name : side2Name;
 
+  if (isCelebrating) return "🏆 ممتاز! انتهت الجولة";
   if (spinning) return "🎡 العجلة تدور...";
   if (spinResult === null) return `🎯 الدور على: ${currentName} — لف العجلة`;
   if (typeof spinResult === "number") return "✍️ اختر حرفًا — وإذا جاوبت صح كمل لين تغلط";
@@ -96,13 +98,15 @@ export function WheelGame({
   const [side2Score, setSide2Score] = useState(0);
 
   const [solveInput, setSolveInput] = useState("");
+  const [winnerName, setWinnerName] = useState("");
+  const [isCelebrating, setIsCelebrating] = useState(false);
 
   const normalizedAnswer = useMemo(() => normalizeArabic(answer), [answer]);
   const currentName = turn === "side1" ? side1Name : side2Name;
   const segmentAngle = 360 / SEGMENTS.length;
 
-  const showWheelArea = spinning || spinResult === null;
-  const showKeyboardArea = !spinning && typeof spinResult === "number";
+  const showWheelArea = !isCelebrating && (spinning || spinResult === null);
+  const showKeyboardArea = !isCelebrating && !spinning && typeof spinResult === "number";
 
   useEffect(() => {
     const i = Math.floor(Math.random() * PUZZLES.length);
@@ -115,6 +119,8 @@ export function WheelGame({
     setSpinResult(null);
     setTurn("side1");
     setSolveInput("");
+    setWinnerName("");
+    setIsCelebrating(false);
     setRotation(Math.floor(Math.random() * 360));
   }, [roundKey]);
 
@@ -126,8 +132,18 @@ export function WheelGame({
     return nextRevealed.every((letter) => letter !== "");
   }
 
+  function finishRound(winner: WinnerType) {
+    const name = winner === "side1" ? side1Name : side2Name;
+    setWinnerName(name);
+    setIsCelebrating(true);
+
+    window.setTimeout(() => {
+      onRoundEnd(winner);
+    }, 1400);
+  }
+
   function spinWheel() {
-    if (spinning || spinResult !== null) return;
+    if (spinning || spinResult !== null || isCelebrating) return;
 
     setSpinning(true);
 
@@ -159,7 +175,7 @@ export function WheelGame({
   }
 
   function pickLetter(letter: string) {
-    if (spinning) return;
+    if (spinning || isCelebrating) return;
     if (typeof spinResult !== "number") return;
     if (usedLetters.includes(letter)) return;
 
@@ -187,7 +203,7 @@ export function WheelGame({
       }
 
       if (isPuzzleSolved(updated)) {
-        onRoundEnd(turn);
+        finishRound(turn);
         return;
       }
 
@@ -199,11 +215,13 @@ export function WheelGame({
   }
 
   function solveWord() {
+    if (isCelebrating) return;
+
     const guess = normalizeArabic(solveInput);
     if (!guess) return;
 
     if (guess === normalizedAnswer) {
-      onRoundEnd(turn);
+      finishRound(turn);
       return;
     }
 
@@ -218,13 +236,8 @@ export function WheelGame({
         <h2 className="text-3xl font-black">🎡 لف وخمّن</h2>
         <p className="mt-2 text-white/75">الفئة: {category}</p>
 
-        <div className="mt-4 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm leading-7 text-white/80">
-          لف العجلة أولًا، وإذا طلع رقم اختر حرف. إذا الحرف موجود تكسب نقاط
-          وتنفتح الخانات. وإذا ما كان موجود يروح الدور للفريق الثاني.
-        </div>
-
         <div className="mt-4 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
-          {buildBannerText(turn, side1Name, side2Name, spinResult, spinning)}
+          {buildBannerText(turn, side1Name, side2Name, spinResult, spinning, isCelebrating)}
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -249,6 +262,16 @@ export function WheelGame({
             </div>
           ))}
         </div>
+
+        {isCelebrating && (
+          <div className="mt-8">
+            <div className="animate-bounce rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-2xl">
+              <p className="text-5xl">🏆</p>
+              <p className="mt-4 text-3xl font-black">{winnerName}</p>
+              <p className="mt-2 text-lg text-white/85">فاز بالجولة!</p>
+            </div>
+          </div>
+        )}
 
         {showWheelArea && (
           <div className="mt-8 flex flex-col items-center gap-4">
@@ -302,7 +325,7 @@ export function WheelGame({
 
             <button
               onClick={spinWheel}
-              disabled={spinning || spinResult !== null}
+              disabled={spinning || spinResult !== null || isCelebrating}
               className="btn-primary min-w-[160px] disabled:opacity-50"
             >
               {spinning ? "العجلة تدور..." : "لف العجلة"}
@@ -330,7 +353,7 @@ export function WheelGame({
                       <button
                         key={letter}
                         onClick={() => pickLetter(letter)}
-                        disabled={isUsed}
+                        disabled={isUsed || isCelebrating}
                         className={`h-12 min-w-[46px] rounded-xl px-3 text-base font-bold transition ${
                           isUsed
                             ? "bg-white/5 text-white/25"
@@ -347,25 +370,27 @@ export function WheelGame({
           </>
         )}
 
-        <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-4">
-          <p className="text-sm text-white/70">إذا عرفت الكلمة، اكتبها هنا</p>
+        {!isCelebrating && (
+          <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-4">
+            <p className="text-sm text-white/70">إذا عرفت الكلمة، اكتبها هنا</p>
 
-          <div className="mt-3 flex flex-col items-center justify-center gap-3 md:flex-row">
-            <input
-              value={solveInput}
-              onChange={(e) => setSolveInput(e.target.value)}
-              placeholder="اكتب الحل"
-              className="w-full max-w-sm rounded-2xl border border-white/20 bg-white px-4 py-3 text-center text-lg font-bold text-black outline-none"
-            />
+            <div className="mt-3 flex flex-col items-center justify-center gap-3 md:flex-row">
+              <input
+                value={solveInput}
+                onChange={(e) => setSolveInput(e.target.value)}
+                placeholder="اكتب الحل"
+                className="w-full max-w-sm rounded-2xl border border-white/20 bg-white px-4 py-3 text-center text-lg font-bold text-black outline-none"
+              />
 
-            <button
-              onClick={solveWord}
-              className="btn-primary min-w-[140px]"
-            >
-              حل الكلمة
-            </button>
+              <button
+                onClick={solveWord}
+                className="btn-primary min-w-[140px]"
+              >
+                حل الكلمة
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </GlassCard>
   );
