@@ -104,7 +104,7 @@ export default function WheelGame({
 
     setTimeout(() => {
       onRoundEnd(winner);
-    }, 3000);
+    }, 1400);
   }
 
   function spinWheel() {
@@ -117,16 +117,18 @@ export default function WheelGame({
     setCurrentValue(value);
 
     const targetCenter = index * segmentAngle + segmentAngle / 2;
-    const finalRotation = 9 * 360 + (360 - targetCenter);
 
-    setRotation(0);
+    // نخلي اللفة الجديدة تكمل من آخر زاوية بدل ما ترجع للصفر
+    const extraSpins = 8 * 360;
+    const nextRotation =
+      rotation +
+      extraSpins +
+      (360 - (rotation % 360)) +
+      (360 - targetCenter);
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setRotation(finalRotation);
-      });
-    });
+    setRotation(nextRotation);
 
+    // نخلي النتيجة تظهر بعد ما تخلص الحركة فعلًا
     setTimeout(() => {
       setSpinning(false);
       setPhase("result");
@@ -149,7 +151,7 @@ export default function WheelGame({
 
         setPhase("guess");
       }, 900);
-    }, 1400);
+    }, 3000);
   }
 
   function pickLetter(letter: string) {
@@ -266,7 +268,7 @@ export default function WheelGame({
                     return `${s.color} ${start}deg ${end}deg`;
                   }).join(", ")})`,
                   transform: `rotate(${rotation}deg)`,
-                  transition: "transform 3s ease-out",
+                  transition: "transform 3s cubic-bezier(0.08, 0.9, 0.2, 1)",
                 }}
               >
                 {SEGMENTS.map((segment, i) => {
