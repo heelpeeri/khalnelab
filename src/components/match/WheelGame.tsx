@@ -266,7 +266,7 @@ export default function WheelGame({
                     return `${s.color} ${start}deg ${end}deg`;
                   }).join(", ")})`,
                   transform: `rotate(${rotation}deg)`,
-                  transition: "transform 2.2s cubic-bezier(0.12, 0.85, 0.18, 1)",
+                  transition: "transform 3s ease-out",
                 }}
               >
                 {SEGMENTS.map((segment, i) => {
