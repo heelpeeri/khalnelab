@@ -104,7 +104,7 @@ export default function WheelGame({
 
     setTimeout(() => {
       onRoundEnd(winner);
-    }, 1400);
+    }, 3000);
   }
 
   function spinWheel() {
