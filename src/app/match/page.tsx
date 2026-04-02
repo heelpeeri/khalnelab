@@ -1,26 +1,36 @@
 'use client';
 
 import { useEffect, useState } from "react";
-
 import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
-
 import WordGame from "@/components/match/WordGame";
 import ProverbGame from "@/components/match/ProverbGame";
 import CategoriesGame from "@/components/match/CategoriesGame";
 import ScrambleGame from "@/components/match/ScrambleGame";
-import { WheelGame } from "@/components/match/WheelGame";
+import WheelGame from "@/components/match/WheelGame";
 
 type GameType = "word" | "draw" | "categories" | "scramble" | "wheel";
 type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
-function MatchupBadge({ side1, side2 }: { side1: string; side2: string }) {
+function MatchupBadge({
+  side1,
+  side2,
+}: {
+  side1: string;
+  side2: string;
+}) {
   return (
-    <div className="inline-flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-5 py-3">
-      <span className="bg-white/15 px-3 py-1 rounded-xl font-bold">{side1}</span>
-      <span className="text-white/60">ضد</span>
-      <span className="bg-white/15 px-3 py-1 rounded-xl font-bold">{side2}</span>
+    <div className="inline-flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-lg shadow-lg backdrop-blur-md">
+      <span className="rounded-xl bg-white/15 px-3 py-1 font-bold text-white">
+        {side1}
+      </span>
+
+      <span className="text-sm font-medium text-white/65">ضد</span>
+
+      <span className="rounded-xl bg-white/15 px-3 py-1 font-bold text-white">
+        {side2}
+      </span>
     </div>
   );
 }
@@ -45,17 +55,29 @@ export default function MatchPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const game = params.get("game");
-    if (game === "word" || game === "draw" || game === "categories" || game === "scramble" || game === "wheel") {
+    if (
+      game === "word" ||
+      game === "draw" ||
+      game === "categories" ||
+      game === "scramble" ||
+      game === "wheel"
+    ) {
       setSelectedGame(game);
     }
   }, []);
+
+  const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
+  const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
+  const currentTurnLabel = mode === "teams" ? "دور الفريق" : "دور اللاعب";
+  const winnerQuestionLabel =
+    mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
 
   function getGameTitle(game: GameType) {
     if (game === "word") return "خمن الكلمة";
     if (game === "draw") return "خمن المثل";
     if (game === "scramble") return "حروف بالخلاط";
     if (game === "wheel") return "لف وخمن";
-    return "إنسان حيوان نبات جماد";
+    return "إنسان حيوان نبات جماد بلاد";
   }
 
   function startGame() {
@@ -75,7 +97,10 @@ export default function MatchPage() {
   }
 
   function endRound(winner?: WinnerType) {
-    if (winner) return chooseWinner(winner);
+    if (winner) {
+      chooseWinner(winner);
+      return;
+    }
     setShowWinnerModal(true);
   }
 
@@ -104,6 +129,8 @@ export default function MatchPage() {
     setRoundReady(true);
     setRoundSeed(1);
   }
+
+  const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
 
   const currentGameBoard =
     selectedGame === "word" ? (
@@ -143,79 +170,235 @@ export default function MatchPage() {
 
   return (
     <main className="min-h-screen px-4 py-8 text-white">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-[1600px]">
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm text-white/70">وضع اللعب</p>
+            <h1 className="text-3xl font-black">تحدي الجلسة</h1>
+          </div>
+          <Logo size={90} />
+        </div>
 
         {!started && (
-          <GlassCard className="p-6 space-y-4">
+          <GlassCard className="p-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-bold">نوع التحدي</label>
+                <select
+                  value={mode}
+                  onChange={(e) => {
+                    const nextMode = e.target.value as PlayMode;
+                    setMode(nextMode);
+                    setSide1(nextMode === "teams" ? "فريق 1" : "لاعب 1");
+                    setSide2(nextMode === "teams" ? "فريق 2" : "لاعب 2");
+                  }}
+                  className="input"
+                >
+                  <option value="teams">فريقين</option>
+                  <option value="solo">فردي</option>
+                </select>
+              </div>
 
-            <select value={mode} onChange={(e) => setMode(e.target.value as PlayMode)} className="input">
-              <option value="teams">فريقين</option>
-              <option value="solo">فردي</option>
-            </select>
+              <div>
+                <label className="mb-2 block text-sm font-bold">اختيار اللعبة</label>
+                <select
+                  value={selectedGame}
+                  onChange={(e) => setSelectedGame(e.target.value as GameType)}
+                  className="input"
+                >
+                  <option value="word">خمن الكلمة</option>
+                  <option value="draw">خمن المثل</option>
+                  <option value="categories">إنسان حيوان نبات جماد بلاد</option>
+                  <option value="scramble">حروف بالخلاط</option>
+                  <option value="wheel">لف وخمن</option>
+                </select>
+              </div>
+            </div>
 
-            <select value={selectedGame} onChange={(e) => setSelectedGame(e.target.value as GameType)} className="input">
-              <option value="word">خمن الكلمة</option>
-              <option value="draw">خمن المثل</option>
-              <option value="categories">إنسان حيوان نبات جماد</option>
-              <option value="scramble">حروف بالخلاط</option>
-              <option value="wheel">لف وخمن</option>
-            </select>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-bold">{side1Label}</label>
+                <input
+                  value={side1}
+                  onChange={(e) => setSide1(e.target.value)}
+                  className="input"
+                  placeholder={mode === "teams" ? "مثال: الصقور" : "مثال: محمد"}
+                />
+              </div>
 
-            <input value={side1} onChange={(e) => setSide1(e.target.value)} className="input" />
-            <input value={side2} onChange={(e) => setSide2(e.target.value)} className="input" />
+              <div>
+                <label className="mb-2 block text-sm font-bold">{side2Label}</label>
+                <input
+                  value={side2}
+                  onChange={(e) => setSide2(e.target.value)}
+                  className="input"
+                  placeholder={mode === "teams" ? "مثال: الذئاب" : "مثال: خالد"}
+                />
+              </div>
+            </div>
 
-            <button onClick={startGame} className="btn-primary w-full active:scale-95">
-              ابدأ
+            <div className="mt-4">
+              <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
+              <select
+                value={rounds}
+                onChange={(e) => setRounds(Number(e.target.value))}
+                className="input"
+              >
+                <option value={1}>1</option>
+                <option value={3}>3</option>
+                <option value={5}>5</option>
+              </select>
+            </div>
+
+            <button onClick={startGame} className="btn-primary mt-6 w-full">
+              ابدأ اللعب
             </button>
-
           </GlassCard>
         )}
 
         {started && !gameEnded && (
-          <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div>
+              {roundReady ? (
+                <GlassCard className="min-h-[780px] p-8 text-center">
+                  <div className="flex h-full min-h-[700px] flex-col items-center justify-center">
+                    <p className="text-sm text-white/70">الجولة القادمة</p>
 
-            {roundReady ? (
-              <GlassCard className="p-8 text-center">
-                <h2 className="text-4xl font-black">
-                  الجولة {currentRound}
-                </h2>
+                    <h2 className="mt-2 text-4xl font-black">
+                      الجولة {currentRound}
+                    </h2>
 
-                <p className="mt-4">{getGameTitle(selectedGame)}</p>
+                    <p className="mt-4 text-xl text-white/80">
+                      اللعبة: {getGameTitle(selectedGame)}
+                    </p>
 
-                <div className="mt-4">
-                  <MatchupBadge side1={side1} side2={side2} />
+                    <div className="mt-6">
+                      <MatchupBadge side1={side1} side2={side2} />
+                    </div>
+
+                    <p className="mt-4 text-lg text-white/70">
+                      {currentTurnLabel}: {currentTurnName}
+                    </p>
+
+                    {selectedGame === "wheel" && (
+                      <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-sm leading-7 text-white/80">
+                        لف العجلة أول، وإذا طلع رقم اختر حرف.
+                        إذا كان الحرف موجود تكسب نقاط وتنفتح الخانات.
+                        وإذا ما كان موجود، يروح الدور للفريق الثاني.
+                        وتقدر بأي وقت تحاول تحل الكلمة.
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={beginRound}
+                      className="btn-primary mt-8"
+                    >
+                      ابدأ الجولة
+                    </button>
+                  </div>
+                </GlassCard>
+              ) : (
+                currentGameBoard
+              )}
+            </div>
+
+            <GlassCard className="p-6">
+              <h3 className="text-xl font-black">لوحة التحدي</h3>
+
+              <div className="mt-4 space-y-3">
+                <div className="rounded-2xl bg-white/10 p-4">
+                  <p className="text-sm text-white/70">الجولة</p>
+                  <p className="mt-1 text-3xl font-black">
+                    {currentRound} / {rounds}
+                  </p>
                 </div>
 
-                <button onClick={beginRound} className="btn-primary mt-6 active:scale-95">
-                  ابدأ الجولة
-                </button>
-              </GlassCard>
-            ) : (
-              currentGameBoard
-            )}
+                <div className="rounded-2xl bg-white/10 p-4">
+                  <p className="text-sm text-white/70">{currentTurnLabel}</p>
+                  <p className="mt-1 text-2xl font-black">{currentTurnName}</p>
+                </div>
 
+                <div className="rounded-2xl bg-white/10 p-4">
+                  <div className="flex items-center justify-between">
+                    <span>{side1}</span>
+                    <span className="font-black">{side1Score}</span>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-white/10 p-4">
+                  <div className="flex items-center justify-between">
+                    <span>{side2}</span>
+                    <span className="font-black">{side2Score}</span>
+                  </div>
+                </div>
+              </div>
+            </GlassCard>
           </div>
         )}
 
         {gameEnded && (
           <GlassCard className="p-8 text-center">
+            <h2 className="text-4xl font-black">🏆 انتهى التحدي</h2>
 
-            <h2 className="text-4xl font-black">
-              🏆 انتهى التحدي
-            </h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="rounded-3xl bg-white/10 p-5">
+                <p className="text-lg font-bold">{side1}</p>
+                <p className="mt-2 text-4xl font-black">{side1Score}</p>
+              </div>
 
-            <p className="mt-4 text-2xl font-black">
-              {side1Score > side2Score ? side1 : side2}
+              <div className="rounded-3xl bg-white/10 p-5">
+                <p className="text-lg font-bold">{side2}</p>
+                <p className="mt-2 text-4xl font-black">{side2Score}</p>
+              </div>
+            </div>
+
+            <p className="mt-6 text-2xl font-black">
+              {side1Score > side2Score
+                ? `الفائز: ${side1}`
+                : side2Score > side1Score
+                ? `الفائز: ${side2}`
+                : "تعادل"}
             </p>
 
-            <button onClick={resetGame} className="btn-primary mt-6 active:scale-95">
+            <button onClick={resetGame} className="btn-primary mt-8">
               إعادة اللعب
             </button>
-
           </GlassCard>
         )}
-
       </div>
+
+      {showWinnerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-md rounded-[32px] border border-white/20 bg-[#7a001f] p-6 text-center shadow-2xl">
+            <h3 className="text-3xl font-black">🏆 مين فاز؟</h3>
+            <p className="mt-2 text-white/75">{winnerQuestionLabel}</p>
+
+            <div className="mt-6 space-y-3">
+              <button
+                onClick={() => chooseWinner("side1")}
+                className="btn-primary w-full"
+              >
+                {side1}
+              </button>
+
+              <button
+                onClick={() => chooseWinner("side2")}
+                className="btn-primary w-full"
+              >
+                {side2}
+              </button>
+
+              <button
+                onClick={() => chooseWinner("none")}
+                className="btn-secondary w-full"
+              >
+                لا أحد
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
