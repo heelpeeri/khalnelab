@@ -118,10 +118,15 @@ export default function WheelGame({
     setCurrentValue(value);
 
     const targetCenter = index * segmentAngle + segmentAngle / 2;
-    const extraTurns = 5 + Math.floor(Math.random() * 3);
-    const newRotation = rotation + extraTurns * 360 + (360 - targetCenter);
+    const finalRotation = 6 * 360 + (360 - targetCenter);
 
-    setRotation(newRotation);
+    setRotation(0);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setRotation(finalRotation);
+      });
+    });
 
     setTimeout(() => {
       setSpinning(false);
@@ -129,11 +134,7 @@ export default function WheelGame({
 
       setTimeout(() => {
         if (value === "bankrupt") {
-          if (turn === "side1") {
-            setScore1(0);
-          } else {
-            setScore2(0);
-          }
+          turn === "side1" ? setScore1(0) : setScore2(0);
           setCurrentValue(null);
           nextTurn();
           setPhase("spin");
@@ -165,7 +166,7 @@ export default function WheelGame({
     answer.split("").forEach((char, i) => {
       if (normalizeArabic(char) === normalizeArabic(letter)) {
         next[i] = char;
-        count += 1;
+        count++;
       }
     });
 
@@ -174,11 +175,9 @@ export default function WheelGame({
     if (count > 0) {
       const gained = count * currentValue;
 
-      if (turn === "side1") {
-        setScore1((s) => s + gained);
-      } else {
-        setScore2((s) => s + gained);
-      }
+      turn === "side1"
+        ? setScore1((s) => s + gained)
+        : setScore2((s) => s + gained);
 
       if (next.every((l) => l !== "")) {
         finishRound(turn);
@@ -212,167 +211,81 @@ export default function WheelGame({
   const currentTeamName = turn === "side1" ? side1Name : side2Name;
 
   return (
-    <GlassCard className="min-h-[820px] p-6 text-center md:p-8">
-      <div className="mx-auto max-w-5xl">
-        <h2 className="text-3xl font-black">🎡 لف وخمن</h2>
-        <p className="mt-2 text-white/75">الفئة: {category}</p>
+    <GlassCard className="min-h-[820px] p-6 text-center">
+      <h2 className="text-3xl font-black">🎡 لف وخمن</h2>
+      <p className="mt-2 text-white/70">{category}</p>
 
-        <div className="mt-4 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
-          {phase === "celebrate"
-            ? "🏆 انتهت الجولة!"
-            : phase === "result"
-            ? `النتيجة: ${formatValue(currentValue)}`
-            : phase === "guess"
-            ? "✍️ اختر حرفًا — وإذا جاوبت صح كمل لين تغلط"
-            : `🎯 الدور على: ${currentTeamName} — لف العجلة`}
-        </div>
+      <div className="mt-4 font-bold">
+        {phase === "result"
+          ? `النتيجة: ${formatValue(currentValue)}`
+          : `الدور: ${currentTeamName}`}
+      </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="rounded-3xl border border-white/15 bg-white/10 p-5 text-right">
-            <p className="text-sm text-white/60">{side1Name}</p>
-            <p className="mt-2 text-4xl font-black text-white">{score1}</p>
-          </div>
+      {(phase === "spin" || phase === "result") && (
+        <>
+          <div className="mt-6 relative h-64 w-64 mx-auto">
+            <div className="absolute left-1/2 top-0 -translate-x-1/2 text-2xl">🔻</div>
 
-          <div className="rounded-3xl border border-white/15 bg-white/10 p-5 text-right">
-            <p className="text-sm text-white/60">{side2Name}</p>
-            <p className="mt-2 text-4xl font-black text-white">{score2}</p>
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-          {revealed.map((letter, i) => (
             <div
-              key={i}
-              className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black"
-            >
-              {letter || "_"}
+              className="h-full w-full rounded-full"
+              style={{
+                background: `conic-gradient(${SEGMENTS.map((s, i) => {
+                  const start = i * segmentAngle;
+                  const end = (i + 1) * segmentAngle;
+                  return `${s.color} ${start}deg ${end}deg`;
+                }).join(", ")})`,
+                transform: `rotate(${rotation}deg)`,
+                transition: "transform 2s ease-out",
+              }}
+            />
+          </div>
+
+          <button onClick={spinWheel} className="btn-primary mt-4">
+            لف
+          </button>
+        </>
+      )}
+
+      {phase === "guess" && (
+        <div className="mt-6 space-y-2">
+          {LETTER_ROWS.map((row) => (
+            <div key={row} className="flex justify-center gap-2">
+              {row.split("").map((l) => (
+                <button
+                  key={l}
+                  onClick={() => pickLetter(l)}
+                  className="btn-secondary"
+                >
+                  {l}
+                </button>
+              ))}
             </div>
           ))}
         </div>
+      )}
 
-        {(phase === "spin" || phase === "result") && (
-          <div className="mt-8 flex flex-col items-center gap-4">
-            <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-base font-bold">
-              {phase === "result"
-                ? `النتيجة: ${formatValue(currentValue)}`
-                : `الدور الحالي: ${currentTeamName}`}
-            </div>
-
-            <div className="relative h-72 w-72">
-              <div className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-3 text-3xl">
-                🔻
-              </div>
-
-              <div
-                className="relative h-full w-full rounded-full border-4 border-white/30 shadow-2xl"
-                style={{
-                  background: `conic-gradient(${SEGMENTS.map((s, i) => {
-                    const start = i * segmentAngle;
-                    const end = (i + 1) * segmentAngle;
-                    return `${s.color} ${start}deg ${end}deg`;
-                  }).join(", ")})`,
-                  transform: `rotate(${rotation}deg)`,
-                  transition: "transform 2s cubic-bezier(0.2, 0.9, 0.2, 1)",
-                }}
-              >
-                {SEGMENTS.map((segment, i) => {
-                  const angle = i * segmentAngle + segmentAngle / 2;
-                  return (
-                    <div
-                      key={`${segment.label}-${i}`}
-                      className="absolute left-1/2 top-1/2 origin-center"
-                      style={{
-                        transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-105px) rotate(${-angle}deg)`,
-                      }}
-                    >
-                      <div className="w-20 text-center text-xs font-black leading-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
-                        {segment.label}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                <div className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-white/30 bg-[#7a001f] text-lg font-black shadow-lg">
-                  🎡
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={spinWheel}
-              disabled={phase !== "spin" || spinning}
-              className="btn-primary min-w-[160px] disabled:opacity-50"
-            >
-              {spinning ? "العجلة تدور..." : "لف العجلة"}
-            </button>
+      <div className="mt-6 flex justify-center gap-2">
+        {revealed.map((l, i) => (
+          <div key={i} className="w-10 h-10 bg-white/10 flex items-center justify-center">
+            {l || "_"}
           </div>
-        )}
+        ))}
+      </div>
 
-        {phase === "guess" && (
-          <>
-            <div className="mt-8 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
-              النتيجة: {formatValue(currentValue)} — اختر حرفًا
-            </div>
+      <div className="mt-6">
+        <input
+          value={solveInput}
+          onChange={(e) => setSolveInput(e.target.value)}
+          className="input text-black"
+          placeholder="حل الكلمة"
+        />
+        <button onClick={solveWord} className="btn-primary mt-2">
+          حل
+        </button>
+      </div>
 
-            <div className="mt-6 space-y-2">
-              {LETTER_ROWS.map((row, rowIndex) => (
-                <div
-                  key={rowIndex}
-                  className={`flex justify-center gap-2 ${
-                    rowIndex === 1 ? "mr-6" : rowIndex === 2 ? "mr-10" : ""
-                  }`}
-                >
-                  {row.split("").map((letter) => {
-                    const isUsed = usedLetters.includes(letter);
-                    return (
-                      <button
-                        key={letter}
-                        onClick={() => pickLetter(letter)}
-                        disabled={isUsed}
-                        className={`h-12 min-w-[46px] rounded-xl px-3 text-base font-bold transition ${
-                          isUsed
-                            ? "bg-white/5 text-white/25"
-                            : "bg-white/10 text-white hover:bg-white/20 active:scale-95"
-                        }`}
-                      >
-                        {letter}
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {phase !== "celebrate" && (
-          <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-4">
-            <p className="text-sm text-white/70">إذا عرفت الكلمة، اكتبها هنا</p>
-
-            <div className="mt-3 flex flex-col items-center justify-center gap-3 md:flex-row">
-              <input
-                value={solveInput}
-                onChange={(e) => setSolveInput(e.target.value)}
-                placeholder="اكتب الحل"
-                className="w-full max-w-sm rounded-2xl border border-white/20 bg-white px-4 py-3 text-center text-lg font-bold text-black outline-none"
-              />
-
-              <button onClick={solveWord} className="btn-primary min-w-[140px]">
-                حل الكلمة
-              </button>
-            </div>
-          </div>
-        )}
-
-        {phase === "celebrate" && (
-          <div className="mt-8">
-            <div className="animate-bounce rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-2xl">
-              <p className="text-5xl">🏆</p>
-              <p className="mt-4 text-3xl font-black">{winnerName}</p>
-              <p className="mt-2 text-lg text-white/85">فاز بالجولة!</p>
-            </div>
-          </div>
-        )}
+      <div className="mt-6">
+        {side1Name}: {score1} | {side2Name}: {score2}
       </div>
     </GlassCard>
   );
