@@ -117,7 +117,7 @@ export default function WheelGame({
     setCurrentValue(value);
 
     const targetCenter = index * segmentAngle + segmentAngle / 2;
-    const finalRotation = 5 * 360 + (360 - targetCenter);
+    const finalRotation = 7 * 360 + (360 - targetCenter);
 
     setRotation(0);
 
