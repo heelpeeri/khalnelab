@@ -65,24 +65,18 @@ export default function WheelGame({
     const index = Math.floor(Math.random() * SEGMENTS.length);
     const value = SEGMENTS[index].value;
 
-    // نحفظ النتيجة مباشرة
     setCurrentValue(value);
 
     const angle = 360 / SEGMENTS.length;
     const target = index * angle + angle / 2;
 
-    const spins = 5;
-    const newRot = rotation + spins * 360 + (360 - target);
-
+    const newRot = rotation + 5 * 360 + (360 - target);
     setRotation(newRot);
 
     setTimeout(() => {
       setSpinning(false);
-
-      // مرحلة عرض النتيجة 👇
       setPhase("result");
 
-      // ننتظر شوي قبل التخمين
       setTimeout(() => {
         if (value === "bankrupt") {
           if (turn === "side1") setScore1(0);
@@ -128,20 +122,17 @@ export default function WheelGame({
       if (turn === "side1") setScore1((s) => s + gain);
       else setScore2((s) => s + gain);
 
-      // إذا خلصت الكلمة
       if (next.every((l) => l !== "")) {
         setPhase("celebrate");
         setTimeout(() => onRoundEnd(turn), 1500);
       }
 
-      // يبقى نفس الدور 👍
       return;
     }
 
-    // غلط → يتغير الدور
     nextTurn();
-    setCurrentValue(null);
     setPhase("spin");
+    setCurrentValue(null);
   }
 
   return (
@@ -153,7 +144,7 @@ export default function WheelGame({
       </div>
 
       {/* العجلة */}
-      {phase === "spin" && (
+      {(phase === "spin" || phase === "result") && (
         <div className="mt-6">
           <div
             className="mx-auto h-64 w-64 rounded-full border"
@@ -162,20 +153,24 @@ export default function WheelGame({
               transition: "transform 2s",
             }}
           />
-          <button onClick={spin} className="btn-primary mt-4">
+
+          {phase === "result" && (
+            <div className="mt-4 text-3xl font-black animate-bounce">
+              {typeof currentValue === "number"
+                ? `+${currentValue}`
+                : currentValue === "bankrupt"
+                ? "💸 إفلاس"
+                : "❌ خسارة"}
+            </div>
+          )}
+
+          <button
+            onClick={spin}
+            disabled={phase !== "spin"}
+            className="btn-primary mt-4"
+          >
             لف
           </button>
-        </div>
-      )}
-
-      {/* عرض النتيجة */}
-      {phase === "result" && (
-        <div className="mt-8 text-4xl font-black animate-bounce">
-          {typeof currentValue === "number"
-            ? `+${currentValue}`
-            : currentValue === "bankrupt"
-            ? "💸 إفلاس"
-            : "❌ خسارة الدور"}
         </div>
       )}
 
