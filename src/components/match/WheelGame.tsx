@@ -31,7 +31,7 @@ const PUZZLES = [
 const LETTER_ROWS = [
   "دجحخهعغفقثصض",
   "طكمنتالبيسش",
-  "ظزور",
+  "ذظزور",
 ];
 
 function normalizeArabic(text: string) {
