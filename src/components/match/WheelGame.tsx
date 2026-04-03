@@ -18,14 +18,22 @@ const SEGMENTS = [
 ];
 
 const PUZZLES = [
-  { answer: "شاورما", category: "أكلة" },
-  { answer: "الرياض", category: "مدينة" },
-  { answer: "ابل", category: "براند" },
-  { answer: "تويوتا", category: "سيارة" },
-  { answer: "قهوة", category: "مشروب" },
-  { answer: "ميسي", category: "لاعب" },
-  { answer: "سناب", category: "تطبيق" },
-  { answer: "البيك", category: "مطعم" },
+  { answer: "معصوب", category: "أكلة" },
+  { answer: "سويسرا", category: "دولة" },
+  { answer: "قوتشي", category: "براند" },
+  { answer: "تاهو", category: "سيارة" },
+  { answer: "ريدبول", category: "مشروب" },
+  { answer: "مبابي", category: "لاعب" },
+  { answer: "يوتيوب", category: "تطبيق" },
+  { answer: "وينديز", category: "مطعم" },
+  { answer: "شكشوكة", category: "أكلة" },
+  { answer: "المكسيك", category: "دولة" },
+  { answer: "كارتير", category: "براند" },
+  { answer: "كورولا", category: "سيارة" },
+  { answer: "شاهي", category: "مشروب" },
+  { answer: "بنزيما", category: "لاعب" },
+  { answer: "واتساب", category: "تطبيق" },
+  { answer: "بيت الشواية", category: "مطعم" },
 ];
 
 const LETTER_ROWS = [
