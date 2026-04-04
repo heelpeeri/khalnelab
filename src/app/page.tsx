@@ -1,154 +1,161 @@
 import Link from "next/link";
-import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
 
-const turnBasedGames = [
+const games = [
   {
     href: "/match?game=word",
-    emoji: "💬",
-    title: "خمن الكلمة",
-    desc: "خمن الكلمة بحروف عربية",
-  },
-  {
-    href: "/match?game=categories",
-    emoji: "🌍",
-    title: "إنسان حيوان نبات جماد بلاد",
-    desc: "المعروف لا يعرف",
+    label: "خمن الكلمة",
+    tag: "WORD",
   },
   {
     href: "/match?game=wheel",
-    emoji: "🎡",
-    title: "لف وخمن",
-    desc: "لف العجلة وجرب حظك 😏",
+    label: "لف وخمن",
+    tag: "WHEEL",
   },
-];
-
-const speedGames = [
   {
     href: "/match?game=draw",
-    emoji: "✏️",
-    title: "خمن المثل",
-    desc: "خمن المثل من الإيموجي",
+    label: "خمن المثل",
+    tag: "EMOJI",
   },
   {
     href: "/match?game=scramble",
-    emoji: "🧩",
-    title: "حروف بالخلاط",
-    desc: "حروف ملخبطة؟ رتبها!",
+    label: "حروف بالخلاط",
+    tag: "SCRAMBLE",
+  },
+  {
+    href: "/match?game=categories",
+    label: "إنسان حيوان نبات جماد بلاد",
+    tag: "CATEGORIES",
   },
 ];
 
-function StarField() {
+function PixelStars() {
   return (
     <>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,0,153,0.18),_transparent_35%),radial-gradient(circle_at_bottom,_rgba(0,153,255,0.14),_transparent_30%),linear-gradient(180deg,_#140022_0%,_#250026_35%,_#4a001b_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[#120021]" />
 
-      <div className="pointer-events-none absolute inset-0 opacity-70 [background-image:radial-gradient(circle_at_20%_30%,white_1px,transparent_1.5px),radial-gradient(circle_at_70%_20%,#7dd3fc_1px,transparent_1.5px),radial-gradient(circle_at_80%_75%,#f9a8d4_1px,transparent_1.5px),radial-gradient(circle_at_35%_80%,#fde047_1px,transparent_1.5px)] [background-size:240px_240px]" />
+      <div className="pointer-events-none absolute inset-0 opacity-80 [background-image:radial-gradient(circle_at_15%_20%,#22d3ee_2px,transparent_2px),radial-gradient(circle_at_35%_60%,#f59e0b_2px,transparent_2px),radial-gradient(circle_at_80%_30%,#ec4899_2px,transparent_2px),radial-gradient(circle_at_70%_80%,#22d3ee_2px,transparent_2px),radial-gradient(circle_at_55%_18%,#facc15_2px,transparent_2px),radial-gradient(circle_at_25%_85%,#a855f7_2px,transparent_2px)] [background-size:320px_320px]" />
 
-      <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:28px_28px]" />
+      <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:24px_24px]" />
+
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-48 bg-[linear-gradient(to_top,rgba(74,0,140,0.75),transparent)]" />
+
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 opacity-70 [clip-path:polygon(0_100%,0_55%,12%_72%,24%_48%,35%_68%,48%_38%,60%_62%,73%_35%,85%_58%,100%_30%,100%_100%)] bg-[#2a0066]" />
+
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 opacity-90 [clip-path:polygon(0_100%,0_68%,10%_82%,21%_60%,33%_78%,47%_56%,61%_74%,76%_51%,88%_71%,100%_59%,100%_100%)] bg-[#4c1d95]" />
     </>
   );
 }
 
-function SectionCard({
-  title,
-  subtitle,
-  icon,
-  games,
+function PixelTitle() {
+  return (
+    <div className="text-center">
+      <div className="mb-4 flex justify-center">
+        <div className="drop-shadow-[0_0_18px_rgba(255,100,200,0.35)]">
+          <Logo size={140} />
+        </div>
+      </div>
+
+      <h1
+        className="text-center text-6xl font-black leading-none tracking-tight text-[#39ffb6] md:text-8xl"
+        style={{
+          textShadow:
+            "4px 4px 0 #3b0764, 8px 8px 0 rgba(0,0,0,0.35), 0 0 18px rgba(57,255,182,0.28)",
+        }}
+      >
+        خل نلعب
+      </h1>
+
+      <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-white/80 md:text-xl">
+        ألعاب جلسات سريعة، تنافس، وضحك داخل البيت.
+      </p>
+    </div>
+  );
+}
+
+function StartButton() {
+  return (
+    <Link
+      href="/match?game=word"
+      className="inline-flex min-w-[240px] items-center justify-center border-4 border-[#ffd84d] bg-[#ff5c39] px-10 py-4 text-2xl font-black text-white shadow-[0_0_0_3px_#7c2d12,0_10px_0_#7c2d12,0_0_28px_rgba(255,110,60,0.45)] transition hover:-translate-y-1 hover:brightness-110 active:translate-y-1 active:shadow-[0_0_0_3px_#7c2d12,0_4px_0_#7c2d12,0_0_20px_rgba(255,110,60,0.35)]"
+      style={{
+        clipPath:
+          "polygon(6% 0,94% 0,100% 18%,100% 82%,94% 100%,6% 100%,0 82%,0 18%)",
+      }}
+    >
+      ابدأ اللعب
+    </Link>
+  );
+}
+
+function GameMode({
+  href,
+  label,
+  tag,
 }: {
-  title: string;
-  subtitle: string;
-  icon: string;
-  games: { href: string; emoji: string; title: string; desc: string }[];
+  href: string;
+  label: string;
+  tag: string;
 }) {
   return (
-    <GlassCard className="relative overflow-hidden rounded-[32px] border border-white/15 bg-white/10 p-7 shadow-[0_0_30px_rgba(255,0,128,0.12)] backdrop-blur-xl md:p-8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.08),_transparent_35%)]" />
-
-      <div className="relative z-10 flex items-center justify-between gap-4">
-        <div className="text-right">
-          <p className="text-sm font-bold text-white/55">نمط اللعب</p>
-          <h2 className="mt-1 text-3xl font-black text-white md:text-4xl">
-            {title}
-          </h2>
-          <p className="mt-2 text-sm leading-7 text-white/75 md:text-base">
-            {subtitle}
-          </p>
-        </div>
-
-        <div className="flex h-16 w-16 items-center justify-center rounded-3xl border border-white/15 bg-white/10 text-3xl shadow-[0_0_20px_rgba(255,255,255,0.08)]">
-          {icon}
+    <Link href={href} className="block">
+      <div className="group border-2 border-[#ff5ccf]/40 bg-[#2a003d]/85 px-4 py-4 text-right shadow-[0_0_0_2px_rgba(255,255,255,0.04),0_0_18px_rgba(255,0,153,0.12)] transition hover:-translate-y-1 hover:border-[#39ffb6]/50 hover:bg-[#33004a] hover:shadow-[0_0_0_2px_rgba(255,255,255,0.06),0_0_24px_rgba(57,255,182,0.16)]">
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-xs font-black tracking-[0.2em] text-[#ffd84d]">
+            {tag}
+          </span>
+          <span className="text-lg font-black text-white md:text-2xl">
+            {label}
+          </span>
         </div>
       </div>
-
-      <div className="relative z-10 mt-8 grid gap-5 md:grid-cols-2">
-        {games.map((game) => (
-          <Link key={game.title} href={game.href} className="block">
-            <div className="group relative h-full rounded-[28px] border border-white/15 bg-black/15 p-6 text-right transition duration-200 hover:-translate-y-1 hover:border-pink-300/30 hover:bg-white/10 hover:shadow-[0_0_24px_rgba(255,0,153,0.18)]">
-              <div className="absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.08),_transparent_45%)] opacity-0 transition group-hover:opacity-100" />
-
-              <div className="relative z-10 flex items-start gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-white/10 text-3xl shadow-[0_0_14px_rgba(255,255,255,0.08)]">
-                  {game.emoji}
-                </div>
-
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-2xl font-black text-white">{game.title}</h3>
-                  <p className="mt-2 text-sm text-white/75 md:text-base">
-                    {game.desc}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </GlassCard>
+    </Link>
   );
 }
 
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-8 text-white">
-      <StarField />
+      <PixelStars />
 
-      <div className="relative z-10 mx-auto max-w-7xl">
-        <div className="flex justify-center">
-          <div className="drop-shadow-[0_0_22px_rgba(255,120,220,0.35)]">
-            <Logo size={210} />
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center">
+        <PixelTitle />
+
+        <div className="mt-10">
+          <StartButton />
+        </div>
+
+        <div className="mt-12 w-full max-w-4xl border-2 border-[#8b5cf6]/40 bg-[#180028]/75 p-4 shadow-[0_0_28px_rgba(139,92,246,0.18)] backdrop-blur-sm md:p-6">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <p className="text-sm font-black tracking-[0.25em] text-[#22d3ee]">
+              SELECT MODE
+            </p>
+            <p className="text-sm font-bold text-white/60">اختر اللعبة</p>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            {games.map((game) => (
+              <GameMode
+                key={game.href}
+                href={game.href}
+                label={game.label}
+                tag={game.tag}
+              />
+            ))}
           </div>
         </div>
 
-        <section className="mx-auto mt-6 max-w-3xl text-center">
-          <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/85 md:text-2xl">
-            منصة ألعاب عائلية سعودية بتجربة سريعة، واضحة، وممتعة داخل البيت.
-          </p>
-
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/match?game=word"
-              className="rounded-full border border-pink-300/40 bg-gradient-to-r from-pink-500 via-fuchsia-500 to-orange-400 px-8 py-4 text-lg font-black text-white shadow-[0_0_28px_rgba(255,0,153,0.32)] transition active:scale-95 hover:brightness-110"
-            >
-              ابدأ التحدي
-            </Link>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm font-bold">
+          <div className="border border-[#22d3ee]/40 bg-[#001b2a]/70 px-4 py-2 text-[#67e8f9]">
+            1 UP
           </div>
-        </section>
-
-        <section className="mt-14 grid gap-8 xl:grid-cols-2">
-          <SectionCard
-            title="دور دور"
-            subtitle="هذا النمط أهدى شوي، تفكير وتركيز ووقت مضبوط."
-            icon="🎯"
-            games={turnBasedGames}
-          />
-
-          <SectionCard
-            title="أسرع واحد يفوز"
-            subtitle="هنا السرعة تحكم، لا تتردد كثير وتورط نفسك."
-            icon="⚡"
-            games={speedGames}
-          />
-        </section>
+          <div className="border border-[#f472b6]/40 bg-[#2a0017]/70 px-4 py-2 text-[#f9a8d4]">
+            FAMILY MODE
+          </div>
+          <div className="border border-[#facc15]/40 bg-[#2b2100]/70 px-4 py-2 text-[#fde047]">
+            START
+          </div>
+        </div>
       </div>
     </main>
   );
