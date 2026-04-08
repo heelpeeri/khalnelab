@@ -125,8 +125,6 @@ export default function WheelGame({
     setCurrentValue(value);
 
     const targetCenter = index * segmentAngle + segmentAngle / 2;
-
-    // نخلي اللفة الجديدة تكمل من آخر زاوية بدل ما ترجع للصفر
     const extraSpins = 8 * 360;
     const nextRotation =
       rotation +
@@ -136,7 +134,6 @@ export default function WheelGame({
 
     setRotation(nextRotation);
 
-    // نخلي النتيجة تظهر بعد ما تخلص الحركة فعلًا
     setTimeout(() => {
       setSpinning(false);
       setPhase("result");
@@ -217,25 +214,29 @@ export default function WheelGame({
   }
 
   return (
-    <GlassCard className="min-h-[760px] p-6 text-center md:p-8">
-      <div className="mx-auto max-w-4xl">
-        <h2 className="text-3xl font-black">🎡 لف وخمن</h2>
+    <GlassCard className="relative overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-6 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md min-h-[760px] md:p-8">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
+      <div className="relative z-10 mx-auto max-w-4xl">
+        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">WHEEL</p>
+        <h2 className="mt-2 text-3xl font-black text-[#98ffb6] drop-shadow-[0_0_14px_rgba(152,255,182,0.35)]">
+          🎡 لف وخمن
+        </h2>
         <p className="mt-2 text-white/75">الفئة: {category}</p>
 
         <div className="mt-5 grid gap-3 md:grid-cols-3">
-          <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-4">
+          <div className="rounded-2xl border border-pink-400/20 bg-pink-500/10 px-4 py-4">
             <p className="text-sm text-white/60">{side1Name}</p>
-            <p className="mt-2 text-3xl font-black">{score1}</p>
+            <p className="mt-2 text-3xl font-black text-yellow-200">{score1}</p>
           </div>
 
-          <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-4">
+          <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 px-4 py-4">
             <p className="text-sm text-white/60">الدور الحالي</p>
             <p className="mt-2 text-2xl font-black">{currentTeamName}</p>
           </div>
 
-          <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-4">
+          <div className="rounded-2xl border border-pink-400/20 bg-pink-500/10 px-4 py-4">
             <p className="text-sm text-white/60">{side2Name}</p>
-            <p className="mt-2 text-3xl font-black">{score2}</p>
+            <p className="mt-2 text-3xl font-black text-yellow-200">{score2}</p>
           </div>
         </div>
 
@@ -253,7 +254,7 @@ export default function WheelGame({
           {revealed.map((letter, i) => (
             <div
               key={i}
-              className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black"
+              className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black text-white shadow-[0_0_12px_rgba(255,255,255,0.04)]"
             >
               {letter || "_"}
             </div>
@@ -268,7 +269,7 @@ export default function WheelGame({
               </div>
 
               <div
-                className="relative h-full w-full rounded-full border-4 border-white/25 shadow-2xl"
+                className="relative h-full w-full rounded-full border-4 border-white/25 shadow-[0_0_28px_rgba(255,255,255,0.08)]"
                 style={{
                   background: `conic-gradient(${SEGMENTS.map((s, i) => {
                     const start = i * segmentAngle;
@@ -289,9 +290,7 @@ export default function WheelGame({
                         transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-104px) rotate(${-angle}deg)`,
                       }}
                     >
-                      <div className="w-20 text-center text-sm font-black leading-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-                        {segment.label}
-                      </div>
+                      <div className="w-20 text-center text-sm font-black leading-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]" />
                     </div>
                   );
                 })}
@@ -332,7 +331,7 @@ export default function WheelGame({
                         className={`h-12 min-w-[46px] rounded-xl px-3 text-base font-bold transition ${
                           isUsed
                             ? "bg-white/5 text-white/25"
-                            : "bg-white/10 text-white hover:bg-white/20 active:scale-95"
+                            : "bg-white/10 text-white hover:bg-pink-500/25 hover:shadow-[0_0_16px_rgba(255,0,153,0.16)] active:scale-95"
                         }`}
                       >
                         {letter}
@@ -353,9 +352,9 @@ export default function WheelGame({
 
         {phase === "celebrate" && (
           <div className="mt-8">
-            <div className="animate-bounce rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-2xl">
+            <div className="rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-[0_0_28px_rgba(250,204,21,0.16)]">
               <p className="text-5xl">🏆</p>
-              <p className="mt-4 text-3xl font-black">{winnerName}</p>
+              <p className="mt-4 text-3xl font-black text-yellow-100">{winnerName}</p>
               <p className="mt-2 text-lg text-white/85">فاز بالجولة!</p>
             </div>
           </div>
