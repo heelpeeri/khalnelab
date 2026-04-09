@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 
 type WinnerType = "side1" | "side2" | "none";
-
 type CellState = "correct" | "present" | "absent";
 
 export default function WordGame({
@@ -14,25 +13,16 @@ export default function WordGame({
   onRoundEnd: (winner?: WinnerType) => void;
   roundKey: number;
 }) {
-  const WORDS_3 = [
-    "بيت", "باب", "بحر", "جمل", "جبل", "حبر", "حلم", "حوت",
-    "خيل", "درب", "رمل", "ريح", "زهر", "سهم", "سور", "شمس",
-    "صقر", "طير", "عين", "قمر", "قلم", "كلب", "ليل", "مطر",
-    "نار", "نجم", "نور", "نهر", "ورد", "وقت",
-  ];
-
   const WORDS_4 = [
     "كتاب", "مكتب", "هاتف", "تفاح", "قطار", "كرسي", "شمعة", "خيمة",
-    "سحاب", "نجمة", "مكيف", "قهوة", "طريق", "ملعب", "موزة", "صحن",
+    "سحاب", "نجمة", "مكيف", "قهوة", "طريق", "ملعب", "موزة", "معلم",
     "سرير", "شباك", "حليب", "ورقة", "نخله", "ورده", "سمكه", "بيضه",
-    "علبه", "شاحن", "لوحه", "مخده", "منبه", "فرشه", "ساعه", "غرفه",
-    "مطبخ", "شارع", "مدرس", "طالب",
+    "علبه", "لوحه", "مخده", "منبه", "فرشه", "ساعه", "غرفه", "مطبخ",
+    "شارع", "مدرس", "طالب", "رمان", "خيار", "ارنب", "مقعد",
   ];
 
   function getRandomWord() {
-    const useFour = Math.random() < 0.7;
-    const list = useFour ? WORDS_4 : WORDS_3;
-    return list[Math.floor(Math.random() * list.length)];
+    return WORDS_4[Math.floor(Math.random() * WORDS_4.length)];
   }
 
   const MAX_TRIES = 6;
@@ -53,6 +43,10 @@ export default function WordGame({
   ];
 
   useEffect(() => {
+    resetRound();
+  }, [roundKey]);
+
+  function resetRound() {
     setAnswer(getRandomWord());
     setGuesses([]);
     setCurrent("");
@@ -61,7 +55,7 @@ export default function WordGame({
     setFeedback("اكتب الكلمة ثم اضغط إدخال");
     setFeedbackTone("default");
     setShakeBoard(false);
-  }, [roundKey]);
+  }
 
   function normalize(text: string) {
     return text.trim().replace(/\s+/g, "");
@@ -84,9 +78,7 @@ export default function WordGame({
       return;
     }
 
-    if (guesses.length >= MAX_TRIES) {
-      return;
-    }
+    if (guesses.length >= MAX_TRIES) return;
 
     const nextGuesses = [...guesses, guess];
     const nextKeyStatus = { ...keyStatus };
@@ -121,7 +113,7 @@ export default function WordGame({
       return;
     }
 
-    setFeedback(`باقي ${MAX_TRIES - nextGuesses.length} محاولات`);
+    setFeedback(`مو صح — باقي ${MAX_TRIES - nextGuesses.length} محاولات`);
     setFeedbackTone("default");
   }
 
@@ -143,11 +135,22 @@ export default function WordGame({
   const triesUsed = guesses.length;
   const triesLeft = MAX_TRIES - triesUsed;
 
+  const statusText =
+    status === "won"
+      ? "✅ عرفتها"
+      : status === "lost"
+      ? "⛔ انتهت المحاولات"
+      : `🎯 الآن: خمن الكلمة من ${answer.length} حروف`;
+
   return (
     <GlassCard className="panel-animated min-h-[780px] p-8 text-center">
       <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">WORD</p>
       <h2 className="mt-2 text-3xl font-black">خمن الكلمة</h2>
-      <p className="mt-2 text-white/80">خمن الكلمة من {answer.length} حروف</p>
+      <p className="mt-2 text-white/80">كل الجولات هنا 4 حروف فقط</p>
+
+      <div className="mt-5 rounded-2xl border border-pink-300/20 bg-pink-500/10 px-4 py-3 text-lg font-black text-white">
+        {statusText}
+      </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
         <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
@@ -199,9 +202,9 @@ export default function WordGame({
               return (
                 <div
                   key={colIndex}
-                  className={`flex h-16 w-16 items-center justify-center rounded-2xl border text-2xl font-black text-white ${
+                  className={`flex h-16 w-16 items-center justify-center rounded-2xl border text-2xl font-black text-white transition ${
                     rowIndex === 0
-                      ? "border-cyan-300/25 bg-cyan-400/10"
+                      ? "border-cyan-300/30 bg-cyan-400/10 shadow-[0_0_14px_rgba(34,211,238,0.12)]"
                       : "border-white/20 bg-white/5"
                   }`}
                 >
@@ -264,6 +267,14 @@ export default function WordGame({
 
           <button
             type="button"
+            onClick={resetRound}
+            className="btn-secondary min-w-[140px]"
+          >
+            كلمة جديدة
+          </button>
+
+          <button
+            type="button"
             onClick={() => onRoundEnd()}
             className="btn-secondary min-w-[140px]"
           >
@@ -275,6 +286,7 @@ export default function WordGame({
       {status === "won" && (
         <div className="winner-animated mt-6 rounded-2xl border border-green-300/25 bg-green-400/10 p-4 shadow-[0_0_18px_rgba(34,197,94,0.12)]">
           <p className="text-lg font-black text-green-100">🔥 ممتاز! عرفت الكلمة</p>
+          <p className="mt-2 text-white/80">تقدر تبدأ كلمة جديدة أو تنهي الجولة</p>
         </div>
       )}
 
