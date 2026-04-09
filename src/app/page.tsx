@@ -58,6 +58,21 @@ function StatusStrip({
   );
 }
 
+function SetupField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-right">
+      <label className="mb-2 block text-sm font-bold text-white/85">{label}</label>
+      {children}
+    </div>
+  );
+}
+
 export default function MatchPage() {
   const [mode, setMode] = useState<PlayMode>("teams");
   const [side1, setSide1] = useState("فريق 1");
@@ -123,7 +138,7 @@ export default function MatchPage() {
       return {
         title: "لف وخمن",
         icon: "🎡",
-        hint: "لف، شوف الرقم، وبعدها اختر حرف أو حل الكلمة.",
+        hint: "لف العجلة أول، وبعدها اختر حرف أو حل الكلمة.",
       };
     }
     return {
@@ -222,9 +237,9 @@ export default function MatchPage() {
 
   return (
     <main className="min-h-screen px-4 py-8 text-white">
-      <div className="mx-auto max-w-[1600px]">
+      <div className="mx-auto max-w-[1400px]">
         <div className="mb-8 flex items-center justify-between gap-4">
-          <div>
+          <div className="text-right">
             <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
               MATCH MODE
             </p>
@@ -234,26 +249,26 @@ export default function MatchPage() {
         </div>
 
         {!started && (
-          <GlassCard className="p-6">
-            <div className="mb-6 flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
-                  READY ROOM
-                </p>
-                <h2 className="mt-1 text-2xl font-black">جهّز التحدي</h2>
-              </div>
+          <GlassCard className="mx-auto max-w-3xl p-6 md:p-8">
+            <div className="mb-6 text-right">
+              <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+                READY ROOM
+              </p>
+              <h2 className="mt-1 text-3xl font-black">جهّز التحدي</h2>
+              <p className="mt-2 text-white/65">
+                اختر اللعبة، اكتب الأسماء، وحدد عدد الجولات.
+              </p>
+            </div>
 
-              <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-right">
-                <p className="text-xs text-white/55">اللعبة الحالية</p>
-                <p className="mt-1 font-black">
-                  {gameMeta.icon} {gameMeta.title}
-                </p>
-              </div>
+            <div className="mb-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-right">
+              <p className="text-xs text-white/55">اللعبة الحالية</p>
+              <p className="mt-1 text-lg font-black">
+                {gameMeta.icon} {gameMeta.title}
+              </p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-bold">نوع التحدي</label>
+              <SetupField label="نوع التحدي">
                 <select
                   value={mode}
                   onChange={(e) => {
@@ -262,19 +277,18 @@ export default function MatchPage() {
                     setSide1(nextMode === "teams" ? "فريق 1" : "لاعب 1");
                     setSide2(nextMode === "teams" ? "فريق 2" : "لاعب 2");
                   }}
-                  className="input"
+                  className="input h-14"
                 >
                   <option value="teams">فريقين</option>
                   <option value="solo">فردي</option>
                 </select>
-              </div>
+              </SetupField>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold">اختيار اللعبة</label>
+              <SetupField label="اختيار اللعبة">
                 <select
                   value={selectedGame}
                   onChange={(e) => setSelectedGame(e.target.value as GameType)}
-                  className="input"
+                  className="input h-14"
                 >
                   <option value="word">خمن الكلمة</option>
                   <option value="draw">خمن المثل</option>
@@ -282,45 +296,42 @@ export default function MatchPage() {
                   <option value="scramble">حروف بالخلاط</option>
                   <option value="wheel">لف وخمن</option>
                 </select>
-              </div>
-            </div>
+              </SetupField>
 
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-bold">{side1Label}</label>
+              <SetupField label={side1Label}>
                 <input
                   value={side1}
                   onChange={(e) => setSide1(e.target.value)}
-                  className="input"
+                  className="input h-14"
                   placeholder={mode === "teams" ? "مثال: الصقور" : "مثال: محمد"}
                 />
-              </div>
+              </SetupField>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold">{side2Label}</label>
+              <SetupField label={side2Label}>
                 <input
                   value={side2}
                   onChange={(e) => setSide2(e.target.value)}
-                  className="input"
+                  className="input h-14"
                   placeholder={mode === "teams" ? "مثال: الذئاب" : "مثال: خالد"}
                 />
-              </div>
+              </SetupField>
             </div>
 
             <div className="mt-4">
-              <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
-              <select
-                value={rounds}
-                onChange={(e) => setRounds(Number(e.target.value))}
-                className="input"
-              >
-                <option value={1}>1</option>
-                <option value={3}>3</option>
-                <option value={5}>5</option>
-              </select>
+              <SetupField label="عدد الجولات">
+                <select
+                  value={rounds}
+                  onChange={(e) => setRounds(Number(e.target.value))}
+                  className="input h-14"
+                >
+                  <option value={1}>1</option>
+                  <option value={3}>3</option>
+                  <option value={5}>5</option>
+                </select>
+              </SetupField>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-right">
+            <div className="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-right">
               <p className="text-sm text-white/60">مختصر اللعبة</p>
               <p className="mt-1 text-white/90">{gameMeta.hint}</p>
             </div>
@@ -332,7 +343,7 @@ export default function MatchPage() {
         )}
 
         {started && !gameEnded && (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
             <div>
               {roundReady ? (
                 <GlassCard className="min-h-[780px] p-8 text-center">
@@ -431,7 +442,7 @@ export default function MatchPage() {
         )}
 
         {gameEnded && (
-          <GlassCard className="p-8 text-center">
+          <GlassCard className="mx-auto max-w-4xl p-8 text-center">
             <p className="text-sm font-black tracking-[0.18em] text-yellow-200/85">
               GAME OVER
             </p>
