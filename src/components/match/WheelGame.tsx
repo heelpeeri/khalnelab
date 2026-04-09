@@ -33,7 +33,7 @@ const PUZZLES = [
   { answer: "شاهي", category: "مشروب" },
   { answer: "بنزيما", category: "لاعب" },
   { answer: "واتساب", category: "تطبيق" },
-  { answer: "بيت الشواية", category: "مطعم" },
+  { answer: "بيتالشواية", category: "مطعم" },
 ];
 
 const LETTER_ROWS = [
