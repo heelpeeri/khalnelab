@@ -4,48 +4,69 @@
 
 /* ========== ROOT COLORS ========== */
 :root {
-  --bg-start: #0a0014;
-  --bg-end: #1a0030;
+  --bg-start: #070012;
+  --bg-end: #140028;
 }
 
 body {
   direction: rtl;
   color: white;
   background:
-    radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 30%),
+    radial-gradient(circle at top, rgba(255,0,150,0.15), transparent 40%),
     linear-gradient(180deg, var(--bg-start), var(--bg-end));
 }
 
-/* ========== GLASS ========== */
+/* ========== PIXEL BACKGROUND ========== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.25;
+}
+
+/* ========== GLASS (أقوى arcade) ========== */
 .glass {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  backdrop-filter: blur(16px);
+  background: rgba(20, 0, 40, 0.75);
+  border: 1px solid rgba(255, 0, 150, 0.35);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 25px rgba(255, 0, 150, 0.2);
 }
 
 /* ========== BUTTON ========== */
 .btn-primary {
   border-radius: 14px;
-  padding: 12px 20px;
-  font-weight: 700;
+  padding: 12px 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+
   background: linear-gradient(to right, #ff7a18, #ff0080);
-  box-shadow: 0 0 20px rgba(255, 0, 128, 0.4);
-  transition: 0.2s;
+  box-shadow:
+    0 0 20px rgba(255, 0, 128, 0.5),
+    inset 0 0 8px rgba(255,255,255,0.2);
+
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    0 0 30px rgba(255, 0, 128, 0.7),
+    inset 0 0 12px rgba(255,255,255,0.25);
 }
 
 .btn-primary:active {
   transform: scale(0.95);
 }
 
-/* ========== CRT EFFECT ========== */
+/* ========== CRT EFFECT (محسن) ========== */
 @keyframes crt-flicker {
-  0% { opacity: 0.95; }
+  0% { opacity: 0.96; }
   50% { opacity: 1; }
-  100% { opacity: 0.96; }
+  100% { opacity: 0.97; }
 }
 
 .crt-screen {
@@ -57,34 +78,39 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
+
   background: repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,0.03),
-    rgba(255,255,255,0.03) 2px,
+    rgba(255,255,255,0.04),
+    rgba(255,255,255,0.04) 2px,
     transparent 2px,
     transparent 4px
   );
-  opacity: 0.2;
+
+  mix-blend-mode: overlay;
+  opacity: 0.25;
 }
 
 .crt-screen::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.4));
   pointer-events: none;
+
+  background:
+    radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.5));
 }
 
 .crt-flicker {
-  animation: crt-flicker 0.15s infinite;
+  animation: crt-flicker 0.12s infinite;
 }
 
-/* ========== ANIMATIONS ========== */
+/* ========== INTRO ANIMATION ========== */
 @keyframes intro {
   from {
     opacity: 0;
-    transform: scale(1.05) translateY(30px);
-    filter: blur(10px);
+    transform: scale(1.08) translateY(30px);
+    filter: blur(8px);
   }
   to {
     opacity: 1;
@@ -94,14 +120,35 @@ body {
 }
 
 .intro {
-  animation: intro 0.8s ease-out;
+  animation: intro 0.7s ease-out;
 }
 
+/* ========== NEON TEXT (أقوى) ========== */
 @keyframes neon {
-  0%,100% { text-shadow: 0 0 10px rgba(152,255,182,0.3); }
-  50% { text-shadow: 0 0 25px rgba(152,255,182,0.6); }
+  0%,100% {
+    text-shadow:
+      0 0 6px rgba(255,0,150,0.4),
+      0 0 18px rgba(255,0,150,0.2);
+  }
+  50% {
+    text-shadow:
+      0 0 12px rgba(255,0,150,0.7),
+      0 0 30px rgba(255,0,150,0.4);
+  }
 }
 
 .neon {
   animation: neon 2s infinite;
+}
+
+/* ========== CARD HOVER (Arcade feel) ========== */
+.card-arcade {
+  transition: all 0.2s ease;
+}
+
+.card-arcade:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 0 35px rgba(255,0,150,0.4),
+    0 0 10px rgba(0,255,255,0.2);
 }
