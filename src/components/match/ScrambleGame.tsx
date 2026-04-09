@@ -21,37 +21,39 @@ export default function ScrambleGame({
 }) {
   const QUESTIONS = [
     { prompt: "طلع لي اسم أكلة", answer: "شاورما" },
-    { prompt: "طلع لي اسم أكلة", answer: "كبسة" },
-    { prompt: "طلع لي اسم أكلة", answer: "بيتزا" },
-    { prompt: "طلع لي اسم براند", answer: "ابل" },
+    { prompt: "طلع لي اسم أكلة", answer: "شكشوكة" },
+    { prompt: "طلع لي اسم أكلة", answer: "بروستد" },
     { prompt: "طلع لي اسم براند", answer: "سامسونج" },
     { prompt: "طلع لي اسم براند", answer: "نايكي" },
     { prompt: "طلع لي اسم مدينة", answer: "الرياض" },
-    { prompt: "طلع لي اسم مدينة", answer: "جدة" },
-    { prompt: "طلع لي اسم مدينة", answer: "دبي" },
+    { prompt: "طلع لي اسم مدينة", answer: "الدمام" },
     { prompt: "طلع لي اسم سيارة", answer: "تويوتا" },
-    { prompt: "طلع لي اسم سيارة", answer: "نيسان" },
     { prompt: "طلع لي اسم سيارة", answer: "مرسيدس" },
-    { prompt: "طلع لي اسم بنت", answer: "نورة" },
-    { prompt: "طلع لي اسم بنت", answer: "سارة" },
-    { prompt: "طلع لي اسم بنت", answer: "ريم" },
-    { prompt: "طلع لي اسم تطبيق", answer: "سناب" },
+    { prompt: "طلع لي اسم سيارة", answer: "كورولا" },
+    { prompt: "طلع لي اسم تطبيق", answer: "واتساب" },
     { prompt: "طلع لي اسم تطبيق", answer: "تيكتوك" },
     { prompt: "طلع لي اسم تطبيق", answer: "انستقرام" },
-    { prompt: "طلع لي اسم لاعب", answer: "ميسي" },
     { prompt: "طلع لي اسم لاعب", answer: "رونالدو" },
+    { prompt: "طلع لي اسم لاعب", answer: "بنزيما" },
+    { prompt: "طلع لي اسم لاعب", answer: "مبابي" },
   ];
 
   function shuffleWord(word: string) {
-    const chars = word.split("");
-    for (let i = chars.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [chars[i], chars[j]] = [chars[j], chars[i]];
+    let shuffled = word;
+
+    while (shuffled === word) {
+      const chars = word.split("");
+      for (let i = chars.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [chars[i], chars[j]] = [chars[j], chars[i]];
+      }
+      shuffled = chars.join("");
     }
-    return chars.join(" ");
+
+    return shuffled.split("").join(" ");
   }
 
-  const ROUND_TIME = 20;
+  const ROUND_TIME = 12;
   const [index, setIndex] = useState(() => Math.floor(Math.random() * QUESTIONS.length));
   const current = useMemo(() => QUESTIONS[index], [index]);
 
@@ -98,8 +100,13 @@ export default function ScrambleGame({
 
   function markWinner(side: "side1" | "side2") {
     if (winnerSide || revealed) return;
+
     setWinnerSide(side);
     setWinnerTime(ROUND_TIME - timeLeft);
+
+    setTimeout(() => {
+      setRevealed(true);
+    }, 700);
   }
 
   const statusText = winnerSide
@@ -114,8 +121,15 @@ export default function ScrambleGame({
     ? "border-cyan-300/20 bg-cyan-300/10 text-white"
     : "border-pink-300/20 bg-pink-500/10 text-white";
 
+  const timerTextClass =
+    timeLeft <= 4
+      ? "font-black text-red-400 animate-pulse scale-110"
+      : timeLeft <= 7
+      ? "font-black text-yellow-300"
+      : "font-black text-cyan-200";
+
   return (
-    <GlassCard className="relative overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-8 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md min-h-[780px]">
+    <GlassCard className="relative min-h-[780px] overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-8 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
 
       <div className="relative z-10">
@@ -136,9 +150,7 @@ export default function ScrambleGame({
         <div className="mx-auto mt-5 w-full max-w-md">
           <div className="mb-1 flex justify-between text-sm text-white/80">
             <span>الوقت</span>
-            <span className={timeLeft <= 5 ? "font-black text-red-300 animate-pulse" : "font-black text-yellow-200"}>
-              {timeLeft}
-            </span>
+            <span className={timerTextClass}>{timeLeft}</span>
           </div>
 
           <div className="h-3 w-full overflow-hidden rounded-full border border-white/10 bg-white/10">
@@ -154,7 +166,7 @@ export default function ScrambleGame({
           <p className="mt-2 text-xl font-black text-white">{current.prompt}</p>
 
           <div className="mt-6 rounded-2xl border border-pink-300/20 bg-pink-500/10 px-4 py-6">
-            <div className="text-5xl font-black tracking-[0.4em] text-pink-300 drop-shadow-[0_0_12px_rgba(255,0,150,0.8)] md:text-6xl">
+            <div className="text-6xl font-black tracking-[0.5em] text-pink-300 drop-shadow-[0_0_20px_rgba(255,0,150,0.9)] md:text-7xl">
               {shuffled}
             </div>
           </div>
@@ -183,7 +195,9 @@ export default function ScrambleGame({
           <div
             className={`rounded-3xl border p-4 text-center transition ${
               winnerSide === "side1"
-                ? "border-pink-300/35 bg-pink-500/20 shadow-[0_0_18px_rgba(236,72,153,0.14)]"
+                ? "scale-105 border-pink-300/40 bg-pink-500/20 shadow-[0_0_22px_rgba(236,72,153,0.2)] animate-pulse"
+                : winnerSide
+                ? "border-pink-400/20 bg-pink-500/10 opacity-35 grayscale"
                 : "border-pink-400/20 bg-pink-500/10"
             }`}
           >
@@ -209,7 +223,9 @@ export default function ScrambleGame({
           <div
             className={`rounded-3xl border p-4 text-center transition ${
               winnerSide === "side2"
-                ? "border-cyan-300/35 bg-cyan-400/20 shadow-[0_0_18px_rgba(34,211,238,0.14)]"
+                ? "scale-105 border-cyan-300/40 bg-cyan-400/20 shadow-[0_0_22px_rgba(34,211,238,0.2)] animate-pulse"
+                : winnerSide
+                ? "border-cyan-300/20 bg-cyan-400/10 opacity-35 grayscale"
                 : "border-cyan-300/20 bg-cyan-400/10"
             }`}
           >
@@ -253,9 +269,9 @@ export default function ScrambleGame({
         </div>
 
         {revealed && (
-          <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 p-5">
+          <div className="winner-animated mt-6 rounded-2xl border border-white/15 bg-white/10 p-5">
             <p className="text-sm text-white/70">الإجابة الصحيحة</p>
-            <p className="mt-2 text-3xl font-black text-white">{current.answer}</p>
+            <p className="mt-2 text-4xl font-black text-white">{current.answer}</p>
           </div>
         )}
       </div>
