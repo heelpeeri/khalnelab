@@ -216,11 +216,16 @@ export default function WheelGame({
   return (
     <GlassCard className="relative overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-6 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md min-h-[760px] md:p-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
+
       <div className="relative z-10 mx-auto max-w-4xl">
-        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">WHEEL</p>
+        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">
+          WHEEL
+        </p>
+
         <h2 className="mt-2 text-3xl font-black text-[#98ffb6] drop-shadow-[0_0_14px_rgba(152,255,182,0.35)]">
           🎡 لف وخمن
         </h2>
+
         <p className="mt-2 text-white/75">الفئة: {category}</p>
 
         <div className="mt-5 grid gap-3 md:grid-cols-3">
@@ -282,6 +287,7 @@ export default function WheelGame({
               >
                 {SEGMENTS.map((segment, i) => {
                   const angle = i * segmentAngle + segmentAngle / 2;
+
                   return (
                     <div
                       key={`${segment.label}-${i}`}
@@ -291,8 +297,9 @@ export default function WheelGame({
                       }}
                     >
                       <div className="w-20 text-center text-base font-black leading-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-  {segment.label}
-</div>
+                        {segment.label}
+                      </div>
+                    </div>
                   );
                 })}
 
@@ -324,6 +331,7 @@ export default function WheelGame({
                 >
                   {row.split("").map((letter) => {
                     const isUsed = usedLetters.includes(letter);
+
                     return (
                       <button
                         key={letter}
@@ -355,7 +363,9 @@ export default function WheelGame({
           <div className="mt-8">
             <div className="rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-[0_0_28px_rgba(250,204,21,0.16)]">
               <p className="text-5xl">🏆</p>
-              <p className="mt-4 text-3xl font-black text-yellow-100">{winnerName}</p>
+              <p className="mt-4 text-3xl font-black text-yellow-100">
+                {winnerName}
+              </p>
               <p className="mt-2 text-lg text-white/85">فاز بالجولة!</p>
             </div>
           </div>
