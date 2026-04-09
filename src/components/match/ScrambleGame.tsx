@@ -74,7 +74,7 @@ export default function ScrambleGame({
   }, [roundKey]);
 
   useEffect(() => {
-    if (revealed) return;
+    if (revealed || winnerSide) return;
 
     if (timeLeft <= 0) {
       setRevealed(true);
@@ -86,7 +86,7 @@ export default function ScrambleGame({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, revealed]);
+  }, [timeLeft, revealed, winnerSide]);
 
   function finishRound() {
     if (winnerSide) {
@@ -96,23 +96,51 @@ export default function ScrambleGame({
     onRoundEnd();
   }
 
+  function markWinner(side: "side1" | "side2") {
+    if (winnerSide || revealed) return;
+    setWinnerSide(side);
+    setWinnerTime(ROUND_TIME - timeLeft);
+  }
+
+  const statusText = winnerSide
+    ? `الأسرع: ${winnerSide === "side1" ? side1Name : side2Name}`
+    : revealed
+    ? "انكشف الحل — أعلن النتيجة"
+    : "الآن: رتب الحروف بأسرع وقت";
+
+  const statusTone = winnerSide
+    ? "border-yellow-300/25 bg-yellow-300/10 text-yellow-100"
+    : revealed
+    ? "border-cyan-300/20 bg-cyan-300/10 text-white"
+    : "border-pink-300/20 bg-pink-500/10 text-white";
+
   return (
     <GlassCard className="relative overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-8 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md min-h-[780px]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
+
       <div className="relative z-10">
-        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">SCRAMBLE</p>
+        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">
+          SCRAMBLE
+        </p>
+
         <h2 className="mt-2 text-3xl font-black text-[#98ffb6] drop-shadow-[0_0_14px_rgba(152,255,182,0.35)]">
           🧩 حروف بالخلاط
         </h2>
+
         <p className="mt-2 text-white/80">رتب الكلمة قبل غيرك</p>
 
-        <div className="mx-auto mt-4 w-full max-w-md">
+        <div className={`mt-5 rounded-2xl border px-4 py-3 text-lg font-black ${statusTone}`}>
+          {statusText}
+        </div>
+
+        <div className="mx-auto mt-5 w-full max-w-md">
           <div className="mb-1 flex justify-between text-sm text-white/80">
             <span>الوقت</span>
             <span className={timeLeft <= 5 ? "font-black text-red-300 animate-pulse" : "font-black text-yellow-200"}>
               {timeLeft}
             </span>
           </div>
+
           <div className="h-3 w-full overflow-hidden rounded-full border border-white/10 bg-white/10">
             <div
               className="h-full bg-gradient-to-r from-cyan-400 via-pink-500 to-yellow-300 transition-all duration-1000"
@@ -122,15 +150,19 @@ export default function ScrambleGame({
         </div>
 
         <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_0_18px_rgba(255,255,255,0.04)]">
-          <p className="text-xl font-black text-white">{current.prompt}</p>
-          <div className="mt-6 text-5xl font-black tracking-[0.4em] text-pink-300 drop-shadow-[0_0_12px_rgba(255,0,150,0.8)] md:text-6xl">
-            {shuffled}
+          <p className="text-sm text-white/60">التحدي</p>
+          <p className="mt-2 text-xl font-black text-white">{current.prompt}</p>
+
+          <div className="mt-6 rounded-2xl border border-pink-300/20 bg-pink-500/10 px-4 py-6">
+            <div className="text-5xl font-black tracking-[0.4em] text-pink-300 drop-shadow-[0_0_12px_rgba(255,0,150,0.8)] md:text-6xl">
+              {shuffled}
+            </div>
           </div>
         </div>
 
         {!revealed && !winnerSide && (
           <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4 text-white/80">
-            أول واحد يفكها يفوز
+            أول واحد يفكها يضغط <span className="font-black text-white">{readyLabel}</span>
           </div>
         )}
 
@@ -148,18 +180,25 @@ export default function ScrambleGame({
         )}
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="rounded-3xl border border-pink-400/20 bg-pink-500/10 p-4 text-center">
+          <div
+            className={`rounded-3xl border p-4 text-center transition ${
+              winnerSide === "side1"
+                ? "border-pink-300/35 bg-pink-500/20 shadow-[0_0_18px_rgba(236,72,153,0.14)]"
+                : "border-pink-400/20 bg-pink-500/10"
+            }`}
+          >
             <p className="text-lg font-black">{side1Name}</p>
             <p className="mt-2 text-sm text-white/80">
-              {winnerSide === "side1" ? "✅ سجّل أولًا" : "⏳ جاهز للتسجيل"}
+              {winnerSide === "side1"
+                ? "✅ سجّل أولًا"
+                : winnerSide
+                ? "انتهت الجولة"
+                : "⏳ جاهز للتسجيل"}
             </p>
+
             <button
               type="button"
-              onClick={() => {
-                if (winnerSide) return;
-                setWinnerSide("side1");
-                setWinnerTime(ROUND_TIME - timeLeft);
-              }}
+              onClick={() => markWinner("side1")}
               disabled={!!winnerSide || revealed}
               className="btn-primary mt-4 w-full disabled:opacity-50"
             >
@@ -167,18 +206,25 @@ export default function ScrambleGame({
             </button>
           </div>
 
-          <div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-center">
+          <div
+            className={`rounded-3xl border p-4 text-center transition ${
+              winnerSide === "side2"
+                ? "border-cyan-300/35 bg-cyan-400/20 shadow-[0_0_18px_rgba(34,211,238,0.14)]"
+                : "border-cyan-300/20 bg-cyan-400/10"
+            }`}
+          >
             <p className="text-lg font-black">{side2Name}</p>
             <p className="mt-2 text-sm text-white/80">
-              {winnerSide === "side2" ? "✅ سجّل أولًا" : "⏳ جاهز للتسجيل"}
+              {winnerSide === "side2"
+                ? "✅ سجّل أولًا"
+                : winnerSide
+                ? "انتهت الجولة"
+                : "⏳ جاهز للتسجيل"}
             </p>
+
             <button
               type="button"
-              onClick={() => {
-                if (winnerSide) return;
-                setWinnerSide("side2");
-                setWinnerTime(ROUND_TIME - timeLeft);
-              }}
+              onClick={() => markWinner("side2")}
               disabled={!!winnerSide || revealed}
               className="btn-primary mt-4 w-full disabled:opacity-50"
             >
@@ -191,7 +237,8 @@ export default function ScrambleGame({
           <button
             type="button"
             onClick={() => setRevealed(true)}
-            className="btn-primary"
+            disabled={revealed}
+            className="btn-secondary disabled:opacity-50"
           >
             إظهار الإجابة
           </button>
