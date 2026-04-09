@@ -1,192 +1,514 @@
-import Link from "next/link";
+'use client';
+
+import { useEffect, useMemo, useState } from "react";
+import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
+import WordGame from "@/components/match/WordGame";
+import ProverbGame from "@/components/match/ProverbGame";
+import CategoriesGame from "@/components/match/CategoriesGame";
+import ScrambleGame from "@/components/match/ScrambleGame";
+import WheelGame from "@/components/match/WheelGame";
 
-const games = [
-  {
-    href: "/match?game=word",
-    title: "خمن الكلمة",
-    desc: "خمن الكلمة بحروف عربية",
-    tag: "WORD",
-    emoji: "💬",
-  },
-  {
-    href: "/match?game=wheel",
-    title: "لف وخمن",
-    desc: "لف العجلة وجرب حظك",
-    tag: "WHEEL",
-    emoji: "🎡",
-  },
-  {
-    href: "/match?game=draw",
-    title: "خمن المثل",
-    desc: "خمن المثل من الإيموجي",
-    tag: "EMOJI",
-    emoji: "✏️",
-  },
-  {
-    href: "/match?game=scramble",
-    title: "حروف بالخلاط",
-    desc: "رتب الحروف قبل الوقت يخلص",
-    tag: "SCRAMBLE",
-    emoji: "🧩",
-  },
-  {
-    href: "/match?game=categories",
-    title: "إنسان حيوان نبات جماد بلاد",
-    desc: "الكل يفكر بسرعة ويجاوب",
-    tag: "CATEGORIES",
-    emoji: "🌍",
-  },
-];
+type GameType = "word" | "draw" | "categories" | "scramble" | "wheel";
+type PlayMode = "solo" | "teams";
+type WinnerType = "side1" | "side2" | "none";
 
-function ArcadeBackground() {
-  return (
-    <>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(80,255,180,0.18),_transparent_18%),linear-gradient(180deg,_#0c001d_0%,_#170028_35%,_#2d0030_70%,_#3b001a_100%)]" />
-
-      <div className="pointer-events-none absolute inset-0 opacity-80 [background-image:radial-gradient(circle_at_10%_15%,#22d3ee_2px,transparent_2px),radial-gradient(circle_at_20%_70%,#facc15_2px,transparent_2px),radial-gradient(circle_at_35%_30%,#f472b6_2px,transparent_2px),radial-gradient(circle_at_48%_85%,#22d3ee_2px,transparent_2px),radial-gradient(circle_at_63%_18%,#fde047_2px,transparent_2px),radial-gradient(circle_at_76%_60%,#a855f7_2px,transparent_2px),radial-gradient(circle_at_90%_25%,#38bdf8_2px,transparent_2px),radial-gradient(circle_at_88%_82%,#f59e0b_2px,transparent_2px)] [background-size:300px_300px]" />
-
-      <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:24px_24px]" />
-
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-[linear-gradient(to_top,rgba(91,33,182,0.4),transparent)]" />
-
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 opacity-80 [clip-path:polygon(0_100%,0_70%,12%_82%,22%_62%,35%_78%,46%_55%,58%_73%,70%_52%,83%_69%,100%_45%,100%_100%)] bg-[#2c0a66]" />
-    </>
-  );
-}
-
-function Hero() {
-  return (
-    <section className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-      <div className="drop-shadow-[0_0_20px_rgba(255,120,220,0.35)]">
-        <Logo size={130} />
-      </div>
-
-      <h1
-        className="mt-6 text-6xl font-black leading-none text-[#98ffb6] md:text-8xl"
-        style={{
-          textShadow:
-            "4px 4px 0 #2b124a, 8px 8px 0 rgba(0,0,0,0.35), 0 0 22px rgba(152,255,182,0.35)",
-        }}
-      >
-        خل نلعب
-      </h1>
-
-      <p className="mt-5 max-w-2xl text-lg leading-8 text-white/85 md:text-2xl">
-        ألعاب جلسات سريعة، تنافس، وضحك داخل البيت.
-      </p>
-
-      <div className="mt-8">
-        <Link
-          href="/match?game=word"
-          className="inline-flex min-w-[250px] items-center justify-center border-4 border-[#ffd84d] bg-[#ff6a3c] px-10 py-4 text-2xl font-black text-white shadow-[0_0_0_3px_#7c2d12,0_10px_0_#7c2d12,0_0_28px_rgba(255,110,60,0.4)] transition hover:-translate-y-1 hover:brightness-110 active:translate-y-1 active:shadow-[0_0_0_3px_#7c2d12,0_4px_0_#7c2d12,0_0_18px_rgba(255,110,60,0.28)]"
-          style={{
-            clipPath:
-              "polygon(6% 0,94% 0,100% 18%,100% 82%,94% 100%,6% 100%,0 82%,0 18%)",
-          }}
-        >
-          ابدأ اللعب
-        </Link>
-      </div>
-    </section>
-  );
-}
-
-function GameCard({
-  href,
-  title,
-  desc,
-  tag,
-  emoji,
+function MatchupBadge({
+  side1,
+  side2,
 }: {
-  href: string;
-  title: string;
-  desc: string;
-  tag: string;
-  emoji: string;
+  side1: string;
+  side2: string;
 }) {
   return (
-    <Link href={href} className="block">
-      <div className="group relative overflow-hidden border-2 border-[#ff4fd8]/35 bg-[#220032]/80 p-5 shadow-[0_0_0_2px_rgba(255,255,255,0.03),0_0_18px_rgba(255,0,140,0.14)] transition duration-200 hover:-translate-y-1 hover:border-[#69fff1]/50 hover:bg-[#2b003f] hover:shadow-[0_0_0_2px_rgba(255,255,255,0.05),0_0_24px_rgba(80,255,220,0.18)]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.07),_transparent_35%)] opacity-0 transition group-hover:opacity-100" />
+    <div className="inline-flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-lg shadow-lg backdrop-blur-md">
+      <span className="rounded-xl bg-pink-500/15 px-3 py-1 font-bold text-white">
+        {side1}
+      </span>
 
-        <div className="relative z-10 flex items-start justify-between gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-white/15 bg-white/10 text-3xl shadow-[0_0_14px_rgba(255,255,255,0.08)]">
-            {emoji}
-          </div>
+      <span className="text-sm font-medium text-white/65">ضد</span>
 
-          <div className="min-w-0 flex-1 text-right">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-xs font-black tracking-[0.22em] text-[#fde047]">
-                {tag}
-              </span>
-              <h3 className="text-2xl font-black text-white">{title}</h3>
-            </div>
-
-            <p className="mt-3 text-sm leading-7 text-white/75 md:text-base">
-              {desc}
-            </p>
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-function ModePanel() {
-  return (
-    <section className="mx-auto mt-14 w-full max-w-5xl">
-      <div className="border-2 border-[#8b5cf6]/40 bg-[#160025]/75 p-4 shadow-[0_0_26px_rgba(139,92,246,0.18)] backdrop-blur-sm md:p-6">
-        <div className="mb-5 flex items-center justify-between gap-4">
-          <p className="text-sm font-black tracking-[0.25em] text-[#67e8f9]">
-            SELECT MODE
-          </p>
-          <p className="text-sm font-bold text-white/65">اختر اللعبة</p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {games.map((game) => (
-            <GameCard
-              key={game.href}
-              href={game.href}
-              title={game.title}
-              desc={game.desc}
-              tag={game.tag}
-              emoji={game.emoji}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FooterBadges() {
-  return (
-    <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm font-black">
-      <div className="border border-[#fde047]/35 bg-[#2f2200]/70 px-4 py-2 text-[#fde047]">
-        START
-      </div>
-      <div className="border border-[#f472b6]/35 bg-[#2a0018]/70 px-4 py-2 text-[#f9a8d4]">
-        FAMILY MODE
-      </div>
-      <div className="border border-[#67e8f9]/35 bg-[#001d29]/70 px-4 py-2 text-[#67e8f9]">
-        1 UP
-      </div>
+      <span className="rounded-xl bg-cyan-400/15 px-3 py-1 font-bold text-white">
+        {side2}
+      </span>
     </div>
   );
 }
 
-export default function Home() {
-  return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-8 text-white">
-      <ArcadeBackground />
+function StatusStrip({
+  text,
+  tone = "default",
+}: {
+  text: string;
+  tone?: "default" | "success" | "warning";
+}) {
+  const toneClass =
+    tone === "success"
+      ? "border-green-300/20 bg-green-400/10 text-green-100"
+      : tone === "warning"
+      ? "border-yellow-300/20 bg-yellow-400/10 text-yellow-100"
+      : "border-cyan-300/20 bg-cyan-400/10 text-white";
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center py-10">
-        <Hero />
-        <ModePanel />
-        <FooterBadges />
+  return (
+    <div
+      className={`rounded-2xl border px-4 py-3 text-center text-lg font-black shadow-[0_0_18px_rgba(255,255,255,0.04)] ${toneClass}`}
+    >
+      {text}
+    </div>
+  );
+}
+
+export default function MatchPage() {
+  const [mode, setMode] = useState<PlayMode>("teams");
+  const [side1, setSide1] = useState("فريق 1");
+  const [side2, setSide2] = useState("فريق 2");
+  const [rounds, setRounds] = useState(3);
+  const [selectedGame, setSelectedGame] = useState<GameType>("word");
+
+  const [started, setStarted] = useState(false);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [side1Score, setSide1Score] = useState(0);
+  const [side2Score, setSide2Score] = useState(0);
+
+  const [showWinnerModal, setShowWinnerModal] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false);
+  const [roundReady, setRoundReady] = useState(true);
+  const [roundSeed, setRoundSeed] = useState(1);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const game = params.get("game");
+    if (
+      game === "word" ||
+      game === "draw" ||
+      game === "categories" ||
+      game === "scramble" ||
+      game === "wheel"
+    ) {
+      setSelectedGame(game);
+    }
+  }, []);
+
+  const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
+  const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
+  const currentTurnLabel = mode === "teams" ? "دور الفريق" : "دور اللاعب";
+  const winnerQuestionLabel =
+    mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
+
+  const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
+
+  const gameMeta = useMemo(() => {
+    if (selectedGame === "word") {
+      return {
+        title: "خمن الكلمة",
+        icon: "💬",
+        hint: "خمن الكلمة حرف حرف، وكل محاولة تقربك أو تبعدك.",
+      };
+    }
+    if (selectedGame === "draw") {
+      return {
+        title: "خمن المثل",
+        icon: "✏️",
+        hint: "خمن المثل من الإيموجي، والوقت يمشي.",
+      };
+    }
+    if (selectedGame === "scramble") {
+      return {
+        title: "حروف بالخلاط",
+        icon: "🧩",
+        hint: "رتب الحروف بأسرع وقت، أول واحد يخلص يفوز.",
+      };
+    }
+    if (selectedGame === "wheel") {
+      return {
+        title: "لف وخمن",
+        icon: "🎡",
+        hint: "لف، شوف الرقم، وبعدها اختر حرف أو حل الكلمة.",
+      };
+    }
+    return {
+      title: "إنسان حيوان نبات جماد بلاد",
+      icon: "🌍",
+      hint: "كل الإجابات لازم تبدأ بنفس الحرف، والسرعة تفرق.",
+    };
+  }, [selectedGame]);
+
+  function startGame() {
+    if (!side1.trim() || !side2.trim()) return;
+
+    setStarted(true);
+    setCurrentRound(1);
+    setSide1Score(0);
+    setSide2Score(0);
+    setGameEnded(false);
+    setRoundReady(true);
+    setRoundSeed(1);
+  }
+
+  function beginRound() {
+    setRoundReady(false);
+    setRoundSeed((s) => s + 1);
+  }
+
+  function endRound(winner?: WinnerType) {
+    if (winner) {
+      chooseWinner(winner);
+      return;
+    }
+    setShowWinnerModal(true);
+  }
+
+  function chooseWinner(winner: WinnerType) {
+    if (winner === "side1") setSide1Score((s) => s + 1);
+    if (winner === "side2") setSide2Score((s) => s + 1);
+
+    setShowWinnerModal(false);
+
+    if (currentRound >= rounds) {
+      setGameEnded(true);
+      return;
+    }
+
+    setCurrentRound((r) => r + 1);
+    setRoundReady(true);
+  }
+
+  function resetGame() {
+    setStarted(false);
+    setCurrentRound(1);
+    setSide1Score(0);
+    setSide2Score(0);
+    setShowWinnerModal(false);
+    setGameEnded(false);
+    setRoundReady(true);
+    setRoundSeed(1);
+  }
+
+  const currentGameBoard =
+    selectedGame === "word" ? (
+      <WordGame onRoundEnd={endRound} roundKey={roundSeed} />
+    ) : selectedGame === "draw" ? (
+      <ProverbGame
+        mode={mode}
+        side1Name={side1}
+        side2Name={side2}
+        onRoundEnd={endRound}
+        roundKey={roundSeed}
+      />
+    ) : selectedGame === "scramble" ? (
+      <ScrambleGame
+        mode={mode}
+        side1Name={side1}
+        side2Name={side2}
+        onRoundEnd={endRound}
+        roundKey={roundSeed}
+      />
+    ) : selectedGame === "wheel" ? (
+      <WheelGame
+        side1Name={side1}
+        side2Name={side2}
+        onRoundEnd={endRound}
+        roundKey={roundSeed}
+      />
+    ) : (
+      <CategoriesGame
+        mode={mode}
+        side1Name={side1}
+        side2Name={side2}
+        onRoundEnd={endRound}
+        roundKey={roundSeed}
+      />
+    );
+
+  return (
+    <main className="min-h-screen px-4 py-8 text-white">
+      <div className="mx-auto max-w-[1600px]">
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+              MATCH MODE
+            </p>
+            <h1 className="mt-1 text-3xl font-black">تحدي الجلسة</h1>
+          </div>
+          <Logo size={90} />
+        </div>
+
+        {!started && (
+          <GlassCard className="p-6">
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+                  READY ROOM
+                </p>
+                <h2 className="mt-1 text-2xl font-black">جهّز التحدي</h2>
+              </div>
+
+              <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-right">
+                <p className="text-xs text-white/55">اللعبة الحالية</p>
+                <p className="mt-1 font-black">
+                  {gameMeta.icon} {gameMeta.title}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-bold">نوع التحدي</label>
+                <select
+                  value={mode}
+                  onChange={(e) => {
+                    const nextMode = e.target.value as PlayMode;
+                    setMode(nextMode);
+                    setSide1(nextMode === "teams" ? "فريق 1" : "لاعب 1");
+                    setSide2(nextMode === "teams" ? "فريق 2" : "لاعب 2");
+                  }}
+                  className="input"
+                >
+                  <option value="teams">فريقين</option>
+                  <option value="solo">فردي</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-bold">اختيار اللعبة</label>
+                <select
+                  value={selectedGame}
+                  onChange={(e) => setSelectedGame(e.target.value as GameType)}
+                  className="input"
+                >
+                  <option value="word">خمن الكلمة</option>
+                  <option value="draw">خمن المثل</option>
+                  <option value="categories">إنسان حيوان نبات جماد بلاد</option>
+                  <option value="scramble">حروف بالخلاط</option>
+                  <option value="wheel">لف وخمن</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-bold">{side1Label}</label>
+                <input
+                  value={side1}
+                  onChange={(e) => setSide1(e.target.value)}
+                  className="input"
+                  placeholder={mode === "teams" ? "مثال: الصقور" : "مثال: محمد"}
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-bold">{side2Label}</label>
+                <input
+                  value={side2}
+                  onChange={(e) => setSide2(e.target.value)}
+                  className="input"
+                  placeholder={mode === "teams" ? "مثال: الذئاب" : "مثال: خالد"}
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
+              <select
+                value={rounds}
+                onChange={(e) => setRounds(Number(e.target.value))}
+                className="input"
+              >
+                <option value={1}>1</option>
+                <option value={3}>3</option>
+                <option value={5}>5</option>
+              </select>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-right">
+              <p className="text-sm text-white/60">مختصر اللعبة</p>
+              <p className="mt-1 text-white/90">{gameMeta.hint}</p>
+            </div>
+
+            <button onClick={startGame} className="btn-primary mt-6 w-full">
+              ابدأ اللعب
+            </button>
+          </GlassCard>
+        )}
+
+        {started && !gameEnded && (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div>
+              {roundReady ? (
+                <GlassCard className="min-h-[780px] p-8 text-center">
+                  <div className="flex h-full min-h-[700px] flex-col items-center justify-center">
+                    <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+                      NEXT ROUND
+                    </p>
+
+                    <h2 className="mt-3 text-5xl font-black">
+                      الجولة {currentRound}
+                    </h2>
+
+                    <div className="mt-4 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-lg font-black">
+                      {gameMeta.icon} {gameMeta.title}
+                    </div>
+
+                    <div className="mt-6">
+                      <MatchupBadge side1={side1} side2={side2} />
+                    </div>
+
+                    <div className="mt-6 w-full max-w-xl">
+                      <StatusStrip text={`${currentTurnLabel}: ${currentTurnName}`} />
+                    </div>
+
+                    <div className="mt-4 w-full max-w-xl rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-sm leading-7 text-white/80">
+                      {gameMeta.hint}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={beginRound}
+                      className="btn-primary mt-8 min-w-[220px]"
+                    >
+                      ابدأ الجولة
+                    </button>
+                  </div>
+                </GlassCard>
+              ) : (
+                currentGameBoard
+              )}
+            </div>
+
+            <GlassCard className="p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-xl font-black">لوحة التحدي</h3>
+                <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-black tracking-[0.18em] text-cyan-300/80">
+                  LIVE
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+                  <p className="text-sm text-white/70">الجولة</p>
+                  <p className="mt-1 text-3xl font-black text-yellow-200">
+                    {currentRound} / {rounds}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/10 p-4">
+                  <p className="text-sm text-white/70">{currentTurnLabel}</p>
+                  <p className="mt-1 text-2xl font-black">{currentTurnName}</p>
+                </div>
+
+                <div
+                  className={`rounded-2xl border p-4 ${
+                    currentTurnName === side1
+                      ? "border-pink-300/30 bg-pink-500/15 shadow-[0_0_18px_rgba(236,72,153,0.14)]"
+                      : "border-white/10 bg-white/10"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold">{side1}</span>
+                    <span className="text-2xl font-black text-yellow-200">
+                      {side1Score}
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  className={`rounded-2xl border p-4 ${
+                    currentTurnName === side2
+                      ? "border-cyan-300/30 bg-cyan-400/15 shadow-[0_0_18px_rgba(34,211,238,0.14)]"
+                      : "border-white/10 bg-white/10"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold">{side2}</span>
+                    <span className="text-2xl font-black text-yellow-200">
+                      {side2Score}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </GlassCard>
+          </div>
+        )}
+
+        {gameEnded && (
+          <GlassCard className="p-8 text-center">
+            <p className="text-sm font-black tracking-[0.18em] text-yellow-200/85">
+              GAME OVER
+            </p>
+
+            <h2 className="mt-2 text-4xl font-black">🏆 انتهى التحدي</h2>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="rounded-3xl border border-pink-300/20 bg-pink-500/10 p-5">
+                <p className="text-lg font-bold">{side1}</p>
+                <p className="mt-2 text-4xl font-black text-yellow-200">
+                  {side1Score}
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/10 p-5">
+                <p className="text-lg font-bold">{side2}</p>
+                <p className="mt-2 text-4xl font-black text-yellow-200">
+                  {side2Score}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <StatusStrip
+                text={
+                  side1Score > side2Score
+                    ? `الفائز: ${side1}`
+                    : side2Score > side1Score
+                    ? `الفائز: ${side2}`
+                    : "تعادل"
+                }
+                tone={side1Score === side2Score ? "warning" : "success"}
+              />
+            </div>
+
+            <button onClick={resetGame} className="btn-primary mt-8 min-w-[220px]">
+              إعادة اللعب
+            </button>
+          </GlassCard>
+        )}
       </div>
+
+      {showWinnerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-[32px] border border-white/20 bg-[#7a001f] p-6 text-center shadow-2xl">
+            <p className="text-sm font-black tracking-[0.18em] text-yellow-200/85">
+              ROUND RESULT
+            </p>
+
+            <h3 className="mt-2 text-3xl font-black">🏆 مين فاز؟</h3>
+            <p className="mt-2 text-white/75">{winnerQuestionLabel}</p>
+
+            <div className="mt-6 space-y-3">
+              <button
+                onClick={() => chooseWinner("side1")}
+                className="btn-primary w-full"
+              >
+                {side1}
+              </button>
+
+              <button
+                onClick={() => chooseWinner("side2")}
+                className="btn-primary w-full"
+              >
+                {side2}
+              </button>
+
+              <button
+                onClick={() => chooseWinner("none")}
+                className="btn-secondary w-full"
+              >
+                لا أحد
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
