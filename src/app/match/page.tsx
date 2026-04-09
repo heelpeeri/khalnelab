@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
 import WordGame from "@/components/match/WordGame";
@@ -22,15 +22,38 @@ function MatchupBadge({
 }) {
   return (
     <div className="inline-flex items-center justify-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-lg shadow-lg backdrop-blur-md">
-      <span className="rounded-xl bg-white/15 px-3 py-1 font-bold text-white">
+      <span className="rounded-xl bg-pink-500/15 px-3 py-1 font-bold text-white">
         {side1}
       </span>
 
       <span className="text-sm font-medium text-white/65">ضد</span>
 
-      <span className="rounded-xl bg-white/15 px-3 py-1 font-bold text-white">
+      <span className="rounded-xl bg-cyan-400/15 px-3 py-1 font-bold text-white">
         {side2}
       </span>
+    </div>
+  );
+}
+
+function StatusStrip({
+  text,
+  tone = "default",
+}: {
+  text: string;
+  tone?: "default" | "success" | "warning";
+}) {
+  const toneClass =
+    tone === "success"
+      ? "border-green-300/20 bg-green-400/10 text-green-100"
+      : tone === "warning"
+      ? "border-yellow-300/20 bg-yellow-400/10 text-yellow-100"
+      : "border-cyan-300/20 bg-cyan-400/10 text-white";
+
+  return (
+    <div
+      className={`rounded-2xl border px-4 py-3 text-center text-lg font-black shadow-[0_0_18px_rgba(255,255,255,0.04)] ${toneClass}`}
+    >
+      {text}
     </div>
   );
 }
@@ -72,16 +95,47 @@ export default function MatchPage() {
   const winnerQuestionLabel =
     mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
 
-  function getGameTitle(game: GameType) {
-    if (game === "word") return "خمن الكلمة";
-    if (game === "draw") return "خمن المثل";
-    if (game === "scramble") return "حروف بالخلاط";
-    if (game === "wheel") return "لف وخمن";
-    return "إنسان حيوان نبات جماد بلاد";
-  }
+  const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
+
+  const gameMeta = useMemo(() => {
+    if (selectedGame === "word") {
+      return {
+        title: "خمن الكلمة",
+        icon: "💬",
+        hint: "خمن الكلمة حرف حرف، وكل محاولة تقربك أو تبعدك.",
+      };
+    }
+    if (selectedGame === "draw") {
+      return {
+        title: "خمن المثل",
+        icon: "✏️",
+        hint: "خمن المثل من الإيموجي، والوقت يمشي.",
+      };
+    }
+    if (selectedGame === "scramble") {
+      return {
+        title: "حروف بالخلاط",
+        icon: "🧩",
+        hint: "رتب الحروف بأسرع وقت، أول واحد يخلص يفوز.",
+      };
+    }
+    if (selectedGame === "wheel") {
+      return {
+        title: "لف وخمن",
+        icon: "🎡",
+        hint: "لف، شوف الرقم، وبعدها اختر حرف أو حل الكلمة.",
+      };
+    }
+    return {
+      title: "إنسان حيوان نبات جماد بلاد",
+      icon: "🌍",
+      hint: "كل الإجابات لازم تبدأ بنفس الحرف، والسرعة تفرق.",
+    };
+  }, [selectedGame]);
 
   function startGame() {
     if (!side1.trim() || !side2.trim()) return;
+
     setStarted(true);
     setCurrentRound(1);
     setSide1Score(0);
@@ -130,8 +184,6 @@ export default function MatchPage() {
     setRoundSeed(1);
   }
 
-  const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
-
   const currentGameBoard =
     selectedGame === "word" ? (
       <WordGame onRoundEnd={endRound} roundKey={roundSeed} />
@@ -173,14 +225,32 @@ export default function MatchPage() {
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-white/70">وضع اللعب</p>
-            <h1 className="text-3xl font-black">تحدي الجلسة</h1>
+            <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+              MATCH MODE
+            </p>
+            <h1 className="mt-1 text-3xl font-black">تحدي الجلسة</h1>
           </div>
           <Logo size={90} />
         </div>
 
         {!started && (
           <GlassCard className="p-6">
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+                  READY ROOM
+                </p>
+                <h2 className="mt-1 text-2xl font-black">جهّز التحدي</h2>
+              </div>
+
+              <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-right">
+                <p className="text-xs text-white/55">اللعبة الحالية</p>
+                <p className="mt-1 font-black">
+                  {gameMeta.icon} {gameMeta.title}
+                </p>
+              </div>
+            </div>
+
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-bold">نوع التحدي</label>
@@ -250,6 +320,11 @@ export default function MatchPage() {
               </select>
             </div>
 
+            <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-right">
+              <p className="text-sm text-white/60">مختصر اللعبة</p>
+              <p className="mt-1 text-white/90">{gameMeta.hint}</p>
+            </div>
+
             <button onClick={startGame} className="btn-primary mt-6 w-full">
               ابدأ اللعب
             </button>
@@ -262,37 +337,34 @@ export default function MatchPage() {
               {roundReady ? (
                 <GlassCard className="min-h-[780px] p-8 text-center">
                   <div className="flex h-full min-h-[700px] flex-col items-center justify-center">
-                    <p className="text-sm text-white/70">الجولة القادمة</p>
+                    <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+                      NEXT ROUND
+                    </p>
 
-                    <h2 className="mt-2 text-4xl font-black">
+                    <h2 className="mt-3 text-5xl font-black">
                       الجولة {currentRound}
                     </h2>
 
-                    <p className="mt-4 text-xl text-white/80">
-                      اللعبة: {getGameTitle(selectedGame)}
-                    </p>
+                    <div className="mt-4 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-lg font-black">
+                      {gameMeta.icon} {gameMeta.title}
+                    </div>
 
                     <div className="mt-6">
                       <MatchupBadge side1={side1} side2={side2} />
                     </div>
 
-                    <p className="mt-4 text-lg text-white/70">
-                      {currentTurnLabel}: {currentTurnName}
-                    </p>
+                    <div className="mt-6 w-full max-w-xl">
+                      <StatusStrip text={`${currentTurnLabel}: ${currentTurnName}`} />
+                    </div>
 
-                    {selectedGame === "wheel" && (
-                      <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-sm leading-7 text-white/80">
-                        لف العجلة أول، وإذا طلع رقم اختر حرف.
-                        إذا كان الحرف موجود تكسب نقاط وتنفتح الخانات.
-                        وإذا ما كان موجود، يروح الدور للفريق الثاني.
-                        وتقدر بأي وقت تحاول تحل الكلمة.
-                      </div>
-                    )}
+                    <div className="mt-4 w-full max-w-xl rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-sm leading-7 text-white/80">
+                      {gameMeta.hint}
+                    </div>
 
                     <button
                       type="button"
                       onClick={beginRound}
-                      className="btn-primary mt-8"
+                      className="btn-primary mt-8 min-w-[220px]"
                     >
                       ابدأ الجولة
                     </button>
@@ -304,32 +376,53 @@ export default function MatchPage() {
             </div>
 
             <GlassCard className="p-6">
-              <h3 className="text-xl font-black">لوحة التحدي</h3>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-xl font-black">لوحة التحدي</h3>
+                <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-black tracking-[0.18em] text-cyan-300/80">
+                  LIVE
+                </span>
+              </div>
 
-              <div className="mt-4 space-y-3">
-                <div className="rounded-2xl bg-white/10 p-4">
+              <div className="space-y-3">
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
                   <p className="text-sm text-white/70">الجولة</p>
-                  <p className="mt-1 text-3xl font-black">
+                  <p className="mt-1 text-3xl font-black text-yellow-200">
                     {currentRound} / {rounds}
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-white/10 p-4">
+                <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/10 p-4">
                   <p className="text-sm text-white/70">{currentTurnLabel}</p>
                   <p className="mt-1 text-2xl font-black">{currentTurnName}</p>
                 </div>
 
-                <div className="rounded-2xl bg-white/10 p-4">
+                <div
+                  className={`rounded-2xl border p-4 ${
+                    currentTurnName === side1
+                      ? "border-pink-300/30 bg-pink-500/15 shadow-[0_0_18px_rgba(236,72,153,0.14)]"
+                      : "border-white/10 bg-white/10"
+                  }`}
+                >
                   <div className="flex items-center justify-between">
-                    <span>{side1}</span>
-                    <span className="font-black">{side1Score}</span>
+                    <span className="font-bold">{side1}</span>
+                    <span className="text-2xl font-black text-yellow-200">
+                      {side1Score}
+                    </span>
                   </div>
                 </div>
 
-                <div className="rounded-2xl bg-white/10 p-4">
+                <div
+                  className={`rounded-2xl border p-4 ${
+                    currentTurnName === side2
+                      ? "border-cyan-300/30 bg-cyan-400/15 shadow-[0_0_18px_rgba(34,211,238,0.14)]"
+                      : "border-white/10 bg-white/10"
+                  }`}
+                >
                   <div className="flex items-center justify-between">
-                    <span>{side2}</span>
-                    <span className="font-black">{side2Score}</span>
+                    <span className="font-bold">{side2}</span>
+                    <span className="text-2xl font-black text-yellow-200">
+                      {side2Score}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -339,29 +432,42 @@ export default function MatchPage() {
 
         {gameEnded && (
           <GlassCard className="p-8 text-center">
-            <h2 className="text-4xl font-black">🏆 انتهى التحدي</h2>
+            <p className="text-sm font-black tracking-[0.18em] text-yellow-200/85">
+              GAME OVER
+            </p>
+
+            <h2 className="mt-2 text-4xl font-black">🏆 انتهى التحدي</h2>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className="rounded-3xl bg-white/10 p-5">
+              <div className="rounded-3xl border border-pink-300/20 bg-pink-500/10 p-5">
                 <p className="text-lg font-bold">{side1}</p>
-                <p className="mt-2 text-4xl font-black">{side1Score}</p>
+                <p className="mt-2 text-4xl font-black text-yellow-200">
+                  {side1Score}
+                </p>
               </div>
 
-              <div className="rounded-3xl bg-white/10 p-5">
+              <div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/10 p-5">
                 <p className="text-lg font-bold">{side2}</p>
-                <p className="mt-2 text-4xl font-black">{side2Score}</p>
+                <p className="mt-2 text-4xl font-black text-yellow-200">
+                  {side2Score}
+                </p>
               </div>
             </div>
 
-            <p className="mt-6 text-2xl font-black">
-              {side1Score > side2Score
-                ? `الفائز: ${side1}`
-                : side2Score > side1Score
-                ? `الفائز: ${side2}`
-                : "تعادل"}
-            </p>
+            <div className="mt-6">
+              <StatusStrip
+                text={
+                  side1Score > side2Score
+                    ? `الفائز: ${side1}`
+                    : side2Score > side1Score
+                    ? `الفائز: ${side2}`
+                    : "تعادل"
+                }
+                tone={side1Score === side2Score ? "warning" : "success"}
+              />
+            </div>
 
-            <button onClick={resetGame} className="btn-primary mt-8">
+            <button onClick={resetGame} className="btn-primary mt-8 min-w-[220px]">
               إعادة اللعب
             </button>
           </GlassCard>
@@ -369,9 +475,13 @@ export default function MatchPage() {
       </div>
 
       {showWinnerModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-[32px] border border-white/20 bg-[#7a001f] p-6 text-center shadow-2xl">
-            <h3 className="text-3xl font-black">🏆 مين فاز؟</h3>
+            <p className="text-sm font-black tracking-[0.18em] text-yellow-200/85">
+              ROUND RESULT
+            </p>
+
+            <h3 className="mt-2 text-3xl font-black">🏆 مين فاز؟</h3>
             <p className="mt-2 text-white/75">{winnerQuestionLabel}</p>
 
             <div className="mt-6 space-y-3">
