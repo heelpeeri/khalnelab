@@ -290,8 +290,9 @@ export default function WheelGame({
                         transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-104px) rotate(${-angle}deg)`,
                       }}
                     >
-                      <div className="w-20 text-center text-sm font-black leading-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]" />
-                    </div>
+                      <div className="w-20 text-center text-base font-black leading-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+  {segment.label}
+</div>
                   );
                 })}
 
