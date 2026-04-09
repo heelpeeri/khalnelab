@@ -234,7 +234,7 @@ export default function MatchPage() {
         </div>
 
         {!started && (
-          <GlassCard className="p-6">
+          <GlassCard className="mx-auto max-w-5xl p-6">
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
