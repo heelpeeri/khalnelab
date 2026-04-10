@@ -47,6 +47,7 @@ export default function ProverbGame({
     { emoji: "🐂❓🥛", answer: "قالوا ثور قالوا احلبوه" },
     { emoji: "🌹❌😒🔴😊", answer: "ما لقوا للورد عيب قالوا يا احمر الخدين" },
     { emoji: "🔁🔁📖🐴", answer: "التكرار يعلم الحمار" },
+    { emoji: "🌴🔩🦵", answer: "التمر مسامير الركب" },
   ];
 
   const ROUND_TIME = 20;
