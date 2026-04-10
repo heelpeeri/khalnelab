@@ -34,6 +34,14 @@ const PUZZLES = [
   { answer: "بنزيما", category: "لاعب" },
   { answer: "واتساب", category: "تطبيق" },
   { answer: "بيت الشواية", category: "مطعم" },
+  { answer: "شركة الاتصالات السعودية", category: "شركة سعودية" },
+  { answer: "أرامكو السعودية", category: "شركة سعودية" },
+  { answer: "سابك", category: " شركة سعودية" },
+  { answer: "هيئة الثقافة", category: "جهة حكومية" },
+  { answer: "هيئة السياحة", category: "جهة حكومية" },
+  { answer: "الأمن السيبراني", category: "تخصص" },
+  { answer: "تكنولوجيا المعلومات", category: "تخصص" },
+];
 ];
 
 const LETTER_ROWS = [
