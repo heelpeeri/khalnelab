@@ -46,6 +46,7 @@ export default function ProverbGame({
     { emoji: "🦶🔥🦶💧", answer: "اللي رجله بالنار مو مثل اللي رجله بالموية" },
     { emoji: "🐂❓🥛", answer: "قالوا ثور قالوا احلبوه" },
     { emoji: "🌹❌😒🔴😊", answer: "ما لقوا للورد عيب قالوا يا احمر الخدين" },
+    { emoji: "🔁🔁📖🐴", answer: "التكرار يعلم الحمار" },
   ];
 
   const ROUND_TIME = 20;
