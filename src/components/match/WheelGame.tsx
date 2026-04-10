@@ -33,15 +33,14 @@ const PUZZLES = [
   { answer: "شاهي", category: "مشروب" },
   { answer: "بنزيما", category: "لاعب" },
   { answer: "واتساب", category: "تطبيق" },
-  { answer: "بيت الشواية", category: "مطعم" },
+  { answer: "بيتالشواية", category: "مطعم" },
   { answer: "مكتبةجرير", category: "شركة سعودية" },
   { answer: "أرامكوالسعودية", category: "شركة سعودية" },
-  { answer: "سابك", category: " شركة سعودية" },
+  { answer: "سابك", category: "شركة سعودية" },
   { answer: "هيئةالثقافة", category: "جهة حكومية" },
   { answer: "هيئةالسياحة", category: "جهة حكومية" },
   { answer: "الأمنالسيبراني", category: "تخصص" },
   { answer: "تكنولوجياالمعلومات", category: "تخصص" },
-];
 ];
 
 const LETTER_ROWS = [
@@ -133,8 +132,6 @@ export default function WheelGame({
     setCurrentValue(value);
 
     const targetCenter = index * segmentAngle + segmentAngle / 2;
-
-    // نخلي اللفة الجديدة تكمل من آخر زاوية بدل ما ترجع للصفر
     const extraSpins = 8 * 360;
     const nextRotation =
       rotation +
@@ -144,7 +141,6 @@ export default function WheelGame({
 
     setRotation(nextRotation);
 
-    // نخلي النتيجة تظهر بعد ما تخلص الحركة فعلًا
     setTimeout(() => {
       setSpinning(false);
       setPhase("result");
@@ -192,9 +188,11 @@ export default function WheelGame({
     if (count > 0) {
       const gained = count * currentValue;
 
-      turn === "side1"
-        ? setScore1((s) => s + gained)
-        : setScore2((s) => s + gained);
+      if (turn === "side1") {
+        setScore1((s) => s + gained);
+      } else {
+        setScore2((s) => s + gained);
+      }
 
       if (next.every((l) => l !== "")) {
         finishRound(turn);
@@ -257,7 +255,7 @@ export default function WheelGame({
             : `الدور: ${currentTeamName} — لف العجلة`}
         </div>
 
-        <div className="mt-6 flex justify-center gap-2">
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
           {revealed.map((letter, i) => (
             <div
               key={i}
@@ -298,8 +296,8 @@ export default function WheelGame({
                       }}
                     >
                       <div className="w-20 text-center text-base font-black leading-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-  {segment.label}
-</div>
+                        {segment.label}
+                      </div>
                     </div>
                   );
                 })}
