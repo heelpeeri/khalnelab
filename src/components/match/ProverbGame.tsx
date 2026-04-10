@@ -48,6 +48,9 @@ export default function ProverbGame({
     { emoji: "🌹❌😒🔴😊", answer: "ما لقوا للورد عيب قالوا يا احمر الخدين" },
     { emoji: "🔁🔁📖🐴", answer: "التكرار يعلم الحمار" },
     { emoji: "🌴🔩🦵", answer: "التمر مسامير الركب" },
+    { emoji: "🐄🕋🦴", answer: "اذا حجت البقر على قرونها" },
+    { emoji: "🐐👀🥛", answer: "شف وجه العنز واحلب لبن" },
+    { emoji: "👅🔁👂", answer: "لسانه يلوط اذانه" },
   ];
 
   const ROUND_TIME = 20;
