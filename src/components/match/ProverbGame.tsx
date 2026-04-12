@@ -52,7 +52,6 @@ export default function ProverbGame({
     { emoji: "🐐👀🥛", answer: "شف وجه العنز واحلب لبن" },
     { emoji: "👅🔁👂", answer: "لسانه يلوط اذانه" },
   ];
-  ];
 
   const ROUND_TIME = 20;
   const [index, setIndex] = useState(() => Math.floor(Math.random() * puzzles.length));
