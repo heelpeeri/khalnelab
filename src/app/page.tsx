@@ -39,6 +39,13 @@ const games = [
     desc: "فكر بسرعة وجاوب",
     tag: "CATEGORIES",
   },
+  {
+    href: "/match?game=quiz",
+    emoji: "❓",
+    title: "الأسئلة",
+    desc: "اختر فئة وجاوب 5 أسئلة",
+    tag: "QUIZ",
+  },
 ];
 
 export default function Home() {
