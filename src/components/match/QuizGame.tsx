@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
-import { quizQuestions, QuizCategoryKey } from "@/lib/quizQuestions";
+import QuizCategorySelect from "@/components/match/QuizCategorySelect";
+import { quizQuestions, QuizCategoryKey, QuizQuestion } from "@/lib/quizQuestions";
 
 type WinnerType = "side1" | "side2" | "none";
 
@@ -14,18 +15,16 @@ export default function QuizGame({
   roundKey: number;
 }) {
   const [category, setCategory] = useState<QuizCategoryKey | null>(null);
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
 
-  // اختيار 5 أسئلة عشوائية
   function pickQuestions(cat: QuizCategoryKey) {
     const all = quizQuestions[cat];
     const shuffled = [...all].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 5);
   }
 
-  // إعادة تعيين كل جولة
   useEffect(() => {
     setCategory(null);
     setQuestions([]);
@@ -33,7 +32,7 @@ export default function QuizGame({
     setShowAnswer(false);
   }, [roundKey]);
 
-  function startCategory(cat: QuizCategoryKey) {
+  function handleSelectCategory(cat: QuizCategoryKey) {
     setCategory(cat);
     setQuestions(pickQuestions(cat));
     setIndex(0);
@@ -42,81 +41,80 @@ export default function QuizGame({
 
   function nextQuestion() {
     if (index >= questions.length - 1) {
-      onRoundEnd(); // نهاية الجولة
+      onRoundEnd();
       return;
     }
 
-    setIndex((i) => i + 1);
+    setIndex((prev) => prev + 1);
     setShowAnswer(false);
   }
 
-  // 📌 شاشة اختيار الفئة
   if (!category) {
-    return (
-      <GlassCard className="min-h-[700px] p-8 text-center">
-        <h2 className="text-3xl font-black">اختر الفئة</h2>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <button
-            onClick={() => startCategory("seerah")}
-            className="btn-primary"
-          >
-            السيرة والأنبياء
-          </button>
-
-          <button
-            onClick={() => startCategory("saudi")}
-            className="btn-primary"
-          >
-            تاريخ السعودية
-          </button>
-
-          <button
-            onClick={() => startCategory("football")}
-            className="btn-primary"
-          >
-            كرة القدم السعودية
-          </button>
-        </div>
-      </GlassCard>
-    );
+    return <QuizCategorySelect onSelect={handleSelectCategory} />;
   }
 
   const current = questions[index];
 
   return (
     <GlassCard className="min-h-[700px] p-8 text-center">
-      <p className="text-sm text-white/60">
-        سؤال {index + 1} / {questions.length}
+      <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+        QUIZ
       </p>
 
-      <h2 className="mt-6 text-3xl font-black leading-relaxed">
-        {current.question}
-      </h2>
+      <h2 className="mt-2 text-3xl font-black">الأسئلة</h2>
 
-      {/* زر إظهار الإجابة */}
-      {!showAnswer && (
-        <button
-          onClick={() => setShowAnswer(true)}
-          className="btn-primary mt-8"
-        >
-          إظهار الإجابة
-        </button>
-      )}
-
-      {/* الإجابة */}
-      {showAnswer && (
-        <div className="mt-8">
-          <p className="text-xl text-yellow-200 font-black">
-            {current.answer}
+      <div className="mt-5 grid gap-3 md:grid-cols-2">
+        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+          <p className="text-sm text-white/60">الفئة</p>
+          <p className="mt-1 text-xl font-black text-yellow-200">
+            {category === "seerah"
+              ? "السيرة والأنبياء"
+              : category === "saudi"
+              ? "تاريخ السعودية"
+              : "كرة القدم السعودية"}
           </p>
+        </div>
 
+        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+          <p className="text-sm text-white/60">السؤال</p>
+          <p className="mt-1 text-xl font-black text-cyan-200">
+            {index + 1} / {questions.length}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_0_18px_rgba(255,255,255,0.04)]">
+        <p className="text-2xl font-black leading-relaxed text-white">
+          {current.question}
+        </p>
+      </div>
+
+      {!showAnswer ? (
+        <div className="mt-8">
           <button
-            onClick={nextQuestion}
-            className="btn-primary mt-6"
+            onClick={() => setShowAnswer(true)}
+            className="btn-primary min-w-[180px]"
           >
-            السؤال التالي
+            إظهار الإجابة
           </button>
+        </div>
+      ) : (
+        <div className="mt-8">
+          <div className="rounded-2xl border border-yellow-300/25 bg-yellow-300/10 p-5 shadow-[0_0_18px_rgba(250,204,21,0.12)]">
+            <p className="text-sm text-white/70">الإجابة الصحيحة</p>
+            <p className="mt-2 text-2xl font-black text-yellow-100">
+              {current.answer}
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <button
+              onClick={nextQuestion}
+              className="btn-primary min-w-[180px]"
+            >
+              {index >= questions.length - 1 ? "إنهاء الجولة" : "السؤال التالي"}
+            </button>
+          </div>
         </div>
       )}
     </GlassCard>
