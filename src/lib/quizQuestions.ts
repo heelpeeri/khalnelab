@@ -65,7 +65,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     },
     {
       question: "ماذا قال جبريل للنبي محمد عند أول وحي؟",
-      answer: "اقرأ",
+      answer: "اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ(1)",
     },
     {
       question: "ماذا كان يعمل النبي محمد قبل النبوة؟",
