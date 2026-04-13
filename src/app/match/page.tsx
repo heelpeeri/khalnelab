@@ -8,8 +8,16 @@ import ProverbGame from "@/components/match/ProverbGame";
 import CategoriesGame from "@/components/match/CategoriesGame";
 import ScrambleGame from "@/components/match/ScrambleGame";
 import WheelGame from "@/components/match/WheelGame";
+import QuizGame from "@/components/match/QuizGame";
 
-type GameType = "word" | "draw" | "categories" | "scramble" | "wheel";
+type GameType =
+  | "word"
+  | "draw"
+  | "categories"
+  | "scramble"
+  | "wheel"
+  | "quiz";
+
 type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
@@ -78,12 +86,14 @@ export default function MatchPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const game = params.get("game");
+
     if (
       game === "word" ||
       game === "draw" ||
       game === "categories" ||
       game === "scramble" ||
-      game === "wheel"
+      game === "wheel" ||
+      game === "quiz"
     ) {
       setSelectedGame(game);
     }
@@ -93,7 +103,9 @@ export default function MatchPage() {
   const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
   const currentTurnLabel = mode === "teams" ? "دور الفريق" : "دور اللاعب";
   const winnerQuestionLabel =
-    mode === "teams" ? "اختر الجهة الفائزة في هذه الجولة" : "اختر الفائز في هذه الجولة";
+    mode === "teams"
+      ? "اختر الجهة الفائزة في هذه الجولة"
+      : "اختر الفائز في هذه الجولة";
 
   const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
 
@@ -105,6 +117,7 @@ export default function MatchPage() {
         hint: "خمن الكلمة حرف حرف، وكل محاولة تقربك أو تبعدك.",
       };
     }
+
     if (selectedGame === "draw") {
       return {
         title: "خمن المثل",
@@ -112,6 +125,7 @@ export default function MatchPage() {
         hint: "خمن المثل من الإيموجي، والوقت يمشي.",
       };
     }
+
     if (selectedGame === "scramble") {
       return {
         title: "حروف بالخلاط",
@@ -119,6 +133,7 @@ export default function MatchPage() {
         hint: "رتب الحروف بأسرع وقت، أول واحد يخلص يفوز.",
       };
     }
+
     if (selectedGame === "wheel") {
       return {
         title: "لف وخمن",
@@ -126,6 +141,15 @@ export default function MatchPage() {
         hint: "لف، شوف الرقم، وبعدها اختر حرف أو حل الكلمة.",
       };
     }
+
+    if (selectedGame === "quiz") {
+      return {
+        title: "الأسئلة",
+        icon: "❓",
+        hint: "اختر الفئة ثم جاوب 5 أسئلة.",
+      };
+    }
+
     return {
       title: "إنسان حيوان نبات جماد بلاد",
       icon: "🌍",
@@ -210,6 +234,8 @@ export default function MatchPage() {
         onRoundEnd={endRound}
         roundKey={roundSeed}
       />
+    ) : selectedGame === "quiz" ? (
+      <QuizGame onRoundEnd={endRound} roundKey={roundSeed} />
     ) : (
       <CategoriesGame
         mode={mode}
@@ -281,6 +307,7 @@ export default function MatchPage() {
                   <option value="categories">إنسان حيوان نبات جماد بلاد</option>
                   <option value="scramble">حروف بالخلاط</option>
                   <option value="wheel">لف وخمن</option>
+                  <option value="quiz">الأسئلة</option>
                 </select>
               </div>
             </div>
