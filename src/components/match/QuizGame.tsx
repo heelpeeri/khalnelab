@@ -3,14 +3,25 @@
 import { useEffect, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import QuizCategorySelect from "@/components/match/QuizCategorySelect";
-import { quizQuestions, QuizCategoryKey, QuizQuestion } from "@/lib/quizQuestions";
+import {
+  quizQuestions,
+  QuizCategoryKey,
+  QuizQuestion,
+} from "@/lib/quizQuestions";
 
+type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
 export default function QuizGame({
+  mode,
+  side1Name,
+  side2Name,
   onRoundEnd,
   roundKey,
 }: {
+  mode: PlayMode;
+  side1Name: string;
+  side2Name: string;
   onRoundEnd: (winner?: WinnerType) => void;
   roundKey: number;
 }) {
@@ -18,6 +29,10 @@ export default function QuizGame({
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [showWinnerPick, setShowWinnerPick] = useState(false);
+
+  const [side1Correct, setSide1Correct] = useState(0);
+  const [side2Correct, setSide2Correct] = useState(0);
 
   function pickQuestions(cat: QuizCategoryKey) {
     const all = quizQuestions[cat];
@@ -30,6 +45,9 @@ export default function QuizGame({
     setQuestions([]);
     setIndex(0);
     setShowAnswer(false);
+    setShowWinnerPick(false);
+    setSide1Correct(0);
+    setSide2Correct(0);
   }, [roundKey]);
 
   function handleSelectCategory(cat: QuizCategoryKey) {
@@ -37,10 +55,36 @@ export default function QuizGame({
     setQuestions(pickQuestions(cat));
     setIndex(0);
     setShowAnswer(false);
+    setShowWinnerPick(false);
+    setSide1Correct(0);
+    setSide2Correct(0);
   }
 
-  function nextQuestion() {
+  function handleWinnerPick(winner: WinnerType) {
+    if (winner === "side1") {
+      setSide1Correct((s) => s + 1);
+    }
+
+    if (winner === "side2") {
+      setSide2Correct((s) => s + 1);
+    }
+
+    setShowWinnerPick(false);
+
     if (index >= questions.length - 1) {
+      const nextSide1 = winner === "side1" ? side1Correct + 1 : side1Correct;
+      const nextSide2 = winner === "side2" ? side2Correct + 1 : side2Correct;
+
+      if (nextSide1 > nextSide2) {
+        onRoundEnd("side1");
+        return;
+      }
+
+      if (nextSide2 > nextSide1) {
+        onRoundEnd("side2");
+        return;
+      }
+
       onRoundEnd();
       return;
     }
@@ -49,6 +93,13 @@ export default function QuizGame({
     setShowAnswer(false);
   }
 
+  const categoryTitle =
+    category === "seerah"
+      ? "السيرة والأنبياء"
+      : category === "saudi"
+      ? "تاريخ السعودية"
+      : "كرة القدم السعودية";
+
   if (!category) {
     return <QuizCategorySelect onSelect={handleSelectCategory} />;
   }
@@ -56,22 +107,18 @@ export default function QuizGame({
   const current = questions[index];
 
   return (
-    <GlassCard className="min-h-[700px] p-8 text-center">
+    <GlassCard className="min-h-[780px] p-8 text-center">
       <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
         QUIZ
       </p>
 
       <h2 className="mt-2 text-3xl font-black">الأسئلة</h2>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-2">
+      <div className="mt-5 grid gap-3 md:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
           <p className="text-sm text-white/60">الفئة</p>
           <p className="mt-1 text-xl font-black text-yellow-200">
-            {category === "seerah"
-              ? "السيرة والأنبياء"
-              : category === "saudi"
-              ? "تاريخ السعودية"
-              : "كرة القدم السعودية"}
+            {categoryTitle}
           </p>
         </div>
 
@@ -79,6 +126,13 @@ export default function QuizGame({
           <p className="text-sm text-white/60">السؤال</p>
           <p className="mt-1 text-xl font-black text-cyan-200">
             {index + 1} / {questions.length}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+          <p className="text-sm text-white/60">النتيجة الحالية</p>
+          <p className="mt-1 text-xl font-black">
+            {side1Name} {side1Correct} - {side2Correct} {side2Name}
           </p>
         </div>
       </div>
@@ -93,12 +147,12 @@ export default function QuizGame({
         <div className="mt-8">
           <button
             onClick={() => setShowAnswer(true)}
-            className="btn-primary min-w-[180px]"
+            className="btn-primary min-w-[200px]"
           >
             إظهار الإجابة
           </button>
         </div>
-      ) : (
+      ) : !showWinnerPick ? (
         <div className="mt-8">
           <div className="rounded-2xl border border-yellow-300/25 bg-yellow-300/10 p-5 shadow-[0_0_18px_rgba(250,204,21,0.12)]">
             <p className="text-sm text-white/70">الإجابة الصحيحة</p>
@@ -107,13 +161,47 @@ export default function QuizGame({
             </p>
           </div>
 
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="mt-6">
             <button
-              onClick={nextQuestion}
-              className="btn-primary min-w-[180px]"
+              onClick={() => setShowWinnerPick(true)}
+              className="btn-primary min-w-[220px]"
             >
-              {index >= questions.length - 1 ? "إنهاء الجولة" : "السؤال التالي"}
+              مين جاوب صح؟
             </button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-8">
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5">
+            <p className="text-xl font-black">مين جاوب صح؟</p>
+            <p className="mt-2 text-white/70">
+              {mode === "teams"
+                ? "اختر الفريق الذي جاوب السؤال بشكل صحيح"
+                : "اختر اللاعب الذي جاوب السؤال بشكل صحيح"}
+            </p>
+
+            <div className="mt-6 space-y-3">
+              <button
+                onClick={() => handleWinnerPick("side1")}
+                className="btn-primary w-full"
+              >
+                {side1Name}
+              </button>
+
+              <button
+                onClick={() => handleWinnerPick("side2")}
+                className="btn-primary w-full"
+              >
+                {side2Name}
+              </button>
+
+              <button
+                onClick={() => handleWinnerPick("none")}
+                className="btn-secondary w-full"
+              >
+                لا أحد
+              </button>
+            </div>
           </div>
         </div>
       )}
