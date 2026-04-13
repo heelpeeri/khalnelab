@@ -70,9 +70,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "ماذا كان يعمل النبي محمد قبل النبوة؟",
       answer: "راعٍ وتاجر",
-    },
-
-    // 🔥 الأسئلة الجديدة اللي طلبتها
+    },ا
     {
       question: "إلى أي قوم أُرسل النبي هود؟",
       answer: "عاد",
