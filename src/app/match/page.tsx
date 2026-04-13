@@ -146,7 +146,7 @@ export default function MatchPage() {
       return {
         title: "الأسئلة",
         icon: "❓",
-        hint: "اختر الفئة ثم جاوب 5 أسئلة.",
+        hint: "اختر الفئة، جاوب، ثم حدّد من جاوب صح بعد كل سؤال.",
       };
     }
 
@@ -235,7 +235,13 @@ export default function MatchPage() {
         roundKey={roundSeed}
       />
     ) : selectedGame === "quiz" ? (
-      <QuizGame onRoundEnd={endRound} roundKey={roundSeed} />
+      <QuizGame
+        mode={mode}
+        side1Name={side1}
+        side2Name={side2}
+        onRoundEnd={endRound}
+        roundKey={roundSeed}
+      />
     ) : (
       <CategoriesGame
         mode={mode}
@@ -361,7 +367,9 @@ export default function MatchPage() {
         {started && !gameEnded && (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
             <div>
-              {roundReady ? (
+              {selectedGame === "quiz" ? (
+                currentGameBoard
+              ) : roundReady ? (
                 <GlassCard className="min-h-[780px] p-8 text-center">
                   <div className="flex h-full min-h-[700px] flex-col items-center justify-center">
                     <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
