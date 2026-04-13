@@ -1,3 +1,9 @@
+export type QuizCategoryKey = "seerah" | "saudi" | "football";
+
+export type QuizQuestion = {
+  question: string;
+  answer: string;
+};
 export const quizQuestions = {
   seerah: [
     {
