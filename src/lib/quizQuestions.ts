@@ -4,7 +4,8 @@ export type QuizQuestion = {
   question: string;
   answer: string;
 };
-export const quizQuestions = {
+
+export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
   seerah: [
     {
       question: "من قائل: لا إله إلا أنت سبحانك إني كنت من الظالمين؟",
@@ -87,4 +88,8 @@ export const quizQuestions = {
       answer: "راعٍ وتاجر",
     },
   ],
+
+  saudi: [],
+
+  football: [],
 };
