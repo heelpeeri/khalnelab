@@ -61,20 +61,20 @@ export default function QuizGame({
   }
 
   function handleWinnerPick(winner: WinnerType) {
+    const nextSide1 = winner === "side1" ? side1Correct + 1 : side1Correct;
+    const nextSide2 = winner === "side2" ? side2Correct + 1 : side2Correct;
+
     if (winner === "side1") {
-      setSide1Correct((s) => s + 1);
+      setSide1Correct(nextSide1);
     }
 
     if (winner === "side2") {
-      setSide2Correct((s) => s + 1);
+      setSide2Correct(nextSide2);
     }
 
     setShowWinnerPick(false);
 
     if (index >= questions.length - 1) {
-      const nextSide1 = winner === "side1" ? side1Correct + 1 : side1Correct;
-      const nextSide2 = winner === "side2" ? side2Correct + 1 : side2Correct;
-
       if (nextSide1 > nextSide2) {
         onRoundEnd("side1");
         return;
@@ -141,6 +141,19 @@ export default function QuizGame({
         <p className="text-2xl font-black leading-relaxed text-white">
           {current.question}
         </p>
+
+        {current.options && current.options.length > 0 && (
+          <div className="mt-6 grid gap-3">
+            {current.options.map((opt) => (
+              <div
+                key={opt}
+                className="rounded-xl border border-cyan-300/20 bg-cyan-400/10 p-3 text-lg font-bold text-white"
+              >
+                {opt}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {!showAnswer ? (
