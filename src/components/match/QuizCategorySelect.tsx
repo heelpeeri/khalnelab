@@ -38,8 +38,9 @@ export default function QuizCategorySelect({
         {categories.map((cat) => (
           <button
             key={cat.key}
+            type="button"
             onClick={() => onSelect(cat.key as QuizCategoryKey)}
-            className="group relative rounded-2xl border border-white/15 bg-white/10 p-6 text-right transition hover:-translate-y-1 hover:bg-white/20"
+            className="group relative rounded-2xl border border-white/15 bg-white/10 p-6 text-right transition hover:-translate-y-1 hover:bg-white/20 active:scale-[0.98]"
           >
             <div className="text-3xl">{cat.emoji}</div>
 
