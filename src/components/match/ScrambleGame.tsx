@@ -26,7 +26,7 @@ export default function ScrambleGame({
     { prompt: "طلع لي اسم براند", answer: "سامسونج" },
     { prompt: "طلع لي اسم براند", answer: "نايكي" },
     { prompt: "طلع لي اسم مدينة", answer: "الرياض" },
-    { prompt: "طلع لي اسم مدينة", answer: "الدمام" },
+    { prompt: "طلع لي اسم مدينة", answer: "سويسرا" },
     { prompt: "طلع لي اسم سيارة", answer: "تويوتا" },
     { prompt: "طلع لي اسم سيارة", answer: "مرسيدس" },
     { prompt: "طلع لي اسم سيارة", answer: "كورولا" },
