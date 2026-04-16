@@ -31,12 +31,14 @@ export default function QuizGame({
   side2Name,
   onRoundEnd,
   roundKey,
+  onProgressChange,
 }: {
   mode: PlayMode;
   side1Name: string;
   side2Name: string;
   onRoundEnd: (winner?: WinnerType) => void;
   roundKey: number;
+  onProgressChange?: (current: number, total: number) => void;
 }) {
   const [category, setCategory] = useState<QuizCategoryKey | null>(null);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -58,7 +60,6 @@ export default function QuizGame({
     }
 
     const selected = shuffleArray(pool).slice(0, 5);
-
     LAST_ROUND_QUESTIONS[cat] = selected.map((q) => q.question);
 
     return selected;
@@ -72,7 +73,17 @@ export default function QuizGame({
     setShowWinnerPick(false);
     setSide1Correct(0);
     setSide2Correct(0);
-  }, [roundKey]);
+    onProgressChange?.(0, 0);
+  }, [roundKey, onProgressChange]);
+
+  useEffect(() => {
+    if (!category || questions.length === 0) {
+      onProgressChange?.(0, 0);
+      return;
+    }
+
+    onProgressChange?.(index + 1, questions.length);
+  }, [category, index, questions, onProgressChange]);
 
   function handleSelectCategory(cat: QuizCategoryKey) {
     const picked = pickQuestions(cat);
@@ -164,7 +175,7 @@ export default function QuizGame({
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-          <p className="text-sm text-white/60">النتيجة الحالية</p>
+          <p className="text-sm text-white/60">نتيجة الجولة</p>
           <p className="mt-1 text-xl font-black">
             {side1Name} {side1Correct} - {side2Correct} {side2Name}
           </p>
