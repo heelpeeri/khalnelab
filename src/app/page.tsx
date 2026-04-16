@@ -120,7 +120,7 @@ export default function Home() {
           </h1>
 
           <p className="mt-3 text-lg text-white/85 md:text-xl">
-            ألعاب جلسات سريعة، تنافس، وضحك داخل البيت.
+            منصة العاب سعودية تفعالية تصلح للجسلة العائلية.
           </p>
 
           <Link
