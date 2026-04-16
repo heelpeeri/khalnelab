@@ -184,11 +184,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       {
   question: "متى أُطلقت رؤية السعودية 2030؟",
   answer: "1437 / 2016",
-  options: [
-    "1437 / 2016",
-    "1436 / 2015",
-    "1438 / 2017",
-    "1439 / 2018",
+  options: ["1437 / 2016", "1436 / 2015", "1438 / 2017", "1439 / 2018"]
   ],
 },
     },
