@@ -12,6 +12,19 @@ import {
 type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
+const LAST_ROUND_QUESTIONS: Partial<Record<QuizCategoryKey, string[]>> = {};
+
+function shuffleArray<T>(items: T[]) {
+  const array = [...items];
+
+  for (let i = array.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+
+  return array;
+}
+
 export default function QuizGame({
   mode,
   side1Name,
@@ -36,8 +49,19 @@ export default function QuizGame({
 
   function pickQuestions(cat: QuizCategoryKey) {
     const all = quizQuestions[cat];
-    const shuffled = [...all].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 5);
+    const lastRoundQuestions = LAST_ROUND_QUESTIONS[cat] ?? [];
+
+    let pool = all.filter((q) => !lastRoundQuestions.includes(q.question));
+
+    if (pool.length < 5) {
+      pool = all;
+    }
+
+    const selected = shuffleArray(pool).slice(0, 5);
+
+    LAST_ROUND_QUESTIONS[cat] = selected.map((q) => q.question);
+
+    return selected;
   }
 
   useEffect(() => {
@@ -51,8 +75,10 @@ export default function QuizGame({
   }, [roundKey]);
 
   function handleSelectCategory(cat: QuizCategoryKey) {
+    const picked = pickQuestions(cat);
+
     setCategory(cat);
-    setQuestions(pickQuestions(cat));
+    setQuestions(picked);
     setIndex(0);
     setShowAnswer(false);
     setShowWinnerPick(false);
@@ -105,6 +131,14 @@ export default function QuizGame({
   }
 
   const current = questions[index];
+
+  if (!current) {
+    return (
+      <GlassCard className="min-h-[780px] p-8 text-center">
+        <p className="text-xl font-black">ما فيه أسئلة كفاية في هذه الفئة</p>
+      </GlassCard>
+    );
+  }
 
   return (
     <GlassCard className="min-h-[780px] p-8 text-center">
