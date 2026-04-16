@@ -74,7 +74,7 @@ export default function QuizGame({
     setSide1Correct(0);
     setSide2Correct(0);
     onProgressChange?.(0, 0);
-  }, [roundKey, onProgressChange]);
+  }, [roundKey]); // ✅ شلنا onProgressChange من dependencies
 
   useEffect(() => {
     if (!category || questions.length === 0) {
@@ -83,7 +83,7 @@ export default function QuizGame({
     }
 
     onProgressChange?.(index + 1, questions.length);
-  }, [category, index, questions, onProgressChange]);
+  }, [category, index, questions]); // ✅ شلنا onProgressChange من dependencies هنا أيضًا
 
   function handleSelectCategory(cat: QuizCategoryKey) {
     const picked = pickQuestions(cat);
