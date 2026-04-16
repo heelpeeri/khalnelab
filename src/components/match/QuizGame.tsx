@@ -98,26 +98,28 @@ export default function QuizGame({
   }
 
   function handleWinnerPick(winner: WinnerType) {
-    const nextSide1 = winner === "side1" ? side1Correct + 1 : side1Correct;
-    const nextSide2 = winner === "side2" ? side2Correct + 1 : side2Correct;
+    let newSide1 = side1Correct;
+    let newSide2 = side2Correct;
 
     if (winner === "side1") {
-      setSide1Correct(nextSide1);
+      newSide1 += 1;
+      setSide1Correct(newSide1);
     }
 
     if (winner === "side2") {
-      setSide2Correct(nextSide2);
+      newSide2 += 1;
+      setSide2Correct(newSide2);
     }
 
     setShowWinnerPick(false);
 
     if (index >= questions.length - 1) {
-      if (nextSide1 > nextSide2) {
+      if (newSide1 > newSide2) {
         onRoundEnd("side1");
         return;
       }
 
-      if (nextSide2 > nextSide1) {
+      if (newSide2 > newSide1) {
         onRoundEnd("side2");
         return;
       }
@@ -128,6 +130,7 @@ export default function QuizGame({
 
     setIndex((prev) => prev + 1);
     setShowAnswer(false);
+    setShowWinnerPick(false);
   }
 
   const categoryTitle =
@@ -138,7 +141,12 @@ export default function QuizGame({
       : "كرة القدم السعودية";
 
   if (!category) {
-    return <QuizCategorySelect onSelect={handleSelectCategory} />;
+    return (
+      <QuizCategorySelect
+        key={`quiz-category-${roundKey}`}
+        onSelect={handleSelectCategory}
+      />
+    );
   }
 
   const current = questions[index];
@@ -169,7 +177,10 @@ export default function QuizGame({
 
         <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
           <p className="text-sm text-white/60">السؤال</p>
-          <p className="mt-1 text-xl font-black text-cyan-200">
+          <p
+            dir="ltr"
+            className="mt-1 text-xl font-black text-cyan-200 text-left"
+          >
             {index + 1} / {questions.length}
           </p>
         </div>
@@ -204,6 +215,7 @@ export default function QuizGame({
       {!showAnswer ? (
         <div className="mt-8">
           <button
+            type="button"
             onClick={() => setShowAnswer(true)}
             className="btn-primary min-w-[200px]"
           >
@@ -221,6 +233,7 @@ export default function QuizGame({
 
           <div className="mt-6">
             <button
+              type="button"
               onClick={() => setShowWinnerPick(true)}
               className="btn-primary min-w-[220px]"
             >
@@ -240,6 +253,7 @@ export default function QuizGame({
 
             <div className="mt-6 space-y-3">
               <button
+                type="button"
                 onClick={() => handleWinnerPick("side1")}
                 className="btn-primary w-full"
               >
@@ -247,6 +261,7 @@ export default function QuizGame({
               </button>
 
               <button
+                type="button"
                 onClick={() => handleWinnerPick("side2")}
                 className="btn-primary w-full"
               >
@@ -254,6 +269,7 @@ export default function QuizGame({
               </button>
 
               <button
+                type="button"
                 onClick={() => handleWinnerPick("none")}
                 className="btn-secondary w-full"
               >
