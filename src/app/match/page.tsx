@@ -168,7 +168,7 @@ export default function MatchPage() {
     setSide1Score(0);
     setSide2Score(0);
     setGameEnded(false);
-    setRoundReady(true);
+    setRoundReady(selectedGame === "quiz" ? false : true);
     setRoundSeed(1);
     setQuizQuestionIndex(0);
     setQuizQuestionTotal(0);
@@ -202,7 +202,7 @@ export default function MatchPage() {
     }
 
     setCurrentRound((r) => r + 1);
-    setRoundReady(true);
+    setRoundReady(selectedGame === "quiz" ? false : true);
     setRoundSeed((s) => s + 1);
   }
 
@@ -247,6 +247,7 @@ export default function MatchPage() {
       />
     ) : selectedGame === "quiz" ? (
       <QuizGame
+        key={`quiz-${roundSeed}`}
         mode={mode}
         side1Name={side1}
         side2Name={side2}
@@ -436,7 +437,7 @@ export default function MatchPage() {
               <div className="space-y-3">
                 <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
                   <p className="text-sm text-white/70">الجولة</p>
-                  <p className="mt-1 text-3xl font-black text-yellow-200">
+                  <p dir="ltr" className="mt-1 text-3xl font-black text-yellow-200">
                     {currentRound} / {rounds}
                   </p>
                 </div>
@@ -444,7 +445,7 @@ export default function MatchPage() {
                 {selectedGame === "quiz" && quizQuestionTotal > 0 && (
                   <div className="rounded-2xl border border-yellow-300/15 bg-yellow-400/10 p-4">
                     <p className="text-sm text-white/70">أسئلة الجولة</p>
-                    <p className="mt-1 text-2xl font-black text-yellow-200">
+                    <p dir="ltr" className="mt-1 text-2xl font-black text-yellow-200">
                       {quizQuestionIndex} / {quizQuestionTotal}
                     </p>
                   </div>
