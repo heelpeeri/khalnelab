@@ -168,7 +168,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "متى بدأ تصدير النفط السعودي رسميًا؟",
       answer: "1358 / 1939",
-      options: ["1358 / 1939", "1357 / 1938", "1437 / 2016", "1331 / 1913"],
+      options: ["1358 / 1939", "1357 / 1938", "1329 / 1911", "1331 / 1913"],
     },
     {
       question: "ما أول بنك أُنشئ في السعودية؟",
