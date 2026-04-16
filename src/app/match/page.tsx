@@ -33,9 +33,7 @@ function MatchupBadge({
       <span className="rounded-xl bg-pink-500/15 px-3 py-1 font-bold text-white">
         {side1}
       </span>
-
       <span className="text-sm font-medium text-white/65">ضد</span>
-
       <span className="rounded-xl bg-cyan-400/15 px-3 py-1 font-bold text-white">
         {side2}
       </span>
@@ -179,6 +177,7 @@ export default function MatchPage() {
       chooseWinner(winner);
       return;
     }
+
     setShowWinnerModal(true);
   }
 
@@ -195,6 +194,7 @@ export default function MatchPage() {
 
     setCurrentRound((r) => r + 1);
     setRoundReady(true);
+    setRoundSeed((s) => s + 1);
   }
 
   function resetGame() {
