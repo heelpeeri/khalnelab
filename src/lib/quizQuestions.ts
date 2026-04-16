@@ -188,7 +188,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "ما اسم المشروع المستقبلي في شمال غرب السعودية؟",
       answer: "نيوم",
-      options: ["نيوم", "القدية", "الدرعية", "العلا"],
+      options: ["نيوم", "مدينة ذا لاين", "الدرعية التراثية", "العلا"],
     },
     {
       question: "من هو والد الملك عبدالعزيز؟",
