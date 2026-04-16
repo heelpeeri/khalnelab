@@ -33,7 +33,9 @@ function MatchupBadge({
       <span className="rounded-xl bg-pink-500/15 px-3 py-1 font-bold text-white">
         {side1}
       </span>
+
       <span className="text-sm font-medium text-white/65">ضد</span>
+
       <span className="rounded-xl bg-cyan-400/15 px-3 py-1 font-bold text-white">
         {side2}
       </span>
@@ -80,6 +82,9 @@ export default function MatchPage() {
   const [gameEnded, setGameEnded] = useState(false);
   const [roundReady, setRoundReady] = useState(true);
   const [roundSeed, setRoundSeed] = useState(1);
+
+  const [quizQuestionIndex, setQuizQuestionIndex] = useState(0);
+  const [quizQuestionTotal, setQuizQuestionTotal] = useState(0);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -144,7 +149,7 @@ export default function MatchPage() {
       return {
         title: "الأسئلة",
         icon: "❓",
-        hint: "اختر الفئة، جاوب، ثم حدّد من جاوب صح بعد كل سؤال.",
+        hint: "اختر الفئة، اعرض الإجابة، ثم حدّد من جاوب صح.",
       };
     }
 
@@ -165,6 +170,8 @@ export default function MatchPage() {
     setGameEnded(false);
     setRoundReady(true);
     setRoundSeed(1);
+    setQuizQuestionIndex(0);
+    setQuizQuestionTotal(0);
   }
 
   function beginRound() {
@@ -186,6 +193,8 @@ export default function MatchPage() {
     if (winner === "side2") setSide2Score((s) => s + 1);
 
     setShowWinnerModal(false);
+    setQuizQuestionIndex(0);
+    setQuizQuestionTotal(0);
 
     if (currentRound >= rounds) {
       setGameEnded(true);
@@ -206,6 +215,8 @@ export default function MatchPage() {
     setGameEnded(false);
     setRoundReady(true);
     setRoundSeed(1);
+    setQuizQuestionIndex(0);
+    setQuizQuestionTotal(0);
   }
 
   const currentGameBoard =
@@ -241,6 +252,10 @@ export default function MatchPage() {
         side2Name={side2}
         onRoundEnd={endRound}
         roundKey={roundSeed}
+        onProgressChange={(current, total) => {
+          setQuizQuestionIndex(current);
+          setQuizQuestionTotal(total);
+        }}
       />
     ) : (
       <CategoriesGame
@@ -425,6 +440,15 @@ export default function MatchPage() {
                     {currentRound} / {rounds}
                   </p>
                 </div>
+
+                {selectedGame === "quiz" && quizQuestionTotal > 0 && (
+                  <div className="rounded-2xl border border-yellow-300/15 bg-yellow-400/10 p-4">
+                    <p className="text-sm text-white/70">أسئلة الجولة</p>
+                    <p className="mt-1 text-2xl font-black text-yellow-200">
+                      {quizQuestionIndex} / {quizQuestionTotal}
+                    </p>
+                  </div>
+                )}
 
                 <div className="rounded-2xl border border-cyan-300/15 bg-cyan-400/10 p-4">
                   <p className="text-sm text-white/70">{currentTurnLabel}</p>
