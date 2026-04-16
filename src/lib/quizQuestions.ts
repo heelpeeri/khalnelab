@@ -148,7 +148,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "متى تم إعلان المملكة العربية السعودية؟",
       answer: "1351 / 1932",
-      options: ["1351 / 1932", "1319 / 1902", "1331 / 1913", "1437 / 2016"],
+      options: ["1351 / 1932", "1319 / 1902", "1331 / 1913", "1330 / 1912"],
     },
     {
       question: "كم عدد مناطق المملكة؟",
