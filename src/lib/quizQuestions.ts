@@ -113,7 +113,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "ما عاصمة الدولة السعودية الأولى؟",
       answer: "الدرعية",
-      options: ["الدرعية", "الرياض", "مكة", "الأحساء"],
+      options: ["الدرعية", "الرياض", "مكة", "نجد"],
     },
     {
       question: "متى سقطت الدولة السعودية الأولى؟",
