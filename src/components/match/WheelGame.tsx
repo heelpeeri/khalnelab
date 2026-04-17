@@ -24,7 +24,7 @@ const PUZZLES = [
   { answer: "قوتشي", category: "براند عالمي" },
   { answer: "تاهو", category: "سيارة" },
   { answer: "ريدبول", category: "مشروب" },
-  { answer: "مبابي", category: "لاعب" },
+  { answer: "روبيرتوكارلوس", category: "لاعب" },
   { answer: "هنقرستيشن", category: "تطبيق" },
   { answer: "وينديز", category: "مطعم" },
   { answer: "شكشوكة", category: "أكلة" },
