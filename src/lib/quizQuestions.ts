@@ -264,7 +264,6 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       options: ["2-1", "1-0", "2-0", "3-1"],
     },
   ],
-};
 geography:[
 {
   question: "ما عاصمة أستراليا؟",
@@ -485,5 +484,6 @@ geography:[
   question: "ما عاصمة زامبيا؟",
   answer: "لوساكا",
   options: ["هراري", "لوساكا", "كينشاسا", "مابوتو"],
-}
-];
+  }
+  ]
+};
