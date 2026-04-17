@@ -35,6 +35,7 @@ const PUZZLES = [
   { answer: "شاهي", category: "مشروب" },
   { answer: "بنزيما", category: "لاعب" },
   { answer: "اوتلوك", category: "تطبيق" },
+  { answer: "المسافر", category: "تطبيق" },
   { answer: "بيتالشواية", category: "مطعم" },
   { answer: "مكتبةجرير", category: "شركة سعودية" },
   { answer: "أرامكوالسعودية", category: "شركة سعودية" },
