@@ -153,7 +153,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "كم عدد مناطق المملكة؟",
       answer: "13",
-      options: ["13", "10", "15", "7"],
+      options: ["12", "13", "14", "11"],
     },
     {
       question: "أين اكتُشف النفط لأول مرة في السعودية؟",
