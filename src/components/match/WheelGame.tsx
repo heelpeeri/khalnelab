@@ -48,6 +48,7 @@ const PUZZLES = [
   { answer: "كلناعيالقرية", category: "مسلسل سعودي" },
   { answer: "حارةالشيخ", category: "مسلسل سعودي" },
   { answer: "مثلوثة", category: "أكلة" },
+  { answer: "لويسفيتون", category: "براند عالمي" },
   ];
 
 const LETTER_ROWS = [
