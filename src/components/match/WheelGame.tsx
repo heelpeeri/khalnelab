@@ -24,7 +24,7 @@ const PUZZLES = [
   { answer: "تاهو", category: "سيارة" },
   { answer: "ريدبول", category: "مشروب" },
   { answer: "مبابي", category: "لاعب" },
-  { answer: "يوتيوب", category: "تطبيق" },
+  { answer: "هنقرستيشن", category: "تطبيق" },
   { answer: "وينديز", category: "مطعم" },
   { answer: "شكشوكة", category: "أكلة" },
   { answer: "المكسيك", category: "دولة" },
@@ -32,16 +32,19 @@ const PUZZLES = [
   { answer: "كورولا", category: "سيارة" },
   { answer: "شاهي", category: "مشروب" },
   { answer: "بنزيما", category: "لاعب" },
-  { answer: "واتساب", category: "تطبيق" },
+  { answer: "اوتلوك", category: "تطبيق" },
   { answer: "بيتالشواية", category: "مطعم" },
   { answer: "مكتبةجرير", category: "شركة سعودية" },
   { answer: "أرامكوالسعودية", category: "شركة سعودية" },
-  { answer: "سابك", category: "شركة سعودية" },
+  { answer: "طيرانناس", category: "شركة سعودية" },
   { answer: "هيئةالثقافة", category: "جهة حكومية" },
   { answer: "هيئةالسياحة", category: "جهة حكومية" },
   { answer: "الأمنالسيبراني", category: "تخصص" },
   { answer: "تكنولوجياالمعلومات", category: "تخصص" },
-];
+  { answer: "أبوالعصافير", category: "مسلسل سعودي" },
+  { answer: "كلناعيالقرية", category: "مسلسل سعودي" },
+  { answer: "حارةالشيخ", category: "مسلسل سعودي" },
+  ];
 
 const LETTER_ROWS = [
   "دجحخهعغفقثصض",
