@@ -20,7 +20,7 @@ const SEGMENTS = [
 const PUZZLES = [
   { answer: "معصوب", category: "أكلة" },
   { answer: "سويسرا", category: "دولة" },
-  { answer: "قوتشي", category: "براند" },
+  { answer: "قوتشي", category: "براند عالمي" },
   { answer: "تاهو", category: "سيارة" },
   { answer: "ريدبول", category: "مشروب" },
   { answer: "مبابي", category: "لاعب" },
@@ -28,7 +28,8 @@ const PUZZLES = [
   { answer: "وينديز", category: "مطعم" },
   { answer: "شكشوكة", category: "أكلة" },
   { answer: "المكسيك", category: "دولة" },
-  { answer: "كارتير", category: "براند" },
+  { answer: "جمهوريةنيكاراغوا", category: "دولة" },
+  { answer: "كارتير", category: "براند عالمي" },
   { answer: "كورولا", category: "سيارة" },
   { answer: "شاهي", category: "مشروب" },
   { answer: "بنزيما", category: "لاعب" },
