@@ -1,4 +1,4 @@
-export type QuizCategoryKey = "seerah" | "saudi" | "football";
+export type QuizCategoryKey = "seerah" | "saudi" | "football" | "geography";
 
 export type QuizQuestion = {
   question: string;
