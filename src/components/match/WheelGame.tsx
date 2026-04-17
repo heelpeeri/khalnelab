@@ -44,6 +44,7 @@ const PUZZLES = [
   { answer: "أبوالعصافير", category: "مسلسل سعودي" },
   { answer: "كلناعيالقرية", category: "مسلسل سعودي" },
   { answer: "حارةالشيخ", category: "مسلسل سعودي" },
+  { answer: "مثلوثة", category: "أكلة" },
   ];
 
 const LETTER_ROWS = [
