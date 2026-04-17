@@ -230,7 +230,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     },
     {
       question: "كم عدد أهداف السعودية في كأس العالم 1994؟",
-      answer: "6",
+      answer: "5",
       options: ["6", "5", "7", "4"],
     },
     {
