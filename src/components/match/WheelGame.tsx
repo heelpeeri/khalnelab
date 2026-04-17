@@ -19,7 +19,7 @@ const SEGMENTS = [
 
 const PUZZLES = [
   { answer: "معصوب", category: "أكلة" },
-  { answer: "معصوب", category: "أكلة" },
+  { answer: "مقشوش", category: "أكلة" },
   { answer: "سويسرا", category: "دولة" },
   { answer: "قوتشي", category: "براند عالمي" },
   { answer: "تاهو", category: "سيارة" },
