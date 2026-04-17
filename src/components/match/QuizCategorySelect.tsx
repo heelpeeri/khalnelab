@@ -2,7 +2,7 @@
 
 import { GlassCard } from "@/components/GlassCard";
 
-type QuizCategoryKey = "seerah" | "saudi" | "football";
+type QuizCategoryKey = "seerah" | "saudi" | "football" | "geography";
 
 export default function QuizCategorySelect({
   onSelect,
@@ -28,13 +28,19 @@ export default function QuizCategorySelect({
       emoji: "⚽",
       desc: "أسئلة عن الكرة السعودية",
     },
+    {
+      key: "geography",
+      title: "الجغرافيا",
+      emoji: "🌍",
+      desc: "أسئلة عن الدول والعواصم والمعالم",
+    },
   ];
 
   return (
     <GlassCard className="min-h-[700px] p-8 text-center">
       <h2 className="text-3xl font-black">اختر الفئة</h2>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
+      <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {categories.map((cat) => (
           <button
             key={cat.key}
