@@ -49,6 +49,7 @@ const PUZZLES = [
   { answer: "حارةالشيخ", category: "مسلسل سعودي" },
   { answer: "مثلوثة", category: "أكلة" },
   { answer: "لويسفيتون", category: "براند عالمي" },
+  { answer: "دارالحكمة", category: "جامعة سعودية" },
   ];
 
 const LETTER_ROWS = [
