@@ -45,8 +45,8 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       answer: "معاذ ومعوذ",
     },
     {
-      question: "أين أُلقي النبي يوسف وهو صغير؟",
-      answer: "في البئر",
+      question: "من هو النبي الذي سماه الله تعالى بنفسه؟",
+      answer: "يحيى عليه السلام",
     },
     {
       question: "ماذا قال الله للنار حين أُلقي فيها إبراهيم؟",
