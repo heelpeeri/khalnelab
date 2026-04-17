@@ -50,6 +50,7 @@ const PUZZLES = [
   { answer: "مثلوثة", category: "أكلة" },
   { answer: "لويسفيتون", category: "براند عالمي" },
   { answer: "دارالحكمة", category: "جامعة سعودية" },
+  { answer: "مليونخاطر", category: "البوم أغاني سعودية" },
   ];
 
 const LETTER_ROWS = [
