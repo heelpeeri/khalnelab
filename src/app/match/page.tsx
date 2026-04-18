@@ -18,11 +18,11 @@ type GameType =
   | "wheel"
   | "quiz";
 
-type SessionMode = "quick" | "match";
+type SessionMode = "quick" | "session";
 type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
-const MATCH_GAMES: GameType[] = ["quiz", "word", "scramble", "wheel", "categories"];
+const SESSION_GAMES: GameType[] = ["quiz", "word", "scramble", "wheel", "categories"];
 
 function MatchupBadge({
   side1,
@@ -69,6 +69,25 @@ function StatusStrip({
   );
 }
 
+function getGameLabel(game: GameType) {
+  switch (game) {
+    case "word":
+      return "خمن الكلمة";
+    case "draw":
+      return "خمن المثل";
+    case "categories":
+      return "إنسان حيوان نبات جماد بلاد";
+    case "scramble":
+      return "حروف بالخلاط";
+    case "wheel":
+      return "لف وخمن";
+    case "quiz":
+      return "الأسئلة";
+    default:
+      return "";
+  }
+}
+
 export default function MatchPage() {
   const [sessionMode, setSessionMode] = useState<SessionMode>("quick");
   const [mode, setMode] = useState<PlayMode>("teams");
@@ -95,10 +114,10 @@ export default function MatchPage() {
     const modeParam = params.get("mode");
     const game = params.get("game");
 
-    if (modeParam === "match") {
-      setSessionMode("match");
-      setRounds(MATCH_GAMES.length);
-      setSelectedGame(MATCH_GAMES[0]);
+    if (modeParam === "session") {
+      setSessionMode("session");
+      setRounds(SESSION_GAMES.length);
+      setSelectedGame(SESSION_GAMES[0]);
       return;
     }
 
@@ -117,8 +136,8 @@ export default function MatchPage() {
   }, []);
 
   useEffect(() => {
-    if (sessionMode === "match") {
-      setSelectedGame(MATCH_GAMES[currentRound - 1] ?? MATCH_GAMES[0]);
+    if (sessionMode === "session") {
+      setSelectedGame(SESSION_GAMES[currentRound - 1] ?? SESSION_GAMES[0]);
     }
   }, [sessionMode, currentRound]);
 
@@ -133,7 +152,7 @@ export default function MatchPage() {
   const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
 
   const gameMeta = useMemo(() => {
-    if (sessionMode === "match") {
+    if (sessionMode === "session") {
       return {
         title: "تحدي الجلسة",
         icon: "🏆",
@@ -191,8 +210,8 @@ export default function MatchPage() {
   function startGame() {
     if (!side1.trim() || !side2.trim()) return;
 
-    const nextRounds = sessionMode === "match" ? MATCH_GAMES.length : rounds;
-    const firstGame = sessionMode === "match" ? MATCH_GAMES[0] : selectedGame;
+    const nextRounds = sessionMode === "session" ? SESSION_GAMES.length : rounds;
+    const firstGame = sessionMode === "session" ? SESSION_GAMES[0] : selectedGame;
 
     setStarted(true);
     setCurrentRound(1);
@@ -236,8 +255,8 @@ export default function MatchPage() {
 
     const nextRound = currentRound + 1;
     const nextGame =
-      sessionMode === "match"
-        ? MATCH_GAMES[nextRound - 1]
+      sessionMode === "session"
+        ? SESSION_GAMES[nextRound - 1]
         : selectedGame;
 
     setCurrentRound(nextRound);
@@ -257,9 +276,10 @@ export default function MatchPage() {
     setRoundSeed(1);
     setQuizQuestionIndex(0);
     setQuizQuestionTotal(0);
-    if (sessionMode === "match") {
-      setSelectedGame(MATCH_GAMES[0]);
-      setRounds(MATCH_GAMES.length);
+
+    if (sessionMode === "session") {
+      setSelectedGame(SESSION_GAMES[0]);
+      setRounds(SESSION_GAMES.length);
     }
   }
 
@@ -318,10 +338,10 @@ export default function MatchPage() {
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
-              {sessionMode === "match" ? "SESSION MODE" : "QUICK MODE"}
+              {sessionMode === "session" ? "SESSION MODE" : "QUICK MODE"}
             </p>
             <h1 className="mt-1 text-3xl font-black">
-              {sessionMode === "match" ? "تحدي الجلسة" : "تحدي سريع"}
+              {sessionMode === "session" ? "تحدي الجلسة" : "تحدي سريع"}
             </h1>
           </div>
           <Logo size={90} />
@@ -340,7 +360,7 @@ export default function MatchPage() {
               <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-right">
                 <p className="text-xs text-white/55">الوضع الحالي</p>
                 <p className="mt-1 font-black">
-                  {sessionMode === "match" ? "🏆 تحدي الجلسة" : `${gameMeta.icon} ${gameMeta.title}`}
+                  {sessionMode === "session" ? "🏆 تحدي الجلسة" : `${gameMeta.icon} ${gameMeta.title}`}
                 </p>
               </div>
             </div>
@@ -419,7 +439,7 @@ export default function MatchPage() {
               </div>
             )}
 
-            {sessionMode === "match" && (
+            {sessionMode === "session" && (
               <div className="mt-4 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-4 text-right">
                 <p className="text-sm text-white/60">ترتيب ألعاب الجلسة</p>
                 <p className="mt-2 text-white/90">
@@ -456,19 +476,9 @@ export default function MatchPage() {
                     </h2>
 
                     <div className="mt-4 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-lg font-black">
-                      {sessionMode === "match" ? (
+                      {sessionMode === "session" ? (
                         <>
-                          🏆 {currentRound} / {rounds} — {selectedGame === "word"
-                            ? "خمن الكلمة"
-                            : selectedGame === "scramble"
-                            ? "حروف بالخلاط"
-                            : selectedGame === "wheel"
-                            ? "لف وخمن"
-                            : selectedGame === "draw"
-                            ? "خمن المثل"
-                            : selectedGame === "quiz"
-                            ? "الأسئلة"
-                            : "إنسان حيوان نبات جماد بلاد"}
+                          🏆 {currentRound} / {rounds} — {getGameLabel(selectedGame)}
                         </>
                       ) : (
                         <>
@@ -486,7 +496,7 @@ export default function MatchPage() {
                     </div>
 
                     <div className="mt-4 w-full max-w-xl rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-sm leading-7 text-white/80">
-                      {sessionMode === "match"
+                      {sessionMode === "session"
                         ? "كل لعبة تعطي نقطة واحدة للفائز. في النهاية الأعلى نقاطًا يفوز بتحدي الجلسة."
                         : gameMeta.hint}
                     </div>
@@ -524,21 +534,11 @@ export default function MatchPage() {
                   </p>
                 </div>
 
-                {sessionMode === "match" && (
+                {sessionMode === "session" && (
                   <div className="rounded-2xl border border-pink-300/15 bg-pink-500/10 p-4">
                     <p className="text-sm text-white/70">اللعبة الحالية</p>
                     <p className="mt-1 text-xl font-black text-pink-100">
-                      {selectedGame === "word"
-                        ? "خمن الكلمة"
-                        : selectedGame === "scramble"
-                        ? "حروف بالخلاط"
-                        : selectedGame === "wheel"
-                        ? "لف وخمن"
-                        : selectedGame === "draw"
-                        ? "خمن المثل"
-                        : selectedGame === "quiz"
-                        ? "الأسئلة"
-                        : "إنسان حيوان نبات جماد بلاد"}
+                      {getGameLabel(selectedGame)}
                     </p>
                   </div>
                 )}
@@ -601,7 +601,7 @@ export default function MatchPage() {
             </p>
 
             <h2 className="mt-2 text-4xl font-black">
-              🏆 {sessionMode === "match" ? "انتهى تحدي الجلسة" : "انتهى التحدي"}
+              🏆 {sessionMode === "session" ? "انتهى تحدي الجلسة" : "انتهى التحدي"}
             </h2>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
