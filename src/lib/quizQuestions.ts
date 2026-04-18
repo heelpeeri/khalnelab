@@ -17,6 +17,10 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       answer: "دخلت بعوضة في رأسه",
     },
     {
+     question: "من أول نبي بعد آدم عليه السلام ذُكر في القرآن الكريم؟",
+     answer: "إدريس",
+    },
+    {
       question: "من هو الملك الذي جادل إبراهيم؟",
       answer: "النمرود",
     },
