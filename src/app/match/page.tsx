@@ -18,8 +18,11 @@ type GameType =
   | "wheel"
   | "quiz";
 
+type SessionMode = "quick" | "match";
 type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
+
+const MATCH_GAMES: GameType[] = ["quiz", "word", "scramble", "wheel", "categories"];
 
 function MatchupBadge({
   side1,
@@ -67,6 +70,7 @@ function StatusStrip({
 }
 
 export default function MatchPage() {
+  const [sessionMode, setSessionMode] = useState<SessionMode>("quick");
   const [mode, setMode] = useState<PlayMode>("teams");
   const [side1, setSide1] = useState("فريق 1");
   const [side2, setSide2] = useState("فريق 2");
@@ -88,7 +92,17 @@ export default function MatchPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const modeParam = params.get("mode");
     const game = params.get("game");
+
+    if (modeParam === "match") {
+      setSessionMode("match");
+      setRounds(MATCH_GAMES.length);
+      setSelectedGame(MATCH_GAMES[0]);
+      return;
+    }
+
+    setSessionMode("quick");
 
     if (
       game === "word" ||
@@ -102,6 +116,12 @@ export default function MatchPage() {
     }
   }, []);
 
+  useEffect(() => {
+    if (sessionMode === "match") {
+      setSelectedGame(MATCH_GAMES[currentRound - 1] ?? MATCH_GAMES[0]);
+    }
+  }, [sessionMode, currentRound]);
+
   const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
   const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
   const currentTurnLabel = mode === "teams" ? "دور الفريق" : "دور اللاعب";
@@ -113,6 +133,14 @@ export default function MatchPage() {
   const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
 
   const gameMeta = useMemo(() => {
+    if (sessionMode === "match") {
+      return {
+        title: "تحدي الجلسة",
+        icon: "🏆",
+        hint: "5 ألعاب متسلسلة، وكل لعبة تمنح نقطة واحدة للفائز.",
+      };
+    }
+
     if (selectedGame === "word") {
       return {
         title: "خمن الكلمة",
@@ -158,17 +186,22 @@ export default function MatchPage() {
       icon: "🌍",
       hint: "كل الإجابات لازم تبدأ بنفس الحرف، والسرعة تفرق.",
     };
-  }, [selectedGame]);
+  }, [selectedGame, sessionMode]);
 
   function startGame() {
     if (!side1.trim() || !side2.trim()) return;
+
+    const nextRounds = sessionMode === "match" ? MATCH_GAMES.length : rounds;
+    const firstGame = sessionMode === "match" ? MATCH_GAMES[0] : selectedGame;
 
     setStarted(true);
     setCurrentRound(1);
     setSide1Score(0);
     setSide2Score(0);
     setGameEnded(false);
-    setRoundReady(selectedGame === "quiz" ? false : true);
+    setRounds(nextRounds);
+    setSelectedGame(firstGame);
+    setRoundReady(firstGame === "quiz" ? false : true);
     setRoundSeed(1);
     setQuizQuestionIndex(0);
     setQuizQuestionTotal(0);
@@ -201,8 +234,15 @@ export default function MatchPage() {
       return;
     }
 
-    setCurrentRound((r) => r + 1);
-    setRoundReady(selectedGame === "quiz" ? false : true);
+    const nextRound = currentRound + 1;
+    const nextGame =
+      sessionMode === "match"
+        ? MATCH_GAMES[nextRound - 1]
+        : selectedGame;
+
+    setCurrentRound(nextRound);
+    setSelectedGame(nextGame);
+    setRoundReady(nextGame === "quiz" ? false : true);
     setRoundSeed((s) => s + 1);
   }
 
@@ -217,6 +257,10 @@ export default function MatchPage() {
     setRoundSeed(1);
     setQuizQuestionIndex(0);
     setQuizQuestionTotal(0);
+    if (sessionMode === "match") {
+      setSelectedGame(MATCH_GAMES[0]);
+      setRounds(MATCH_GAMES.length);
+    }
   }
 
   const currentGameBoard =
@@ -274,9 +318,11 @@ export default function MatchPage() {
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
-              MATCH MODE
+              {sessionMode === "match" ? "SESSION MODE" : "QUICK MODE"}
             </p>
-            <h1 className="mt-1 text-3xl font-black">تحدي الجلسة</h1>
+            <h1 className="mt-1 text-3xl font-black">
+              {sessionMode === "match" ? "تحدي الجلسة" : "تحدي سريع"}
+            </h1>
           </div>
           <Logo size={90} />
         </div>
@@ -292,9 +338,9 @@ export default function MatchPage() {
               </div>
 
               <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-right">
-                <p className="text-xs text-white/55">اللعبة الحالية</p>
+                <p className="text-xs text-white/55">الوضع الحالي</p>
                 <p className="mt-1 font-black">
-                  {gameMeta.icon} {gameMeta.title}
+                  {sessionMode === "match" ? "🏆 تحدي الجلسة" : `${gameMeta.icon} ${gameMeta.title}`}
                 </p>
               </div>
             </div>
@@ -317,21 +363,23 @@ export default function MatchPage() {
                 </select>
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold">اختيار اللعبة</label>
-                <select
-                  value={selectedGame}
-                  onChange={(e) => setSelectedGame(e.target.value as GameType)}
-                  className="input"
-                >
-                  <option value="word">خمن الكلمة</option>
-                  <option value="draw">خمن المثل</option>
-                  <option value="categories">إنسان حيوان نبات جماد بلاد</option>
-                  <option value="scramble">حروف بالخلاط</option>
-                  <option value="wheel">لف وخمن</option>
-                  <option value="quiz">الأسئلة</option>
-                </select>
-              </div>
+              {sessionMode === "quick" && (
+                <div>
+                  <label className="mb-2 block text-sm font-bold">اختيار اللعبة</label>
+                  <select
+                    value={selectedGame}
+                    onChange={(e) => setSelectedGame(e.target.value as GameType)}
+                    className="input"
+                  >
+                    <option value="word">خمن الكلمة</option>
+                    <option value="draw">خمن المثل</option>
+                    <option value="categories">إنسان حيوان نبات جماد بلاد</option>
+                    <option value="scramble">حروف بالخلاط</option>
+                    <option value="wheel">لف وخمن</option>
+                    <option value="quiz">الأسئلة</option>
+                  </select>
+                </div>
+              )}
             </div>
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -356,18 +404,29 @@ export default function MatchPage() {
               </div>
             </div>
 
-            <div className="mt-4">
-              <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
-              <select
-                value={rounds}
-                onChange={(e) => setRounds(Number(e.target.value))}
-                className="input"
-              >
-                <option value={1}>1</option>
-                <option value={3}>3</option>
-                <option value={5}>5</option>
-              </select>
-            </div>
+            {sessionMode === "quick" && (
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
+                <select
+                  value={rounds}
+                  onChange={(e) => setRounds(Number(e.target.value))}
+                  className="input"
+                >
+                  <option value={1}>1</option>
+                  <option value={3}>3</option>
+                  <option value={5}>5</option>
+                </select>
+              </div>
+            )}
+
+            {sessionMode === "match" && (
+              <div className="mt-4 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-4 text-right">
+                <p className="text-sm text-white/60">ترتيب ألعاب الجلسة</p>
+                <p className="mt-2 text-white/90">
+                  1) الأسئلة — 2) خمن الكلمة — 3) حروف بالخلاط — 4) لف وخمن — 5) إنسان حيوان نبات جماد بلاد
+                </p>
+              </div>
+            )}
 
             <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-right">
               <p className="text-sm text-white/60">مختصر اللعبة</p>
@@ -397,7 +456,25 @@ export default function MatchPage() {
                     </h2>
 
                     <div className="mt-4 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-lg font-black">
-                      {gameMeta.icon} {gameMeta.title}
+                      {sessionMode === "match" ? (
+                        <>
+                          🏆 {currentRound} / {rounds} — {selectedGame === "word"
+                            ? "خمن الكلمة"
+                            : selectedGame === "scramble"
+                            ? "حروف بالخلاط"
+                            : selectedGame === "wheel"
+                            ? "لف وخمن"
+                            : selectedGame === "draw"
+                            ? "خمن المثل"
+                            : selectedGame === "quiz"
+                            ? "الأسئلة"
+                            : "إنسان حيوان نبات جماد بلاد"}
+                        </>
+                      ) : (
+                        <>
+                          {gameMeta.icon} {gameMeta.title}
+                        </>
+                      )}
                     </div>
 
                     <div className="mt-6">
@@ -409,7 +486,9 @@ export default function MatchPage() {
                     </div>
 
                     <div className="mt-4 w-full max-w-xl rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-sm leading-7 text-white/80">
-                      {gameMeta.hint}
+                      {sessionMode === "match"
+                        ? "كل لعبة تعطي نقطة واحدة للفائز. في النهاية الأعلى نقاطًا يفوز بتحدي الجلسة."
+                        : gameMeta.hint}
                     </div>
 
                     <button
@@ -444,6 +523,25 @@ export default function MatchPage() {
                     {currentRound} / {rounds}
                   </p>
                 </div>
+
+                {sessionMode === "match" && (
+                  <div className="rounded-2xl border border-pink-300/15 bg-pink-500/10 p-4">
+                    <p className="text-sm text-white/70">اللعبة الحالية</p>
+                    <p className="mt-1 text-xl font-black text-pink-100">
+                      {selectedGame === "word"
+                        ? "خمن الكلمة"
+                        : selectedGame === "scramble"
+                        ? "حروف بالخلاط"
+                        : selectedGame === "wheel"
+                        ? "لف وخمن"
+                        : selectedGame === "draw"
+                        ? "خمن المثل"
+                        : selectedGame === "quiz"
+                        ? "الأسئلة"
+                        : "إنسان حيوان نبات جماد بلاد"}
+                    </p>
+                  </div>
+                )}
 
                 {selectedGame === "quiz" && quizQuestionTotal > 0 && (
                   <div className="rounded-2xl border border-yellow-300/15 bg-yellow-400/10 p-4">
@@ -502,7 +600,9 @@ export default function MatchPage() {
               GAME OVER
             </p>
 
-            <h2 className="mt-2 text-4xl font-black">🏆 انتهى التحدي</h2>
+            <h2 className="mt-2 text-4xl font-black">
+              🏆 {sessionMode === "match" ? "انتهى تحدي الجلسة" : "انتهى التحدي"}
+            </h2>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               <div className="rounded-3xl border border-pink-300/20 bg-pink-500/10 p-5">
@@ -526,8 +626,8 @@ export default function MatchPage() {
                   side1Score > side2Score
                     ? `الفائز: ${side1}`
                     : side2Score > side1Score
-                      ? `الفائز: ${side2}`
-                      : "تعادل"
+                    ? `الفائز: ${side2}`
+                    : "تعادل"
                 }
                 tone={side1Score === side2Score ? "warning" : "success"}
               />
