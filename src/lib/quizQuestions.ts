@@ -11,12 +11,16 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "من قائل: لا إله إلا أنت سبحانك إني كنت من الظالمين؟",
       answer: "يونس",
-    },
-    {
+     },
+     {
       question: "كيف كانت نهاية الملك الذي جادل إبراهيم؟",
       answer: "دخلت بعوضة في رأسه",
-    },
-    {
+     },
+     {
+      question: "كم عدد المسلمين في غزوة بدر تقريبًا؟",
+      answer: "313"
+     },
+     {
       question: "من هو النبي الذي قال: رب إني مسني الضر وأنت أرحم الراحمين؟",
       answer: "أيوب",
      },
@@ -119,6 +123,10 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "ما معجزة النبي صالح؟",
       answer: "الناقة",
+    },
+    {
+      question: "كم كان عمر النبي محمد صلى الله عليه وسلم عند وفاته؟",
+      answer: "63",
     },
     {
       question: "من النبي الذي كان ملكًا ونبيًا؟",
