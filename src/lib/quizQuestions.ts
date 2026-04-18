@@ -25,6 +25,10 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       answer: "950",
     },
     {
+      question: "من هو النبي الذي كان يعمل حدادًا؟",
+      answer: "داود",
+    },
+    {
       question: "في أي عام وُلد النبي محمد صلى الله عليه وسلم؟",
       answer: "عام الفيل",
     },
