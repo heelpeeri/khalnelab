@@ -3,44 +3,44 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 
-const games = [
+const quickGames = [
   {
-    href: "/match?game=word",
+    href: "/match?mode=quick&game=word",
     emoji: "💬",
     title: "خمن الكلمة",
     desc: "خمن الكلمة بحروف عربية",
     tag: "WORD",
   },
   {
-    href: "/match?game=wheel",
+    href: "/match?mode=quick&game=wheel",
     emoji: "🎡",
     title: "لف وخمن",
     desc: "لف العجلة وجرب حظك",
     tag: "WHEEL",
   },
   {
-    href: "/match?game=scramble",
+    href: "/match?mode=quick&game=scramble",
     emoji: "🧩",
     title: "حروف بالخلاط",
     desc: "رتب الحروف بسرعة",
     tag: "SCRAMBLE",
   },
   {
-    href: "/match?game=draw",
+    href: "/match?mode=quick&game=draw",
     emoji: "✏️",
     title: "خمن المثل",
     desc: "خمن المثل من الإيموجي",
     tag: "EMOJI",
   },
   {
-    href: "/match?game=categories",
+    href: "/match?mode=quick&game=categories",
     emoji: "🌍",
     title: "إنسان حيوان نبات جماد بلاد",
     desc: "فكر بسرعة وجاوب",
     tag: "CATEGORIES",
   },
   {
-    href: "/match?game=quiz",
+    href: "/match?mode=quick&game=quiz",
     emoji: "❓",
     title: "الأسئلة",
     desc: "اختر فئة وجاوب 5 أسئلة",
@@ -120,54 +120,72 @@ export default function Home() {
           </h1>
 
           <p className="mt-3 text-lg text-white/85 md:text-xl">
-            منصة العاب سعودية تفعالية تصلح للجسلة العائلية.
+            منصة ألعاب سعودية تفاعلية تصلح للجلسة العائلية.
           </p>
-
-          <Link
-            href="/match?game=word"
-            className="mt-6 inline-block rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 px-10 py-3 font-black shadow-[0_0_25px_rgba(255,120,0,0.5)] transition hover:scale-105 active:scale-95"
-          >
-            ابدأ اللعب
-          </Link>
         </section>
 
         <section className="mt-12">
           <div className="rounded-[28px] border border-pink-400/40 bg-[#120020]/90 p-6 shadow-[0_0_50px_rgba(255,0,150,0.25)]">
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-black text-white/90">اختر اللعبة</h2>
+              <h2 className="text-xl font-black text-white/90">اختر الوضع</h2>
               <span className="text-sm tracking-widest text-cyan-300">
-                SELECT MODE
+                PLAY MODE
               </span>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              {games.map((game) => (
-                <Link key={game.title} href={game.href}>
-                  <div className="group relative rounded-2xl border border-pink-400/40 bg-[#1a0030] p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(255,0,150,0.35)]">
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-500/10 to-cyan-400/10 opacity-0 transition group-hover:opacity-100" />
-
-                    <div className="relative z-10 flex items-center justify-between gap-4">
-                      <div className="text-right">
-                        <h3 className="text-xl font-black text-white">
-                          {game.title}
-                        </h3>
-
-                        <p className="mt-1 text-sm text-white/70">
-                          {game.desc}
-                        </p>
-
-                        <span className="mt-2 block text-xs tracking-widest text-yellow-300">
-                          {game.tag}
-                        </span>
-                      </div>
-
-                      <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-black/40 text-2xl shadow-[0_0_12px_rgba(255,255,255,0.1)]">
-                        {game.emoji}
-                      </div>
+              <Link href="/match?mode=session">
+                <div className="group relative rounded-2xl border border-pink-400/40 bg-[#1a0030] p-6 transition duration-200 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(255,0,150,0.35)]">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-500/10 to-cyan-400/10 opacity-0 transition group-hover:opacity-100" />
+                  <div className="relative z-10 flex items-center justify-between gap-4">
+                    <div className="text-right">
+                      <h3 className="text-2xl font-black text-white">🏆 تحدي الجلسة</h3>
+                      <p className="mt-2 text-sm text-white/70">
+                        عدة ألعاب متسلسلة داخل جلسة واحدة، وفي النهاية يبان الفائز
+                      </p>
+                      <span className="mt-3 block text-xs tracking-widest text-yellow-300">
+                        SESSION MODE
+                      </span>
+                    </div>
+                    <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-white/10 bg-black/40 text-3xl shadow-[0_0_12px_rgba(255,255,255,0.1)]">
+                      🏁
                     </div>
                   </div>
-                </Link>
-              ))}
+                </div>
+              </Link>
+
+              <div className="rounded-2xl border border-cyan-300/30 bg-[#120825]/80 p-6">
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-2xl font-black text-white">⚡ تحدي سريع</h3>
+                  <span className="text-xs tracking-widest text-cyan-300">QUICK MODE</span>
+                </div>
+
+                <p className="mb-4 text-sm text-white/70">
+                  اختر لعبة واحدة والعبها مباشرة
+                </p>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {quickGames.map((game) => (
+                    <Link key={game.title} href={game.href}>
+                      <div className="group relative rounded-2xl border border-pink-400/30 bg-[#1a0030] p-4 transition duration-200 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(255,0,150,0.28)]">
+                        <div className="relative z-10 flex items-center justify-between gap-3">
+                          <div className="text-right">
+                            <h4 className="text-base font-black text-white">{game.title}</h4>
+                            <p className="mt-1 text-xs text-white/65">{game.desc}</p>
+                            <span className="mt-1 block text-[10px] tracking-widest text-yellow-300">
+                              {game.tag}
+                            </span>
+                          </div>
+
+                          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-black/40 text-xl">
+                            {game.emoji}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
