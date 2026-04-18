@@ -17,6 +17,14 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       answer: "دخلت بعوضة في رأسه",
      },
      {
+      question: "لماذا كان فرعون يقتل ذكور بني إسرائيل؟",
+      answer: "خوفًا من مولود من بني إسرائيل يزول ملكه بسببه"
+     },
+     {
+      question: "من هو النبي الذي دعا ربه: لا تذر على الأرض من الكافرين ديارًا؟",
+      answer: "نوح",
+     },
+     {
       question: "كم عدد المسلمين في غزوة بدر تقريبًا؟",
       answer: "313"
      },
