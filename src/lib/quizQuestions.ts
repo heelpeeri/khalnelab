@@ -25,6 +25,10 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       answer: "950",
     },
     {
+      question: "من هو النبي الذي تكلم وهو في المهد؟",
+      answer: "عيسى",
+    },
+    {
       question: "من هو النبي الذي كان يعمل حدادًا؟",
       answer: "داود",
     },
@@ -96,7 +100,7 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       question: "من النبي الذي كان ملكًا ونبيًا؟",
       answer: "سليمان",
     },
-  ],
+    ],
 
   saudi: [
     {
