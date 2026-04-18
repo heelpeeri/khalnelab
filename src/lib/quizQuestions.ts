@@ -17,6 +17,10 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       answer: "دخلت بعوضة في رأسه",
     },
     {
+  question: "إبراهيم عليه السلام ترك زوجته في مكة بأمر من الله، ما اسمها؟",
+  answer: "هاجر",
+    },
+    {
      question: "من أول نبي بعد آدم عليه السلام ذُكر في القرآن الكريم؟",
      answer: "إدريس",
     },
