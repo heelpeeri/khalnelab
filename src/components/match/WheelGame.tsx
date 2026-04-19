@@ -50,8 +50,9 @@ const PUZZLES = [
   { answer: "دكتور بيبر", category: "مشروب" },
 
   // لاعبين
-  { answer: "روبيرتو كارلوس", category: "لاعب" },
+  { answer: "روبرتو كارلوس", category: "لاعب" },
   { answer: "بنزيما", category: "لاعب" },
+  { answer: "رونالدينيو", category: "لاعب" },
 
   // تطبيقات
   { answer: "هنقرستيشن", category: "تطبيق" },
