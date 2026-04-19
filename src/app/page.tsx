@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
 
@@ -48,15 +51,39 @@ const games = [
 ];
 
 function InfoBadge({ text }: { text: string }) {
-  return (
-    <div className="group relative">
-      <div className="flex h-8 w-8 cursor-help items-center justify-center rounded-full border border-white/15 bg-white/10 text-sm font-black text-white/85 transition hover:bg-white/15">
-        !
-      </div>
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-      <div className="pointer-events-none absolute left-0 top-10 z-20 hidden w-72 rounded-2xl border border-white/15 bg-[#16001f]/95 p-4 text-right text-sm leading-7 text-white/80 shadow-2xl group-hover:block">
-        {text}
-      </div>
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (!wrapperRef.current) return;
+      if (!wrapperRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div ref={wrapperRef} className="relative shrink-0">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/10 text-sm font-black text-white/85 transition hover:bg-white/15 active:scale-95"
+        aria-label="معلومات إضافية"
+      >
+        !
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-10 z-20 w-72 rounded-2xl border border-white/15 bg-[#16001f]/95 p-4 text-right text-sm leading-7 text-white/80 shadow-2xl">
+          {text}
+        </div>
+      )}
     </div>
   );
 }
