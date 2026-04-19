@@ -61,7 +61,9 @@ const PUZZLES = [
 
   // مطاعم
   { answer: "وينديز", category: "مطعم" },
-  { answer: "بيتالشواية", category: "مطعم سعودي" },
+  { answer: "بوبايز", category: "مطعم" },
+  { answer: "بيت الشواية", category: "مطعم" },
+  { answer: "بيت الشاورما", category: "مطعم" },
 
   // شركات سعودية
   { answer: "مكتبة جرير", category: "شركة سعودية" },
