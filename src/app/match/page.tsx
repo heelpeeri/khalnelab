@@ -10,19 +10,54 @@ import ScrambleGame from "@/components/match/ScrambleGame";
 import WheelGame from "@/components/match/WheelGame";
 import QuizGame from "@/components/match/QuizGame";
 
-type GameType =
-  | "word"
-  | "draw"
-  | "categories"
-  | "scramble"
-  | "wheel"
-  | "quiz";
-
+type GameType = "word" | "draw" | "categories" | "scramble" | "wheel" | "quiz";
 type SessionMode = "quick" | "session";
 type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
-const SESSION_GAMES: GameType[] = ["quiz", "word", "scramble", "wheel", "categories"];
+const SESSION_GAME_OPTIONS: {
+  id: GameType;
+  title: string;
+  icon: string;
+  hint: string;
+}[] = [
+  {
+    id: "quiz",
+    title: "الأسئلة",
+    icon: "❓",
+    hint: "اختر فئة، جاوب، ثم حدّد من فاز.",
+  },
+  {
+    id: "word",
+    title: "خمن الكلمة",
+    icon: "💬",
+    hint: "خمن الكلمة حرف حرف.",
+  },
+  {
+    id: "scramble",
+    title: "حروف بالخلاط",
+    icon: "🧩",
+    hint: "رتب الحروف بأسرع وقت.",
+  },
+  {
+    id: "wheel",
+    title: "لف وخمن",
+    icon: "🎡",
+    hint: "لف العجلة ثم اختر حرفًا أو حل الكلمة.",
+  },
+  {
+    id: "categories",
+    title: "إنسان حيوان نبات جماد بلاد",
+    icon: "🌍",
+    hint: "كل الإجابات تبدأ بنفس الحرف.",
+  },
+  {
+    id: "draw",
+    title: "خمن المثل",
+    icon: "✏️",
+    hint: "خمن المثل من الإيموجي.",
+  },
+];
 
 function MatchupBadge({
   side1,
@@ -57,8 +92,8 @@ function StatusStrip({
     tone === "success"
       ? "border-green-300/20 bg-green-400/10 text-green-100"
       : tone === "warning"
-        ? "border-yellow-300/20 bg-yellow-400/10 text-yellow-100"
-        : "border-cyan-300/20 bg-cyan-400/10 text-white";
+      ? "border-yellow-300/20 bg-yellow-400/10 text-yellow-100"
+      : "border-cyan-300/20 bg-cyan-400/10 text-white";
 
   return (
     <div
@@ -69,32 +104,20 @@ function StatusStrip({
   );
 }
 
-function getGameLabel(game: GameType) {
-  switch (game) {
-    case "word":
-      return "خمن الكلمة";
-    case "draw":
-      return "خمن المثل";
-    case "categories":
-      return "إنسان حيوان نبات جماد بلاد";
-    case "scramble":
-      return "حروف بالخلاط";
-    case "wheel":
-      return "لف وخمن";
-    case "quiz":
-      return "الأسئلة";
-    default:
-      return "";
-  }
-}
-
 export default function MatchPage() {
   const [sessionMode, setSessionMode] = useState<SessionMode>("quick");
+
   const [mode, setMode] = useState<PlayMode>("teams");
   const [side1, setSide1] = useState("فريق 1");
   const [side2, setSide2] = useState("فريق 2");
   const [rounds, setRounds] = useState(3);
+
   const [selectedGame, setSelectedGame] = useState<GameType>("word");
+  const [selectedSessionGames, setSelectedSessionGames] = useState<GameType[]>([
+    "quiz",
+    "word",
+    "scramble",
+  ]);
 
   const [started, setStarted] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
@@ -116,8 +139,6 @@ export default function MatchPage() {
 
     if (modeParam === "session") {
       setSessionMode("session");
-      setRounds(SESSION_GAMES.length);
-      setSelectedGame(SESSION_GAMES[0]);
       return;
     }
 
@@ -135,11 +156,10 @@ export default function MatchPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (sessionMode === "session") {
-      setSelectedGame(SESSION_GAMES[currentRound - 1] ?? SESSION_GAMES[0]);
-    }
-  }, [sessionMode, currentRound]);
+  const activeGame =
+    sessionMode === "session"
+      ? selectedSessionGames[currentRound - 1] ?? selectedSessionGames[0] ?? "word"
+      : selectedGame;
 
   const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
   const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
@@ -152,78 +172,46 @@ export default function MatchPage() {
   const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
 
   const gameMeta = useMemo(() => {
-    if (sessionMode === "session") {
-      return {
-        title: "تحدي الجلسة",
-        icon: "🏆",
-        hint: "5 ألعاب متسلسلة، وكل لعبة تمنح نقطة واحدة للفائز.",
-      };
-    }
+    const found = SESSION_GAME_OPTIONS.find((game) => game.id === activeGame);
 
-    if (selectedGame === "word") {
-      return {
+    return (
+      found ?? {
+        id: "word",
         title: "خمن الكلمة",
         icon: "💬",
-        hint: "خمن الكلمة حرف حرف، وكل محاولة تقربك أو تبعدك.",
-      };
-    }
+        hint: "خمن الكلمة حرف حرف.",
+      }
+    );
+  }, [activeGame]);
 
-    if (selectedGame === "draw") {
-      return {
-        title: "خمن المثل",
-        icon: "✏️",
-        hint: "خمن المثل من الإيموجي، والوقت يمشي.",
-      };
-    }
-
-    if (selectedGame === "scramble") {
-      return {
-        title: "حروف بالخلاط",
-        icon: "🧩",
-        hint: "رتب الحروف بأسرع وقت، أول واحد يخلص يفوز.",
-      };
-    }
-
-    if (selectedGame === "wheel") {
-      return {
-        title: "لف وخمن",
-        icon: "🎡",
-        hint: "لف، شوف الرقم، وبعدها اختر حرف أو حل الكلمة.",
-      };
-    }
-
-    if (selectedGame === "quiz") {
-      return {
-        title: "الأسئلة",
-        icon: "❓",
-        hint: "اختر الفئة، اعرض الإجابة، ثم حدّد من جاوب صح.",
-      };
-    }
-
-    return {
-      title: "إنسان حيوان نبات جماد بلاد",
-      icon: "🌍",
-      hint: "كل الإجابات لازم تبدأ بنفس الحرف، والسرعة تفرق.",
-    };
-  }, [selectedGame, sessionMode]);
+  function toggleSessionGame(gameId: GameType) {
+    setSelectedSessionGames((prev) => {
+      if (prev.includes(gameId)) {
+        if (prev.length === 1) return prev;
+        return prev.filter((id) => id !== gameId);
+      }
+      return [...prev, gameId];
+    });
+  }
 
   function startGame() {
     if (!side1.trim() || !side2.trim()) return;
 
-    const nextRounds = sessionMode === "session" ? SESSION_GAMES.length : rounds;
-    const firstGame = sessionMode === "session" ? SESSION_GAMES[0] : selectedGame;
+    if (sessionMode === "session" && selectedSessionGames.length === 0) return;
+
+    const nextRounds =
+      sessionMode === "session" ? selectedSessionGames.length : rounds;
 
     setStarted(true);
     setCurrentRound(1);
     setSide1Score(0);
     setSide2Score(0);
     setGameEnded(false);
-    setRounds(nextRounds);
-    setSelectedGame(firstGame);
-    setRoundReady(firstGame === "quiz" ? false : true);
+    setRoundReady(true);
     setRoundSeed(1);
     setQuizQuestionIndex(0);
     setQuizQuestionTotal(0);
+    setRounds(nextRounds);
   }
 
   function beginRound() {
@@ -253,15 +241,8 @@ export default function MatchPage() {
       return;
     }
 
-    const nextRound = currentRound + 1;
-    const nextGame =
-      sessionMode === "session"
-        ? SESSION_GAMES[nextRound - 1]
-        : selectedGame;
-
-    setCurrentRound(nextRound);
-    setSelectedGame(nextGame);
-    setRoundReady(nextGame === "quiz" ? false : true);
+    setCurrentRound((r) => r + 1);
+    setRoundReady(true);
     setRoundSeed((s) => s + 1);
   }
 
@@ -276,17 +257,13 @@ export default function MatchPage() {
     setRoundSeed(1);
     setQuizQuestionIndex(0);
     setQuizQuestionTotal(0);
-
-    if (sessionMode === "session") {
-      setSelectedGame(SESSION_GAMES[0]);
-      setRounds(SESSION_GAMES.length);
-    }
+    setRounds(sessionMode === "session" ? selectedSessionGames.length || 1 : 3);
   }
 
   const currentGameBoard =
-    selectedGame === "word" ? (
+    activeGame === "word" ? (
       <WordGame onRoundEnd={endRound} roundKey={roundSeed} />
-    ) : selectedGame === "draw" ? (
+    ) : activeGame === "draw" ? (
       <ProverbGame
         mode={mode}
         side1Name={side1}
@@ -294,7 +271,7 @@ export default function MatchPage() {
         onRoundEnd={endRound}
         roundKey={roundSeed}
       />
-    ) : selectedGame === "scramble" ? (
+    ) : activeGame === "scramble" ? (
       <ScrambleGame
         mode={mode}
         side1Name={side1}
@@ -302,16 +279,15 @@ export default function MatchPage() {
         onRoundEnd={endRound}
         roundKey={roundSeed}
       />
-    ) : selectedGame === "wheel" ? (
+    ) : activeGame === "wheel" ? (
       <WheelGame
         side1Name={side1}
         side2Name={side2}
         onRoundEnd={endRound}
         roundKey={roundSeed}
       />
-    ) : selectedGame === "quiz" ? (
+    ) : activeGame === "quiz" ? (
       <QuizGame
-        key={`quiz-${roundSeed}`}
         mode={mode}
         side1Name={side1}
         side2Name={side2}
@@ -348,7 +324,7 @@ export default function MatchPage() {
         </div>
 
         {!started && (
-          <GlassCard className="mx-auto max-w-5xl p-6">
+          <GlassCard className="p-6">
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
@@ -360,7 +336,9 @@ export default function MatchPage() {
               <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2 text-right">
                 <p className="text-xs text-white/55">الوضع الحالي</p>
                 <p className="mt-1 font-black">
-                  {sessionMode === "session" ? "🏆 تحدي الجلسة" : `${gameMeta.icon} ${gameMeta.title}`}
+                  {sessionMode === "session"
+                    ? "🏆 تحدي الجلسة"
+                    : `${gameMeta.icon} ${gameMeta.title}`}
                 </p>
               </div>
             </div>
@@ -424,7 +402,7 @@ export default function MatchPage() {
               </div>
             </div>
 
-            {sessionMode === "quick" && (
+            {sessionMode === "quick" ? (
               <div className="mt-4">
                 <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
                 <select
@@ -437,20 +415,71 @@ export default function MatchPage() {
                   <option value={5}>5</option>
                 </select>
               </div>
-            )}
+            ) : (
+              <>
+                <div className="mt-6">
+                  <label className="mb-3 block text-sm font-bold">
+                    اختر الألعاب
+                  </label>
 
-            {sessionMode === "session" && (
-              <div className="mt-4 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-4 text-right">
-                <p className="text-sm text-white/60">ترتيب ألعاب الجلسة</p>
-                <p className="mt-2 text-white/90">
-                  1) الأسئلة — 2) خمن الكلمة — 3) حروف بالخلاط — 4) لف وخمن — 5) إنسان حيوان نبات جماد بلاد
-                </p>
-              </div>
+                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    {SESSION_GAME_OPTIONS.map((game) => {
+                      const isSelected = selectedSessionGames.includes(game.id);
+
+                      return (
+                        <button
+                          key={game.id}
+                          type="button"
+                          onClick={() => toggleSessionGame(game.id)}
+                          className={`rounded-2xl border p-4 text-right transition ${
+                            isSelected
+                              ? "border-cyan-300/40 bg-cyan-400/15 shadow-[0_0_18px_rgba(34,211,238,0.14)]"
+                              : "border-white/15 bg-white/8 hover:bg-white/12"
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-2xl">
+                              {game.icon}
+                            </div>
+
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between gap-2">
+                                <h3 className="text-lg font-black">{game.title}</h3>
+                                <span className="text-sm">
+                                  {isSelected ? "✅" : "⬜"}
+                                </span>
+                              </div>
+
+                              <p className="mt-1 text-sm text-white/70">
+                                {game.hint}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-4 text-right">
+                  <p className="text-sm text-white/60">عدد الجولات</p>
+                  <p className="mt-1 font-black text-yellow-100">
+                    {selectedSessionGames.length} جولة
+                  </p>
+                  <p className="mt-2 text-sm text-white/75">
+                    كل لعبة مختارة = جولة واحدة داخل تحدي الجلسة
+                  </p>
+                </div>
+              </>
             )}
 
             <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-right">
               <p className="text-sm text-white/60">مختصر اللعبة</p>
-              <p className="mt-1 text-white/90">{gameMeta.hint}</p>
+              <p className="mt-1 text-white/90">
+                {sessionMode === "session"
+                  ? "اختر الألعاب اللي تبيها، وكل لعبة تمثل جولة مستقلة داخل التحدي."
+                  : gameMeta.hint}
+              </p>
             </div>
 
             <button onClick={startGame} className="btn-primary mt-6 w-full">
@@ -462,9 +491,7 @@ export default function MatchPage() {
         {started && !gameEnded && (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
             <div>
-              {selectedGame === "quiz" ? (
-                currentGameBoard
-              ) : roundReady ? (
+              {roundReady ? (
                 <GlassCard className="min-h-[780px] p-8 text-center">
                   <div className="flex h-full min-h-[700px] flex-col items-center justify-center">
                     <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
@@ -476,15 +503,7 @@ export default function MatchPage() {
                     </h2>
 
                     <div className="mt-4 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-lg font-black">
-                      {sessionMode === "session" ? (
-                        <>
-                          🏆 {currentRound} / {rounds} — {getGameLabel(selectedGame)}
-                        </>
-                      ) : (
-                        <>
-                          {gameMeta.icon} {gameMeta.title}
-                        </>
-                      )}
+                      {gameMeta.icon} {gameMeta.title}
                     </div>
 
                     <div className="mt-6">
@@ -496,9 +515,7 @@ export default function MatchPage() {
                     </div>
 
                     <div className="mt-4 w-full max-w-xl rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-sm leading-7 text-white/80">
-                      {sessionMode === "session"
-                        ? "كل لعبة تعطي نقطة واحدة للفائز. في النهاية الأعلى نقاطًا يفوز بتحدي الجلسة."
-                        : gameMeta.hint}
+                      {gameMeta.hint}
                     </div>
 
                     <button
@@ -526,30 +543,22 @@ export default function MatchPage() {
               <div className="space-y-3">
                 <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
                   <p className="text-sm text-white/70">الجولة</p>
-                  <p
-                    dir="ltr"
-                    className="mt-1 text-3xl font-black text-yellow-200 text-left"
-                  >
+                  <p className="mt-1 text-3xl font-black text-yellow-200">
                     {currentRound} / {rounds}
                   </p>
                 </div>
 
-                {sessionMode === "session" && (
-                  <div className="rounded-2xl border border-pink-300/15 bg-pink-500/10 p-4">
-                    <p className="text-sm text-white/70">اللعبة الحالية</p>
-                    <p className="mt-1 text-xl font-black text-pink-100">
-                      {getGameLabel(selectedGame)}
-                    </p>
-                  </div>
-                )}
+                <div className="rounded-2xl border border-pink-300/15 bg-pink-500/10 p-4">
+                  <p className="text-sm text-white/70">اللعبة الحالية</p>
+                  <p className="mt-1 text-xl font-black text-pink-100">
+                    {gameMeta.icon} {gameMeta.title}
+                  </p>
+                </div>
 
-                {selectedGame === "quiz" && quizQuestionTotal > 0 && (
+                {activeGame === "quiz" && quizQuestionTotal > 0 && (
                   <div className="rounded-2xl border border-yellow-300/15 bg-yellow-400/10 p-4">
                     <p className="text-sm text-white/70">أسئلة الجولة</p>
-                    <p
-                      dir="ltr"
-                      className="mt-1 text-2xl font-black text-yellow-200 text-left"
-                    >
+                    <p className="mt-1 text-2xl font-black text-yellow-200">
                       {quizQuestionIndex} / {quizQuestionTotal}
                     </p>
                   </div>
@@ -600,9 +609,7 @@ export default function MatchPage() {
               GAME OVER
             </p>
 
-            <h2 className="mt-2 text-4xl font-black">
-              🏆 {sessionMode === "session" ? "انتهى تحدي الجلسة" : "انتهى التحدي"}
-            </h2>
+            <h2 className="mt-2 text-4xl font-black">🏆 انتهى التحدي</h2>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               <div className="rounded-3xl border border-pink-300/20 bg-pink-500/10 p-5">
