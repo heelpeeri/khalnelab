@@ -65,8 +65,10 @@ const PUZZLES = [
   { answer: "طيران ناس", category: "شركة سعودية" },
 
   // جهات حكومية
-  { answer: "هيئة الثقافة", category: "جهة حكومية" },
-  { answer: "هيئة السياحة", category: "جهة حكومية" },
+  { answer: "الأحوال المدنية ", category: "جهة حكومية" },
+  { answer: "أمانة الرياض ", category: "جهة حكومية" },
+  { answer: "وزارة السياحة", category: "جهة حكومية" },
+  { answer: "وزارة الرياضة", category: "جهة حكومية" },
 
   // تخصصات
   { answer: "الأمن السيبراني", category: "تخصص" },
