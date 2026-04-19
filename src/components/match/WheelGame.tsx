@@ -21,6 +21,7 @@ const PUZZLES = [
   { answer: "معصوب", category: "أكلة جنوبية" },
   { answer: "مقشوش", category: "حلا شمال حائل" },
   { answer: "أسعدالزهراني", category: "ممثل سعودي" },
+   { answer: "عبدالمحسنالنمر", category: "ممثل سعودي" },
   { answer: "سويسرا", category: "دولة" },
   { answer: "كولومبيا", category: "دولة" },
   { answer: "قوتشي", category: "براند عالمي" },
