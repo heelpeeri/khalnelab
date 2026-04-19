@@ -69,6 +69,7 @@ const PUZZLES = [
   { answer: "مكتبة جرير", category: "شركة سعودية" },
   { answer: "أرامكو السعودية", category: "شركة سعودية" },
   { answer: "طيران ناس", category: "شركة سعودية" },
+  { answer: "العبيكان للنشر", category: "شركة سعودية" },
 
   // جهات حكومية
   { answer: "الأحوال المدنية ", category: "جهة حكومية" },
