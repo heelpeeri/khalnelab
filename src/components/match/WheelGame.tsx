@@ -64,6 +64,7 @@ const PUZZLES = [
   { answer: "بوبايز", category: "مطعم" },
   { answer: "بيت الشواية", category: "مطعم" },
   { answer: "بيت الشاورما", category: "مطعم" },
+  { answer: "دجاج تكساس", category: "مطعم" },
 
   // شركات سعودية
   { answer: "مكتبة جرير", category: "شركة سعودية" },
@@ -80,6 +81,7 @@ const PUZZLES = [
   // تخصصات
   { answer: "الأمن السيبراني", category: "تخصص" },
   { answer: "تكنولوجيا المعلومات", category: "تخصص" },
+  { answer: "هندسة الطيران", category: "تخصص" },
 
   // مسلسلات
   { answer: "أبو العصافير", category: "مسلسل سعودي" },
