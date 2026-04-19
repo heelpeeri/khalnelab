@@ -26,6 +26,7 @@ const PUZZLES = [
   // ممثل سعودي
   { answer: "أسعد الزهراني", category: "ممثل سعودي" },
   { answer: "عبدالمحسن النمر", category: "ممثل سعودي" },
+  { answer: "خالد سامي", category: "ممثل سعودي" },
 
   // دول
   { answer: "سويسرا", category: "دولة" },
