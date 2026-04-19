@@ -83,9 +83,6 @@ const PUZZLES = [
   { answer: "دار الحكمة", category: "جامعة سعودية" },
   { answer: "دار العلوم", category: "جامعة سعودية" },
   { answer: "الأمير سلطان", category: "جامعة سعودية" },
-
-  // ألبوم
-  { answer: "مليون خاطر", category: "ألبوم أغاني سعودية" },
 ];
 const LETTER_ROWS = [
   "دجحخهعغفقثصض",
