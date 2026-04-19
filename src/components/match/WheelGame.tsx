@@ -16,47 +16,72 @@ const SEGMENTS = [
   { label: "إفلاس", value: "bankrupt" as Value, color: "#ef4444" },
   { label: "خسارة الدور", value: "lose" as Value, color: "#6b7280" },
 ];
-
 const PUZZLES = [
-  { answer: "معصوب", category: "أكلة جنوبية" },
-  { answer: "مقشوش", category: "حلا شمال حائل" },
-  { answer: "أسعدالزهراني", category: "ممثل سعودي" },
-  { answer: "عبدالمحسنالنمر", category: "ممثل سعودي" },
+  // أكل
+  { answer: "معصوب", category: "أكل" },
+  { answer: "مقشوش", category: "أكل" },
+  { answer: "قرصان", category: "أكل" },
+  { answer: "مثلوثة", category: "أكل" },
+
+  // ممثل سعودي
+  { answer: "أسعد الزهراني", category: "ممثل سعودي" },
+
+  // دول
   { answer: "سويسرا", category: "دولة" },
   { answer: "كولومبيا", category: "دولة" },
-  { answer: "قوتشي", category: "براند عالمي" },
-  { answer: "تاهو", category: "سيارة" },
-  { answer: "ريدبول", category: "مشروب" },
-  { answer: "روبيرتوكارلوس", category: "لاعب" },
-  { answer: "هنقرستيشن", category: "تطبيق" },
-  { answer: "وينديز", category: "مطعم" },
-  { answer: "قرصان", category: "أكلة نجدية" },
   { answer: "المكسيك", category: "دولة" },
-  { answer: "جمهوريةنيكاراغوا", category: "دولة" },
+  { answer: "جمهورية نيكاراغوا", category: "دولة" },
+
+  // براند عالمي
+  { answer: "قوتشي", category: "براند عالمي" },
   { answer: "كارتير", category: "براند عالمي" },
+  { answer: "لويس فيتون", category: "براند عالمي" },
+
+  // سيارات
+  { answer: "تاهو", category: "سيارة" },
   { answer: "كورولا", category: "سيارة" },
+
+  // مشروبات
+  { answer: "ريد بول", category: "مشروب" },
   { answer: "شاهي", category: "مشروب" },
+
+  // لاعبين
+  { answer: "روبيرتو كارلوس", category: "لاعب" },
   { answer: "بنزيما", category: "لاعب" },
+
+  // تطبيقات
+  { answer: "هنقرستيشن", category: "تطبيق" },
   { answer: "اوتلوك", category: "تطبيق" },
   { answer: "المسافر", category: "تطبيق" },
-  { answer: "بيتالشواية", category: "مطعم سعودي" },
-  { answer: "مكتبةجرير", category: "شركة سعودية" },
-  { answer: "أرامكوالسعودية", category: "شركة سعودية" },
-  { answer: "طيرانناس", category: "شركة سعودية" },
-  { answer: "هيئةالثقافة", category: "جهة حكومية" },
-  { answer: "هيئةالسياحة", category: "جهة حكومية" },
-  { answer: "الأمنالسيبراني", category: "تخصص" },
-  { answer: "تكنولوجياالمعلومات", category: "تخصص" },
-  { answer: "أبوالعصافير", category: "مسلسل سعودي" },
-  { answer: "كلناعيالقرية", category: "مسلسل سعودي" },
-  { answer: "حارةالشيخ", category: "مسلسل سعودي" },
-  { answer: "مثلوثة", category: "أكلة نجدية" },
-  { answer: "لويسفيتون", category: "براند عالمي" },
-  { answer: "دارالحكمة", category: "جامعة سعودية" },
-   { answer: "دارالعلوم", category: "جامعة سعودية" },
-  { answer: "مليونخاطر", category: "البوم أغاني سعودية" },
-  ];
 
+  // مطاعم
+  { answer: "وينديز", category: "مطعم" },
+  { answer: "بيتالشواية", category: "مطعم سعودي" },
+
+  // شركات سعودية
+  { answer: "مكتبة جرير", category: "شركة سعودية" },
+  { answer: "أرامكو السعودية", category: "شركة سعودية" },
+  { answer: "طيران ناس", category: "شركة سعودية" },
+
+  // جهات حكومية
+  { answer: "هيئة الثقافة", category: "جهة حكومية" },
+  { answer: "هيئة السياحة", category: "جهة حكومية" },
+
+  // تخصصات
+  { answer: "الأمن السيبراني", category: "تخصص" },
+  { answer: "تكنولوجيا المعلومات", category: "تخصص" },
+
+  // مسلسلات
+  { answer: "أبو العصافير", category: "مسلسل سعودي" },
+  { answer: "كلنا عيال قرية", category: "مسلسل سعودي" },
+  { answer: "حارة الشيخ", category: "مسلسل سعودي" },
+
+  // جامعة
+  { answer: "دار الحكمة", category: "جامعة سعودية" },
+
+  // ألبوم
+  { answer: "مليون خاطر", category: "ألبوم أغاني سعودية" },
+];
 const LETTER_ROWS = [
   "دجحخهعغفقثصض",
   "طكمنتالبيسش",
