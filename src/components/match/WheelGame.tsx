@@ -46,7 +46,8 @@ const PUZZLES = [
   { answer: "اكسنت", category: "سيارة" },
   // مشروبات
   { answer: "ريد بول", category: "مشروب" },
-  { answer: "شاهي", category: "مشروب" },
+  { answer: "كينزا", category: "مشروب" },
+  { answer: "دكتور بيبر", category: "مشروب" },
 
   // لاعبين
   { answer: "روبيرتو كارلوس", category: "لاعب" },
