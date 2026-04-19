@@ -18,8 +18,8 @@ const SEGMENTS = [
 ];
 
 const PUZZLES = [
-  { answer: "معصوب", category: "أكلة" },
-  { answer: "مقشوش", category: "حلا سعودي" },
+  { answer: "معصوب", category: "أكلة جنوبية" },
+  { answer: "مقشوش", category: "حلا شمال حائل" },
   { answer: "سويسرا", category: "دولة" },
   { answer: "قوتشي", category: "براند عالمي" },
   { answer: "تاهو", category: "سيارة" },
@@ -27,7 +27,7 @@ const PUZZLES = [
   { answer: "روبيرتوكارلوس", category: "لاعب" },
   { answer: "هنقرستيشن", category: "تطبيق" },
   { answer: "وينديز", category: "مطعم" },
-  { answer: "شكشوكة", category: "أكلة" },
+  { answer: "قرصان", category: "أكلة نجدية" },
   { answer: "المكسيك", category: "دولة" },
   { answer: "جمهوريةنيكاراغوا", category: "دولة" },
   { answer: "كارتير", category: "براند عالمي" },
@@ -36,7 +36,7 @@ const PUZZLES = [
   { answer: "بنزيما", category: "لاعب" },
   { answer: "اوتلوك", category: "تطبيق" },
   { answer: "المسافر", category: "تطبيق" },
-  { answer: "بيتالشواية", category: "مطعم" },
+  { answer: "بيتالشواية", category: "مطعم سعودي" },
   { answer: "مكتبةجرير", category: "شركة سعودية" },
   { answer: "أرامكوالسعودية", category: "شركة سعودية" },
   { answer: "طيرانناس", category: "شركة سعودية" },
@@ -47,7 +47,7 @@ const PUZZLES = [
   { answer: "أبوالعصافير", category: "مسلسل سعودي" },
   { answer: "كلناعيالقرية", category: "مسلسل سعودي" },
   { answer: "حارةالشيخ", category: "مسلسل سعودي" },
-  { answer: "مثلوثة", category: "أكلة" },
+  { answer: "مثلوثة", category: "أكلة نجدية" },
   { answer: "لويسفيتون", category: "براند عالمي" },
   { answer: "دارالحكمة", category: "جامعة سعودية" },
   { answer: "مليونخاطر", category: "البوم أغاني سعودية" },
