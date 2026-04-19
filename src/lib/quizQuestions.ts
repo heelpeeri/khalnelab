@@ -13,7 +13,6 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       answer: "يونس",
     },
     {
-    {
      question: "من النبي الذي قُبضت روحه في السماء؟",
      answer: "إدريس",
     },
