@@ -41,7 +41,7 @@ const PUZZLES = [
   // سيارات
   { answer: "تاهو", category: "سيارة" },
   { answer: "كورولا", category: "سيارة" },
-
+  { answer: "ازيرا", category: "سيارة" },
   // مشروبات
   { answer: "ريد بول", category: "مشروب" },
   { answer: "شاهي", category: "مشروب" },
