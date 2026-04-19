@@ -151,13 +151,6 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-6 rounded-[24px] border border-cyan-300/10 bg-white/6 p-4 text-right">
-              <p className="text-sm font-bold text-white/65">مناسب للجلسات</p>
-              <p className="mt-1 text-sm leading-7 text-white/82">
-                ألعاب متسلسلة + فرق + نقاط + فائز نهائي
-              </p>
-            </div>
-
             <div className="mt-6">
               <Link
                 href="/match?mode=session"
