@@ -13,6 +13,10 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     answer: "يونس",
     },
     {
+    question: "كم كان عمر النبي ﷺ عند نزول الوحي؟",
+    answer: "40",
+    },
+    {
     question: "كم عدد أبناء النبي ﷺ ذكورًا وإناثًا؟",
     answer: "7",
     },
