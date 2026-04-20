@@ -29,8 +29,8 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
   answer: "طور سيناء",
    },
    {
-  question: "من هو النبي الذي بعث بعد 100 عام؟",
-  answer: "عزير",
+  question: "كم سنة استمرت الدعوة في المدينة؟",
+  answer: "10",
     },
     {
      question: "لماذا ابتلع الحوت يونس عليه السلام؟",
