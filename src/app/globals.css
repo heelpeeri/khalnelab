@@ -236,75 +236,57 @@ select option {
   animation: intro 0.55s ease-out;
 }
 /* Final winner overlay */
-@keyframes final-win-pop {
-  0% {
-    opacity: 0;
-    transform: scale(0.72) translateY(18px);
-    filter: blur(10px);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.06) translateY(0);
-    filter: blur(0);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+function FinalWinnerOverlay({
+  show,
+  winnerName,
+  isDraw,
+  onClose,
+}: {
+  show: boolean;
+  winnerName: string;
+  isDraw: boolean;
+  onClose: () => void;
+}) {
+  if (!show) return null;
 
-@keyframes winner-shine {
-  0% {
-    opacity: 0;
-    transform: translateX(-120%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(140%);
-  }
-}
+  return (
+    <div className="arcade-backdrop fixed inset-0 z-[60] flex items-center justify-center px-4">
+      <div className="arcade-card w-full max-w-2xl p-8 text-center md:p-10">
+        <div className="arcade-stars">
+          <span style={{ top: "10%", left: "12%" }}>✦</span>
+          <span style={{ top: "18%", right: "14%" }}>✦</span>
+          <span style={{ bottom: "18%", left: "16%" }}>✦</span>
+          <span style={{ bottom: "12%", right: "12%" }}>✦</span>
+          <span style={{ top: "45%", left: "8%" }}>+</span>
+          <span style={{ top: "42%", right: "8%" }}>+</span>
+        </div>
 
-.final-win-backdrop {
-  background:
-    radial-gradient(circle at center, rgba(255, 191, 63, 0.08), transparent 30%),
-    rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
+        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/80">
+          FINAL RESULT
+        </p>
 
-.final-win-card {
-  position: relative;
-  overflow: hidden;
-  animation: final-win-pop 0.6s ease-out both;
-}
+        <h2 className="arcade-title mt-5">
+          {isDraw ? "DRAW!" : "LEVEL UP!"}
+        </h2>
 
-.final-win-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: -30%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.05) 30%,
-    rgba(255, 255, 255, 0.22) 50%,
-    transparent 70%
+        <p className="arcade-winner mt-6">
+          {isDraw ? "تعادل" : winnerName}
+        </p>
+
+        <p className="arcade-subtitle mt-5 text-sm md:text-base">
+          {isDraw
+            ? "انتهى التحدي بدون فائز نهائي بعدد نقاط متساوٍ"
+            : "الفريق الفائز أنهى التحدي بأعلى عدد من النقاط"}
+        </p>
+
+        <button
+          onClick={onClose}
+          className="arcade-button mt-8"
+          type="button"
+        >
+          START
+        </button>
+      </div>
+    </div>
   );
-  transform: skewX(-18deg);
-  animation: winner-shine 1s ease-out 0.2s 1;
-  pointer-events: none;
-}
-
-.final-win-title {
-  text-shadow:
-    0 0 14px rgba(255, 191, 63, 0.32),
-    0 0 28px rgba(255, 79, 163, 0.14);
-}
-
-.final-win-name {
-  text-shadow:
-    0 0 14px rgba(255, 191, 63, 0.24),
-    0 0 24px rgba(77, 226, 255, 0.14);
 }
