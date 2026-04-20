@@ -11,6 +11,10 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     {
       question: "من قائل: لا إله إلا أنت سبحانك إني كنت من الظالمين؟",
       answer: "يونس",
+       },
+    {
+     question: "لماذا ابتلع الحوت يونس عليه السلام؟",
+     answer: "ترك قومه بدون إذن الله",
     },
     {
      question: "ما المعجزة التي حدثت عند غار ثور أثناء الهجرة؟",
