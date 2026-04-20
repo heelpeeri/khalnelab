@@ -118,32 +118,41 @@ function FinalWinnerOverlay({
   if (!show) return null;
 
   return (
-    <div className="final-win-backdrop fixed inset-0 z-[60] flex items-center justify-center px-4">
-      <div className="final-win-card w-full max-w-2xl rounded-[36px] border border-white/15 bg-[linear-gradient(180deg,rgba(18,0,34,0.96),rgba(10,0,20,0.96))] p-8 text-center shadow-[0_0_60px_rgba(255,79,163,0.14)] md:p-10">
+    <div className="arcade-backdrop fixed inset-0 z-[60] flex items-center justify-center px-4">
+      <div className="arcade-card w-full max-w-2xl p-8 text-center md:p-10">
+        <div className="arcade-stars">
+          <span style={{ top: "10%", left: "12%" }}>✦</span>
+          <span style={{ top: "18%", right: "14%" }}>✦</span>
+          <span style={{ bottom: "18%", left: "16%" }}>✦</span>
+          <span style={{ bottom: "12%", right: "12%" }}>✦</span>
+          <span style={{ top: "45%", left: "8%" }}>+</span>
+          <span style={{ top: "42%", right: "8%" }}>+</span>
+        </div>
+
         <p className="text-sm font-black tracking-[0.22em] text-cyan-300/80">
           FINAL RESULT
         </p>
 
-        <h2 className="final-win-title mt-4 text-4xl font-black text-white md:text-6xl">
-          {isDraw ? "🤝 تعادل" : "🏆 البطل"}
+        <h2 className="arcade-title mt-5">
+          {isDraw ? "DRAW!" : "LEVEL UP!"}
         </h2>
 
-        <p className="final-win-name mt-5 text-3xl font-black text-yellow-300 md:text-5xl">
-          {winnerName}
+        <p className="arcade-winner mt-6">
+          {isDraw ? "تعادل" : winnerName}
         </p>
 
-        <p className="mt-4 text-sm leading-7 text-white/72 md:text-base">
+        <p className="arcade-subtitle mt-5 text-sm md:text-base">
           {isDraw
             ? "انتهى التحدي بدون فائز نهائي بعدد نقاط متساوٍ"
-            : "انتهى التحدي والفريق الفائز حقق أعلى عدد من النقاط"}
+            : "الفريق الفائز أنهى التحدي بأعلى عدد من النقاط"}
         </p>
 
         <button
           onClick={onClose}
-          className="btn-primary mt-8 min-w-[220px]"
+          className="arcade-button mt-8"
           type="button"
         >
-          عرض النتيجة
+          START
         </button>
       </div>
     </div>
