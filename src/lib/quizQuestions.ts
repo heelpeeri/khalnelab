@@ -13,6 +13,10 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
       answer: "يونس",
     },
     {
+     question: "ما المعجزة التي حدثت عند غار ثور أثناء الهجرة؟",
+     answer: "عش الحمام وخيوط العنكبوت",
+    },
+    {
      question: "من هو النبي الذي رآه النبي ﷺ يصلي في قبره ليلة الإسراء؟",
      answer: "موسى", 
     },
