@@ -3,17 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 
-type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
 export default function ScrambleGame({
-  mode,
   side1Name,
   side2Name,
   onRoundEnd,
   roundKey,
 }: {
-  mode: PlayMode;
   side1Name: string;
   side2Name: string;
   onRoundEnd: (winner?: WinnerType) => void;
@@ -54,16 +51,18 @@ export default function ScrambleGame({
   }
 
   const ROUND_TIME = 12;
-  const [index, setIndex] = useState(() => Math.floor(Math.random() * QUESTIONS.length));
+  const [index, setIndex] = useState(
+    () => Math.floor(Math.random() * QUESTIONS.length)
+  );
   const current = useMemo(() => QUESTIONS[index], [index]);
 
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
   const [revealed, setRevealed] = useState(false);
   const [winnerSide, setWinnerSide] = useState<"side1" | "side2" | null>(null);
   const [winnerTime, setWinnerTime] = useState<number | null>(null);
-  const [shuffled, setShuffled] = useState(() => shuffleWord(QUESTIONS[index].answer));
-
-  const readyLabel = mode === "teams" ? "خلصنا" : "خلصت";
+  const [shuffled, setShuffled] = useState(() =>
+    shuffleWord(QUESTIONS[index].answer)
+  );
 
   useEffect(() => {
     const nextIndex = Math.floor(Math.random() * QUESTIONS.length);
@@ -123,7 +122,7 @@ export default function ScrambleGame({
 
   const timerTextClass =
     timeLeft <= 4
-      ? "font-black text-red-400 animate-pulse scale-110"
+      ? "scale-110 animate-pulse font-black text-red-400"
       : timeLeft <= 7
       ? "font-black text-yellow-300"
       : "font-black text-cyan-200";
@@ -174,7 +173,7 @@ export default function ScrambleGame({
 
         {!revealed && !winnerSide && (
           <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4 text-white/80">
-            أول واحد يفكها يضغط <span className="font-black text-white">{readyLabel}</span>
+            أول فريق يفكها يضغط <span className="font-black text-white">خلصنا</span>
           </div>
         )}
 
@@ -195,7 +194,7 @@ export default function ScrambleGame({
           <div
             className={`rounded-3xl border p-4 text-center transition ${
               winnerSide === "side1"
-                ? "scale-105 border-pink-300/40 bg-pink-500/20 shadow-[0_0_22px_rgba(236,72,153,0.2)] animate-pulse"
+                ? "animate-pulse scale-105 border-pink-300/40 bg-pink-500/20 shadow-[0_0_22px_rgba(236,72,153,0.2)]"
                 : winnerSide
                 ? "border-pink-400/20 bg-pink-500/10 opacity-35 grayscale"
                 : "border-pink-400/20 bg-pink-500/10"
@@ -216,14 +215,14 @@ export default function ScrambleGame({
               disabled={!!winnerSide || revealed}
               className="btn-primary mt-4 w-full disabled:opacity-50"
             >
-              {readyLabel}
+              خلصنا
             </button>
           </div>
 
           <div
             className={`rounded-3xl border p-4 text-center transition ${
               winnerSide === "side2"
-                ? "scale-105 border-cyan-300/40 bg-cyan-400/20 shadow-[0_0_22px_rgba(34,211,238,0.2)] animate-pulse"
+                ? "animate-pulse scale-105 border-cyan-300/40 bg-cyan-400/20 shadow-[0_0_22px_rgba(34,211,238,0.2)]"
                 : winnerSide
                 ? "border-cyan-300/20 bg-cyan-400/10 opacity-35 grayscale"
                 : "border-cyan-300/20 bg-cyan-400/10"
@@ -244,7 +243,7 @@ export default function ScrambleGame({
               disabled={!!winnerSide || revealed}
               className="btn-primary mt-4 w-full disabled:opacity-50"
             >
-              {readyLabel}
+              خلصنا
             </button>
           </div>
         </div>
@@ -259,11 +258,7 @@ export default function ScrambleGame({
             إظهار الإجابة
           </button>
 
-          <button
-            type="button"
-            onClick={finishRound}
-            className="btn-primary"
-          >
+          <button type="button" onClick={finishRound} className="btn-primary">
             إنهاء الجولة
           </button>
         </div>
