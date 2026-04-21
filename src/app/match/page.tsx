@@ -1,5 +1,6 @@
 'use client';
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
@@ -12,7 +13,6 @@ import QuizGame from "@/components/match/QuizGame";
 
 type GameType = "word" | "draw" | "categories" | "scramble" | "wheel" | "quiz";
 type SessionMode = "quick" | "session";
-type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
 const SESSION_GAME_OPTIONS: {
@@ -159,10 +159,24 @@ function FinalWinnerOverlay({
   );
 }
 
+function CountdownOverlay({ count }: { count: number | null }) {
+  if (count === null) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-sm">
+      <div className="rounded-[36px] border border-white/20 bg-[#130019]/90 px-16 py-12 text-center shadow-2xl">
+        <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
+          GET READY
+        </p>
+        <p className="mt-4 text-8xl font-black text-white">{count}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function MatchPage() {
   const [sessionMode, setSessionMode] = useState<SessionMode>("quick");
 
-  const [mode, setMode] = useState<PlayMode>("teams");
   const [side1, setSide1] = useState("فريق 1");
   const [side2, setSide2] = useState("فريق 2");
   const [rounds, setRounds] = useState(3);
@@ -188,6 +202,8 @@ export default function MatchPage() {
   const [quizQuestionTotal, setQuizQuestionTotal] = useState(0);
 
   const [showFinalWinnerOverlay, setShowFinalWinnerOverlay] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [gameSelectionLocked, setGameSelectionLocked] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -196,6 +212,7 @@ export default function MatchPage() {
 
     if (modeParam === "session") {
       setSessionMode("session");
+      setGameSelectionLocked(false);
       return;
     }
 
@@ -210,6 +227,9 @@ export default function MatchPage() {
       game === "quiz"
     ) {
       setSelectedGame(game);
+      setGameSelectionLocked(true);
+    } else {
+      setGameSelectionLocked(false);
     }
   }, []);
 
@@ -219,18 +239,33 @@ export default function MatchPage() {
     }
   }, [gameEnded]);
 
+  useEffect(() => {
+    if (countdown === null) return;
+
+    if (countdown === 0) {
+      const timeout = setTimeout(() => {
+        setCountdown(null);
+        setRoundReady(false);
+        setRoundSeed((s) => s + 1);
+      }, 150);
+
+      return () => clearTimeout(timeout);
+    }
+
+    const timeout = setTimeout(() => {
+      setCountdown((prev) => (prev === null ? null : prev - 1));
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [countdown]);
+
   const activeGame =
     sessionMode === "session"
       ? selectedSessionGames[currentRound - 1] ?? selectedSessionGames[0] ?? "word"
       : selectedGame;
 
-  const side1Label = mode === "teams" ? "اسم فريق 1" : "اسم اللاعب 1";
-  const side2Label = mode === "teams" ? "اسم فريق 2" : "اسم اللاعب 2";
-  const currentTurnLabel = mode === "teams" ? "دور الفريق" : "دور اللاعب";
-  const winnerQuestionLabel =
-    mode === "teams"
-      ? "اختر الجهة الفائزة في هذه الجولة"
-      : "اختر الفائز في هذه الجولة";
+  const currentTurnLabel = "دور الفريق";
+  const winnerQuestionLabel = "اختر الجهة الفائزة في هذه الجولة";
 
   const currentTurnName = currentRound % 2 === 1 ? side1 : side2;
 
@@ -266,7 +301,6 @@ export default function MatchPage() {
 
   function startGame() {
     if (!side1.trim() || !side2.trim()) return;
-
     if (sessionMode === "session" && selectedSessionGames.length === 0) return;
 
     const nextRounds =
@@ -283,11 +317,12 @@ export default function MatchPage() {
     setQuizQuestionIndex(0);
     setQuizQuestionTotal(0);
     setRounds(nextRounds);
+    setCountdown(null);
   }
 
   function beginRound() {
-    setRoundReady(false);
-    setRoundSeed((s) => s + 1);
+    if (countdown !== null) return;
+    setCountdown(3);
   }
 
   function endRound(winner?: WinnerType) {
@@ -314,7 +349,8 @@ export default function MatchPage() {
 
     setCurrentRound((r) => r + 1);
     setRoundReady(true);
-    setRoundSeed((s) => s + 1);
+    setQuizQuestionIndex(0);
+    setQuizQuestionTotal(0);
   }
 
   function resetGame() {
@@ -329,6 +365,7 @@ export default function MatchPage() {
     setRoundSeed(1);
     setQuizQuestionIndex(0);
     setQuizQuestionTotal(0);
+    setCountdown(null);
     setRounds(sessionMode === "session" ? selectedSessionGames.length || 1 : 3);
   }
 
@@ -337,7 +374,6 @@ export default function MatchPage() {
       <WordGame onRoundEnd={endRound} roundKey={roundSeed} />
     ) : activeGame === "draw" ? (
       <ProverbGame
-        mode={mode}
         side1Name={side1}
         side2Name={side2}
         onRoundEnd={endRound}
@@ -345,7 +381,6 @@ export default function MatchPage() {
       />
     ) : activeGame === "scramble" ? (
       <ScrambleGame
-        mode={mode}
         side1Name={side1}
         side2Name={side2}
         onRoundEnd={endRound}
@@ -360,7 +395,6 @@ export default function MatchPage() {
       />
     ) : activeGame === "quiz" ? (
       <QuizGame
-        mode={mode}
         side1Name={side1}
         side2Name={side2}
         onRoundEnd={endRound}
@@ -372,7 +406,6 @@ export default function MatchPage() {
       />
     ) : (
       <CategoriesGame
-        mode={mode}
         side1Name={side1}
         side2Name={side2}
         onRoundEnd={endRound}
@@ -417,76 +450,74 @@ export default function MatchPage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-bold">نوع التحدي</label>
-                <select
-                  value={mode}
-                  onChange={(e) => {
-                    const nextMode = e.target.value as PlayMode;
-                    setMode(nextMode);
-                    setSide1(nextMode === "teams" ? "فريق 1" : "لاعب 1");
-                    setSide2(nextMode === "teams" ? "فريق 2" : "لاعب 2");
-                  }}
-                  className="input"
-                >
-                  <option value="teams">فريقين</option>
-                  <option value="solo">فردي</option>
-                </select>
-              </div>
-
-              {sessionMode === "quick" && (
-                <div>
-                  <label className="mb-2 block text-sm font-bold">اختيار اللعبة</label>
-                  <select
-                    value={selectedGame}
-                    onChange={(e) => setSelectedGame(e.target.value as GameType)}
-                    className="input"
-                  >
-                    <option value="word">خمن الكلمة</option>
-                    <option value="draw">خمن المثل</option>
-                    <option value="categories">إنسان حيوان نبات جماد بلاد</option>
-                    <option value="scramble">حروف بالخلاط</option>
-                    <option value="wheel">لف وخمن</option>
-                    <option value="quiz">الأسئلة</option>
-                  </select>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-bold">{side1Label}</label>
+                <label className="mb-2 block text-sm font-bold">اسم فريق 1</label>
                 <input
                   value={side1}
                   onChange={(e) => setSide1(e.target.value)}
                   className="input"
-                  placeholder={mode === "teams" ? "مثال: الصقور" : "مثال: محمد"}
+                  placeholder="مثال: الصقور"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-bold">{side2Label}</label>
+                <label className="mb-2 block text-sm font-bold">اسم فريق 2</label>
                 <input
                   value={side2}
                   onChange={(e) => setSide2(e.target.value)}
                   className="input"
-                  placeholder={mode === "teams" ? "مثال: الذئاب" : "مثال: خالد"}
+                  placeholder="مثال: الذئاب"
                 />
               </div>
             </div>
 
             {sessionMode === "quick" ? (
-              <div className="mt-4">
-                <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
-                <select
-                  value={rounds}
-                  onChange={(e) => setRounds(Number(e.target.value))}
-                  className="input"
-                >
-                  <option value={1}>1</option>
-                  <option value={3}>3</option>
-                  <option value={5}>5</option>
-                </select>
-              </div>
+              <>
+                {gameSelectionLocked ? (
+                  <div className="mt-6 rounded-2xl border border-pink-300/20 bg-pink-500/10 p-4 text-right">
+                    <p className="text-sm text-white/60">اللعبة المختارة</p>
+                    <p className="mt-1 text-xl font-black text-pink-100">
+                      {gameMeta.icon} {gameMeta.title}
+                    </p>
+                    <div className="mt-3">
+                      <Link
+                        href="/match?mode=quick"
+                        className="text-sm font-bold text-cyan-300 hover:text-cyan-200"
+                      >
+                        تغيير اللعبة
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-4">
+                    <label className="mb-2 block text-sm font-bold">اختيار اللعبة</label>
+                    <select
+                      value={selectedGame}
+                      onChange={(e) => setSelectedGame(e.target.value as GameType)}
+                      className="input"
+                    >
+                      <option value="word">خمن الكلمة</option>
+                      <option value="draw">خمن المثل</option>
+                      <option value="categories">إنسان حيوان نبات جماد بلاد</option>
+                      <option value="scramble">حروف بالخلاط</option>
+                      <option value="wheel">لف وخمن</option>
+                      <option value="quiz">الأسئلة</option>
+                    </select>
+                  </div>
+                )}
+
+                <div className="mt-4">
+                  <label className="mb-2 block text-sm font-bold">عدد الجولات</label>
+                  <select
+                    value={rounds}
+                    onChange={(e) => setRounds(Number(e.target.value))}
+                    className="input"
+                  >
+                    <option value={1}>1</option>
+                    <option value={3}>3</option>
+                    <option value={5}>5</option>
+                  </select>
+                </div>
+              </>
             ) : (
               <>
                 <div className="mt-6">
@@ -754,6 +785,8 @@ export default function MatchPage() {
           </div>
         </div>
       )}
+
+      <CountdownOverlay count={countdown} />
 
       <FinalWinnerOverlay
         show={showFinalWinnerOverlay}
