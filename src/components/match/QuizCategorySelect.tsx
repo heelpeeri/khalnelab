@@ -50,13 +50,9 @@ export default function QuizCategorySelect({
           >
             <div className="text-3xl">{cat.emoji}</div>
 
-            <h3 className="mt-3 text-xl font-black text-white">
-              {cat.title}
-            </h3>
+            <h3 className="mt-3 text-xl font-black text-white">{cat.title}</h3>
 
-            <p className="mt-1 text-sm text-white/70">
-              {cat.desc}
-            </p>
+            <p className="mt-1 text-sm text-white/70">{cat.desc}</p>
           </button>
         ))}
       </div>
