@@ -29,12 +29,12 @@ export const quizQuestions: Record<QuizCategoryKey, QuizQuestion[]> = {
     answer: "قميص يوسف",
     },
     {
-  question: "ما اسم الجبل الذي كلم الله فيه موسى؟",
-  answer: "طور سيناء",
+    question: "ما اسم الجبل الذي كلم الله فيه موسى؟",
+    answer: "طور سيناء",
    },
    {
-  question: "كم سنة استمرت الدعوة في المدينة؟",
-  answer: "10",
+    question: "كم سنة استمرت الدعوة في المدينة؟",
+    answer: "10",
     },
     {
      question: "لماذا ابتلع الحوت يونس عليه السلام؟",
