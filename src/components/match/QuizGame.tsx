@@ -9,7 +9,6 @@ import {
   QuizQuestion,
 } from "@/lib/quizQuestions";
 
-type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
 const LAST_ROUND_QUESTIONS: Partial<Record<QuizCategoryKey, string[]>> = {};
@@ -26,14 +25,12 @@ function shuffleArray<T>(items: T[]) {
 }
 
 export default function QuizGame({
-  mode,
   side1Name,
   side2Name,
   onRoundEnd,
   roundKey,
   onProgressChange,
 }: {
-  mode: PlayMode;
   side1Name: string;
   side2Name: string;
   onRoundEnd: (winner?: WinnerType) => void;
@@ -74,7 +71,7 @@ export default function QuizGame({
     setSide1Correct(0);
     setSide2Correct(0);
     onProgressChange?.(0, 0);
-  }, [roundKey]); // ✅ شلنا onProgressChange من dependencies
+  }, [roundKey]);
 
   useEffect(() => {
     if (!category || questions.length === 0) {
@@ -83,7 +80,7 @@ export default function QuizGame({
     }
 
     onProgressChange?.(index + 1, questions.length);
-  }, [category, index, questions]); // ✅ شلنا onProgressChange من dependencies هنا أيضًا
+  }, [category, index, questions]);
 
   function handleSelectCategory(cat: QuizCategoryKey) {
     const picked = pickQuestions(cat);
@@ -138,7 +135,9 @@ export default function QuizGame({
       ? "السيرة والأنبياء"
       : category === "saudi"
       ? "تاريخ السعودية"
-      : "كرة القدم السعودية";
+      : category === "football"
+      ? "كرة القدم السعودية"
+      : "الجغرافيا";
 
   if (!category) {
     return (
@@ -177,10 +176,7 @@ export default function QuizGame({
 
         <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
           <p className="text-sm text-white/60">السؤال</p>
-          <p
-            dir="ltr"
-            className="mt-1 text-xl font-black text-cyan-200 text-left"
-          >
+          <p dir="ltr" className="mt-1 text-left text-xl font-black text-cyan-200">
             {index + 1} / {questions.length}
           </p>
         </div>
@@ -246,9 +242,7 @@ export default function QuizGame({
           <div className="rounded-2xl border border-white/15 bg-white/10 p-5">
             <p className="text-xl font-black">مين جاوب صح؟</p>
             <p className="mt-2 text-white/70">
-              {mode === "teams"
-                ? "اختر الفريق الذي جاوب السؤال بشكل صحيح"
-                : "اختر اللاعب الذي جاوب السؤال بشكل صحيح"}
+              اختر الفريق الذي جاوب السؤال بشكل صحيح
             </p>
 
             <div className="mt-6 space-y-3">
