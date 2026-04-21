@@ -3,171 +3,58 @@
 import { useEffect, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 
-type PlayMode = "solo" | "teams";
-type WinnerType = "side1" | "side2" | "none";
-
 export default function CategoriesGame({
-  mode,
   side1Name,
   side2Name,
   onRoundEnd,
   roundKey,
 }: {
-  mode: PlayMode;
   side1Name: string;
   side2Name: string;
-  onRoundEnd: (winner?: WinnerType) => void;
+  onRoundEnd: () => void;
   roundKey: number;
 }) {
-  const ROUND_TIME = 40;
-  const letters = ["م", "س", "ب", "ر", "ن", "ل", "ك"];
-  const [letter, setLetter] = useState(() => letters[Math.floor(Math.random() * letters.length)]);
-
-  const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
+  const letters = ["م", "س", "ب", "ر", "ن"];
+  const [letter, setLetter] = useState("م");
+  const [timeLeft, setTimeLeft] = useState(40);
   const [revealed, setRevealed] = useState(false);
 
-  const [side1Ready, setSide1Ready] = useState(false);
-  const [side2Ready, setSide2Ready] = useState(false);
-  const [side1Time, setSide1Time] = useState<number | null>(null);
-  const [side2Time, setSide2Time] = useState<number | null>(null);
-
-  const readyLabel = mode === "teams" ? "خلصنا" : "خلصت";
-
-  const instructionText =
-    mode === "teams"
-      ? 'فكروا في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى الفريق، يقول لصاحب الجلسة: "خلصنا" ثم يسجلها صاحب الجلسة'
-      : 'فكر في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت" ثم يسجلها صاحب الجلسة';
-
   useEffect(() => {
-    const next = letters[Math.floor(Math.random() * letters.length)];
-    setLetter(next);
-    setTimeLeft(ROUND_TIME);
+    setLetter(letters[Math.floor(Math.random() * letters.length)]);
+    setTimeLeft(40);
     setRevealed(false);
-    setSide1Ready(false);
-    setSide2Ready(false);
-    setSide1Time(null);
-    setSide2Time(null);
   }, [roundKey]);
 
   useEffect(() => {
     if (revealed) return;
-
-    if (side1Ready && side2Ready) {
-      setRevealed(true);
-      return;
-    }
 
     if (timeLeft <= 0) {
       setRevealed(true);
       return;
     }
 
-    const timer = setTimeout(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [timeLeft, revealed, side1Ready, side2Ready]);
+    const t = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+    return () => clearTimeout(t);
+  }, [timeLeft, revealed]);
 
   return (
-    <GlassCard className="relative overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-8 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md min-h-[780px]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
-      <div className="relative z-10">
-        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">
-          CATEGORIES
-        </p>
-        <h2 className="mt-2 text-3xl font-black text-[#98ffb6] drop-shadow-[0_0_14px_rgba(152,255,182,0.35)]">
-          إنسان حيوان نبات جماد بلاد
-        </h2>
+    <GlassCard className="text-center">
+      <h2 className="text-3xl font-black">إنسان حيوان نبات</h2>
 
-        <div className="mt-6 flex justify-center">
-          <div className="rounded-[30px] border-4 border-yellow-300/35 bg-[#fff7d6] px-12 py-8 text-7xl font-black text-[#ff4fd8] shadow-[0_0_26px_rgba(255,214,102,0.22)]">
-            {letter}
-          </div>
-        </div>
+      <div className="text-6xl mt-6">{letter}</div>
 
-        <div className="mx-auto mt-5 w-full max-w-md">
-          <div className="mb-1 flex justify-between text-sm text-white/80">
-            <span>الوقت</span>
-            <span className={timeLeft <= 5 ? "font-black text-red-300 animate-pulse" : "font-black text-yellow-200"}>
-              {timeLeft}
-            </span>
-          </div>
+      <p className="mt-4">الوقت: {timeLeft}</p>
 
-          <div className="h-3 w-full overflow-hidden rounded-full border border-white/10 bg-white/10">
-            <div
-              className="h-full bg-gradient-to-r from-cyan-400 via-pink-500 to-yellow-300 transition-all duration-1000"
-              style={{ width: `${(timeLeft / 40) * 100}%` }}
-            />
-          </div>
-        </div>
+      {revealed && (
+        <p className="mt-4 text-yellow-300">انتهى الوقت</p>
+      )}
 
-        <div className="mt-6 rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-6 text-center">
-          <p className="text-lg font-black text-white">تعليمات الجولة</p>
-          <p className="mt-3 leading-8 text-white/80">{instructionText}</p>
-        </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="rounded-3xl border border-pink-400/20 bg-pink-500/10 p-4 text-center">
-            <p className="text-lg font-black">{side1Name}</p>
-            <p className="mt-2 text-sm text-white/80">
-              {side1Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
-            </p>
-            {side1Time !== null && (
-              <p className="mt-1 text-xs text-white/70">تم تسجيله خلال {side1Time} ثانية</p>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                setSide1Ready(true);
-                setSide1Time(ROUND_TIME - timeLeft);
-              }}
-              disabled={side1Ready || revealed}
-              className="btn-primary mt-4 w-full disabled:opacity-50"
-            >
-              {readyLabel}
-            </button>
-          </div>
-
-          <div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-center">
-            <p className="text-lg font-black">{side2Name}</p>
-            <p className="mt-2 text-sm text-white/80">
-              {side2Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
-            </p>
-            {side2Time !== null && (
-              <p className="mt-1 text-xs text-white/70">تم تسجيله خلال {side2Time} ثانية</p>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                setSide2Ready(true);
-                setSide2Time(ROUND_TIME - timeLeft);
-              }}
-              disabled={side2Ready || revealed}
-              className="btn-primary mt-4 w-full disabled:opacity-50"
-            >
-              {readyLabel}
-            </button>
-          </div>
-        </div>
-
-        {revealed && (
-          <div className="mt-6 rounded-2xl border border-yellow-300/25 bg-yellow-300/10 p-4 text-center shadow-[0_0_18px_rgba(250,204,21,0.12)]">
-            <p className="text-lg font-black text-yellow-100">🚫 انتهى الوقت – وقت الإعلان</p>
-          </div>
-        )}
-
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => onRoundEnd()}
-            disabled={!revealed}
-            className="btn-primary disabled:opacity-50"
-          >
-            إنهاء الجولة
-          </button>
-        </div>
-      </div>
+      <button
+        className="btn-primary mt-6"
+        onClick={() => onRoundEnd()}
+      >
+        إنهاء الجولة
+      </button>
     </GlassCard>
   );
 }
