@@ -1,3 +1,5 @@
+import React from "react";
+
 export function GlassCard({
   children,
   className = "",
@@ -5,9 +7,5 @@ export function GlassCard({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <div className={`glass p-6 ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`glass ${className}`}>{children}</div>;
 }
