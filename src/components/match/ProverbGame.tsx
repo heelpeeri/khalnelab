@@ -3,17 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { GlassCard } from "@/components/GlassCard";
 
-type PlayMode = "solo" | "teams";
 type WinnerType = "side1" | "side2" | "none";
 
 export default function ProverbGame({
-  mode,
   side1Name,
   side2Name,
   onRoundEnd,
   roundKey,
 }: {
-  mode: PlayMode;
   side1Name: string;
   side2Name: string;
   onRoundEnd: (winner?: WinnerType) => void;
@@ -54,7 +51,9 @@ export default function ProverbGame({
   ];
 
   const ROUND_TIME = 20;
-  const [index, setIndex] = useState(() => Math.floor(Math.random() * puzzles.length));
+  const [index, setIndex] = useState(
+    () => Math.floor(Math.random() * puzzles.length)
+  );
   const current = useMemo(() => puzzles[index], [index]);
 
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
@@ -65,12 +64,8 @@ export default function ProverbGame({
   const [side1Time, setSide1Time] = useState<number | null>(null);
   const [side2Time, setSide2Time] = useState<number | null>(null);
 
-  const readyLabel = mode === "teams" ? "خلصنا" : "خلصت";
-
   const instructionText =
-    mode === "teams"
-      ? 'إذا انتهى الفريق، يقول لصاحب الجلسة: "خلصنا" ثم يسجلها صاحب الجلسة'
-      : 'إذا انتهى اللاعب، يقول لصاحب الجلسة: "خلصت" ثم يسجلها صاحب الجلسة';
+    'إذا انتهى الفريق، يقول لصاحب الجلسة: "خلصنا" ثم يسجلها صاحب الجلسة';
 
   useEffect(() => {
     setIndex(Math.floor(Math.random() * puzzles.length));
@@ -98,10 +93,13 @@ export default function ProverbGame({
   }, [timeLeft, revealed]);
 
   return (
-    <GlassCard className="relative overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-8 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md min-h-[780px]">
+    <GlassCard className="relative min-h-[780px] overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-8 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
+
       <div className="relative z-10">
-        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">EMOJI</p>
+        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">
+          EMOJI
+        </p>
         <h2 className="mt-2 text-3xl font-black text-[#98ffb6] drop-shadow-[0_0_14px_rgba(152,255,182,0.35)]">
           خمن المثل
         </h2>
@@ -113,7 +111,13 @@ export default function ProverbGame({
         <div className="mx-auto mt-4 w-full max-w-md">
           <div className="mb-1 flex justify-between text-sm text-white/80">
             <span>الوقت</span>
-            <span className={timeLeft <= 5 ? "font-black text-red-300 animate-pulse" : "font-black text-yellow-200"}>
+            <span
+              className={
+                timeLeft <= 5
+                  ? "animate-pulse font-black text-red-300"
+                  : "font-black text-yellow-200"
+              }
+            >
               {timeLeft}
             </span>
           </div>
@@ -126,7 +130,7 @@ export default function ProverbGame({
         </div>
 
         <div className="mt-8 rounded-[32px] border border-white/10 bg-white/10 px-6 py-8 shadow-[0_0_18px_rgba(255,255,255,0.04)]">
-          <div className="text-7xl md:text-8xl drop-shadow-[0_0_16px_rgba(255,255,255,0.18)]">
+          <div className="text-7xl drop-shadow-[0_0_16px_rgba(255,255,255,0.18)] md:text-8xl">
             {current.emoji}
           </div>
         </div>
@@ -144,7 +148,9 @@ export default function ProverbGame({
               {side1Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
             </p>
             {side1Time !== null && (
-              <p className="mt-1 text-xs text-white/70">تم تسجيله خلال {side1Time} ثانية</p>
+              <p className="mt-1 text-xs text-white/70">
+                تم تسجيله خلال {side1Time} ثانية
+              </p>
             )}
             <button
               type="button"
@@ -155,7 +161,7 @@ export default function ProverbGame({
               disabled={side1Ready || revealed}
               className="btn-primary mt-4 w-full disabled:opacity-50"
             >
-              {readyLabel}
+              خلصنا
             </button>
           </div>
 
@@ -165,7 +171,9 @@ export default function ProverbGame({
               {side2Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
             </p>
             {side2Time !== null && (
-              <p className="mt-1 text-xs text-white/70">تم تسجيله خلال {side2Time} ثانية</p>
+              <p className="mt-1 text-xs text-white/70">
+                تم تسجيله خلال {side2Time} ثانية
+              </p>
             )}
             <button
               type="button"
@@ -176,7 +184,7 @@ export default function ProverbGame({
               disabled={side2Ready || revealed}
               className="btn-primary mt-4 w-full disabled:opacity-50"
             >
-              {readyLabel}
+              خلصنا
             </button>
           </div>
         </div>
@@ -207,7 +215,9 @@ export default function ProverbGame({
 
             <div className="mt-4 rounded-2xl border border-white/15 bg-white/10 p-5">
               <p className="text-sm text-white/70">الإجابة الصحيحة</p>
-              <p className="mt-2 text-2xl font-black text-white">{current.answer}</p>
+              <p className="mt-2 text-2xl font-black text-white">
+                {current.answer}
+              </p>
             </div>
           </>
         )}
