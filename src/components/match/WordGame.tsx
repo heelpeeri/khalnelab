@@ -132,14 +132,14 @@ export default function WordGame({
 
   return (
     <GameLayout
-      title={`خمن الكلمة (${currentRound}/${totalRounds})`}
-      side1={side1Name}
-      side2={side2Name}
-      side1Score={side1Score}
-      side2Score={side2Score}
-      turn={activeSide === "side1" ? side1Name : side2Name}
-      onEndRound={() => onRoundEnd()}
-    >
+  title={`خمن الكلمة (${currentRound}/${totalRounds})`}
+  side1={side1Name}
+  side2={side2Name}
+  side1Score={side1Score}
+  side2Score={side2Score}
+  turn={activeSide === "side1" ? side1Name : side2Name}
+  onEndRound={() => onRoundEnd()}
+>
       <div className="flex flex-col h-[75vh] justify-between">
 
         {/* FEEDBACK */}
