@@ -14,7 +14,6 @@ export default function WordGame({
   side1Score = 0,
   side2Score = 0,
   currentRound = 1,
-  totalRounds = 3,
 }: {
   onRoundEnd: (winner?: WinnerType) => void;
   roundKey: number;
@@ -23,7 +22,6 @@ export default function WordGame({
   side1Score?: number;
   side2Score?: number;
   currentRound?: number;
-  totalRounds?: number;
 }) {
   const WORDS = ["كتاب", "مكتب", "هاتف", "تفاح", "قطار", "كرسي", "شمعة", "خيمة"];
   const MAX_TRIES = 6;
@@ -40,7 +38,7 @@ export default function WordGame({
   const [status, setStatus] = useState<"playing" | "won" | "lost">("playing");
   const [keyStatus, setKeyStatus] = useState<Record<string, CellState>>({});
   const [activeSide, setActiveSide] = useState<"side1" | "side2">("side1");
-  const [feedback, setFeedback] = useState("");
+  const [feedback, setFeedback] = useState("ابدأ التخمين");
 
   useEffect(() => {
     resetRound();
@@ -64,6 +62,19 @@ export default function WordGame({
       .replace(/أ|إ|آ/g, "ا")
       .replace(/ى/g, "ي");
   }
+
+  const roundLabel =
+    currentRound === 1
+      ? "الجولة الأولى"
+      : currentRound === 2
+      ? "الجولة الثانية"
+      : currentRound === 3
+      ? "الجولة الثالثة"
+      : currentRound === 4
+      ? "الجولة الرابعة"
+      : currentRound === 5
+      ? "الجولة الخامسة"
+      : `الجولة ${currentRound}`;
 
   function getCurrentTurnName() {
     return activeSide === "side1" ? side1Name : side2Name;
@@ -153,7 +164,7 @@ export default function WordGame({
 
   return (
     <GameLayout
-      title={`خمن الكلمة (${currentRound}/${totalRounds})`}
+      title={`خمن الكلمة — ${roundLabel}`}
       side1={side1Name}
       side2={side2Name}
       side1Score={side1Score}
@@ -161,7 +172,7 @@ export default function WordGame({
       turn={`دور ${getCurrentTurnName()}`}
       onEndRound={() => onRoundEnd()}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm sm:text-base font-bold text-white">
           {feedback}
         </div>
@@ -172,7 +183,10 @@ export default function WordGame({
               {guess.split("").map((letter, colIndex) => (
                 <div
                   key={colIndex}
-                  className={`flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-xl md:rounded-2xl border text-xl md:text-2xl font-black ${getCellColor(letter, colIndex)}`}
+                  className={`flex h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl border text-xl md:text-2xl font-black ${getCellColor(
+                    letter,
+                    colIndex
+                  )}`}
                 >
                   {letter}
                 </div>
@@ -188,7 +202,7 @@ export default function WordGame({
                 return (
                   <div
                     key={colIndex}
-                    className={`flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-xl md:rounded-2xl border text-xl md:text-2xl font-black text-white ${
+                    className={`flex h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl border text-xl md:text-2xl font-black text-white ${
                       rowIndex === 0
                         ? "border-[#6d6be9] bg-[#20193f]"
                         : "border-white/10 bg-[#16142a]"
@@ -202,7 +216,7 @@ export default function WordGame({
           ))}
         </div>
 
-        <div className="mt-2 space-y-3">
+        <div className="mt-2 space-y-2">
           {keyboardRows.map((row, rowIndex) => (
             <div
               key={rowIndex}
@@ -220,7 +234,7 @@ export default function WordGame({
                     )
                   }
                   disabled={status !== "playing"}
-                  className={`h-12 min-w-[44px] sm:h-14 sm:min-w-[50px] rounded-xl border text-base sm:text-lg font-bold transition active:scale-95 disabled:opacity-50 ${getKeyColor(
+                  className={`h-10 min-w-[38px] sm:h-11 sm:min-w-[42px] rounded-lg border text-sm sm:text-base font-bold transition active:scale-95 disabled:opacity-50 ${getKeyColor(
                     key
                   )}`}
                 >
@@ -230,12 +244,12 @@ export default function WordGame({
             </div>
           ))}
 
-          <div className="mt-4 flex justify-center gap-3 flex-wrap">
+          <div className="mt-3 flex justify-center gap-2 flex-wrap">
             <button
               type="button"
               onClick={() => setCurrent((prev) => prev.slice(0, -1))}
               disabled={status !== "playing" || current.length === 0}
-              className="h-12 min-w-[120px] rounded-xl border border-white/10 bg-[#2a2f45] text-white font-bold transition hover:bg-[#343a56] disabled:opacity-50"
+              className="h-11 min-w-[110px] rounded-xl border border-white/10 bg-[#2a2f45] text-white font-bold transition hover:bg-[#343a56] disabled:opacity-50"
             >
               حذف
             </button>
@@ -244,7 +258,7 @@ export default function WordGame({
               type="button"
               onClick={submitGuess}
               disabled={status !== "playing"}
-              className="h-12 min-w-[130px] rounded-xl bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold transition hover:scale-[1.02] disabled:opacity-50"
+              className="h-11 min-w-[110px] rounded-xl bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold transition hover:scale-[1.02] disabled:opacity-50"
             >
               إدخال
             </button>
@@ -252,7 +266,7 @@ export default function WordGame({
             <button
               type="button"
               onClick={() => onRoundEnd()}
-              className="h-12 min-w-[140px] rounded-xl border border-white/10 bg-[#4c2b7a] text-white font-bold transition hover:bg-[#5a3392]"
+              className="h-11 min-w-[110px] rounded-xl border border-white/10 bg-[#4c2b7a] text-white font-bold transition hover:bg-[#5a3392]"
             >
               إنهاء الجولة
             </button>
