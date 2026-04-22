@@ -129,17 +129,17 @@ export default function WordGame({
   }
 
   function getCellColor(letter: string, index: number) {
-    if (answer[index] === letter) return "bg-green-500 border-green-400";
+    if (answer[index] === letter) return "bg-green-500 border-green-400 text-white";
     if (answer.includes(letter)) return "bg-yellow-400 border-yellow-300 text-black";
-    return "bg-gray-500 border-gray-400";
+    return "bg-[#2f3750] border-[#4b5676] text-white";
   }
 
   function getKeyColor(key: string) {
     const state = keyStatus[key];
-    if (state === "correct") return "bg-green-500 border-green-400";
+    if (state === "correct") return "bg-green-500 border-green-400 text-white";
     if (state === "present") return "bg-yellow-400 border-yellow-300 text-black";
-    if (state === "absent") return "bg-gray-500 border-gray-400";
-    return "bg-white/10 border-white/10 hover:bg-white/15";
+    if (state === "absent") return "bg-[#2f3750] border-[#4b5676] text-white";
+    return "bg-white/8 border-white/10 text-white hover:bg-white/14";
   }
 
   const emptyRows = MAX_TRIES - guesses.length;
@@ -149,7 +149,7 @@ export default function WordGame({
       ? "border-green-300/20 bg-green-400/10 text-green-100"
       : feedbackTone === "warning"
       ? "border-yellow-300/20 bg-yellow-400/10 text-yellow-100"
-      : "border-cyan-300/20 bg-cyan-400/10 text-white";
+      : "border-white/10 bg-white/6 text-white";
 
   return (
     <GameLayout
@@ -172,7 +172,7 @@ export default function WordGame({
               {guess.split("").map((letter, colIndex) => (
                 <div
                   key={colIndex}
-                  className={`flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-xl sm:rounded-2xl border text-xl sm:text-2xl font-black text-white ${getCellColor(letter, colIndex)}`}
+                  className={`flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-xl sm:rounded-2xl border text-xl sm:text-2xl font-black shadow-[0_0_8px_rgba(255,255,255,0.03)] ${getCellColor(letter, colIndex)}`}
                 >
                   {letter}
                 </div>
@@ -190,8 +190,8 @@ export default function WordGame({
                     key={colIndex}
                     className={`flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-xl sm:rounded-2xl border text-xl sm:text-2xl font-black text-white ${
                       rowIndex === 0
-                        ? "border-cyan-300/30 bg-cyan-400/10"
-                        : "border-white/15 bg-white/5"
+                        ? "border-[#6d6be9] bg-[#20193f]"
+                        : "border-white/10 bg-[#16142a]"
                     }`}
                   >
                     {previewLetter}
@@ -222,7 +222,7 @@ export default function WordGame({
                     });
                   }}
                   disabled={status !== "playing"}
-                  className={`h-10 min-w-[38px] sm:h-12 sm:min-w-[48px] rounded-lg sm:rounded-xl border px-2 sm:px-3 text-sm sm:text-base font-bold text-white transition active:scale-95 disabled:opacity-50 ${getKeyColor(
+                  className={`h-10 min-w-[38px] sm:h-12 sm:min-w-[48px] rounded-lg sm:rounded-xl border px-2 sm:px-3 text-sm sm:text-base font-bold transition active:scale-95 disabled:opacity-50 ${getKeyColor(
                     key
                   )}`}
                 >
