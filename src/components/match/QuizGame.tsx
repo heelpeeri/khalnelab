@@ -186,14 +186,6 @@ export default function QuizGame({
           </div>
         </div>
 
-        <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-lg font-black text-white">
-          {!showAnswer
-            ? "اقرأ السؤال ثم اكشف الإجابة"
-            : !showWinnerPick
-            ? "الإجابة ظهرت — اختر من جاوب صح"
-            : "حدد الفريق الذي جاوب بشكل صحيح"}
-        </div>
-
         <div className="mt-7 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_0_18px_rgba(255,255,255,0.04)] md:p-6">
           <p className="text-2xl font-black leading-relaxed text-white">
             {current.question}
