@@ -18,54 +18,65 @@ export default function GameLayout({
   onEndRound: () => void;
 }) {
   return (
-    <div className="glass mx-auto w-full max-w-3xl p-5 sm:p-6 text-center">
+    <div className="mx-auto w-full max-w-4xl p-4 sm:p-6 text-center">
 
-      {/* اسم اللعبة */}
-      <h2 className="text-2xl sm:text-3xl font-black mb-4">
-        {title}
-      </h2>
+      {/* 🔥 الهيدر */}
+      <div className="mb-5">
+        <h2 className="text-2xl sm:text-3xl font-black tracking-wide">
+          {title}
+        </h2>
+      </div>
 
-      {/* السكور */}
-      <div className="flex items-center justify-between text-lg sm:text-xl font-bold mb-4">
+      {/* 🔥 السكور (محسن) */}
+      <div className="flex items-center justify-between gap-3 mb-4">
 
-        <div className="flex-1 text-right">
-          {side1}
+        {/* فريق 1 */}
+        <div className="flex-1 rounded-2xl border border-pink-400/30 bg-pink-500/10 py-3 px-2">
+          <p className="text-sm text-white/60">{side1}</p>
+          <p className="text-2xl font-black text-pink-300">
+            {side1Score}
+          </p>
         </div>
 
-        <div className="px-4 text-yellow-300 font-black">
-          {side1Score} - {side2Score}
+        {/* الوسط */}
+        <div className="text-xl font-black text-yellow-300 px-2">
+          VS
         </div>
 
-        <div className="flex-1 text-left">
-          {side2}
+        {/* فريق 2 */}
+        <div className="flex-1 rounded-2xl border border-cyan-400/30 bg-cyan-400/10 py-3 px-2">
+          <p className="text-sm text-white/60">{side2}</p>
+          <p className="text-2xl font-black text-cyan-300">
+            {side2Score}
+          </p>
         </div>
 
       </div>
 
-      {/* الدور */}
-      <p className="text-white/70 mb-5 text-sm sm:text-base">
-        الدور: {turn}
-      </p>
-
-      {/* خط */}
-      <div className="border-t border-white/10 my-4"></div>
-
-      {/* منطقة اللعبة */}
-      <div className="mb-6">
-        {children}
+      {/* 🔥 الدور */}
+      <div className="mb-4">
+        <span className="inline-block rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white/80">
+          🎯 الدور: {turn}
+        </span>
       </div>
 
-      {/* خط */}
-      <div className="border-t border-white/10 my-4"></div>
+      {/* 🔥 الكارد الرئيسي */}
+      <div className="glass rounded-3xl p-4 sm:p-6">
 
-      {/* زر */}
-      <button
-        onClick={onEndRound}
-        className="btn-primary w-full sm:w-auto px-10"
-      >
-        إنهاء الجولة
-      </button>
+        {/* اللعبة */}
+        <div className="mb-6">
+          {children}
+        </div>
 
+        {/* زر */}
+        <button
+          onClick={onEndRound}
+          className="btn-primary w-full sm:w-auto px-10"
+        >
+          إنهاء الجولة
+        </button>
+
+      </div>
     </div>
   );
 }
