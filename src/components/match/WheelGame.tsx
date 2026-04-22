@@ -109,6 +109,49 @@ function splitAnswerWords(answer: string) {
   return answer.trim().split(/\s+/);
 }
 
+function HelpModal({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 px-4 backdrop-blur-sm">
+      <div className="w-full max-w-lg rounded-[28px] border border-white/15 bg-[#120d2c]/95 p-6 text-right shadow-2xl">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-2xl font-black">طريقة اللعب</h3>
+          <button
+            onClick={onClose}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-bold text-white transition hover:bg-white/10"
+            type="button"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="mt-5 space-y-3 text-sm leading-7 text-white/85 md:text-base">
+          <p>1. لف العجلة أولًا لتحديد قيمة الحرف.</p>
+          <p>2. إذا طلعت خسارة الدور أو إفلاس ينتقل الدور مباشرة.</p>
+          <p>3. بعد الدوران اختر حرفًا من الكلمة.</p>
+          <p>4. كل حرف صحيح يضيف نفس قيمة العجلة.</p>
+          <p>5. تقدر تختار حل الكلمة كاملة في دورك.</p>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="btn-primary mt-6 min-w-[140px]"
+          type="button"
+        >
+          فهمت
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function WheelGame({
   side1Name,
   side2Name,
@@ -138,6 +181,7 @@ export default function WheelGame({
 
   const [wheelGlow, setWheelGlow] = useState(false);
   const [activeSegmentIndex, setActiveSegmentIndex] = useState<number | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
 
   const tickTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastTickIndexRef = useRef<number | null>(null);
@@ -432,78 +476,89 @@ export default function WheelGame({
   }
 
   return (
-    <GlassCard className="min-h-[760px] p-4 text-center md:p-6">
-      <div className="mx-auto max-w-5xl">
-        <div className="rounded-[28px] border border-white/10 bg-[#091039]/55 p-4 shadow-[0_0_30px_rgba(0,0,0,0.35)] md:p-6">
-          <div className="mb-5 text-center">
-            <h2 className="text-3xl font-black md:text-4xl">🎡 لف وخمن</h2>
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 py-2 text-sm font-bold text-cyan-100">
-              <span className="text-white/70">التصنيف:</span>
-              <span>{category}</span>
-            </div>
-          </div>
+    <>
+      <GlassCard className="min-h-[760px] p-4 text-center md:p-6">
+        <div className="mx-auto max-w-5xl">
+          <div className="rounded-[28px] border border-white/10 bg-[#091039]/55 p-4 shadow-[0_0_30px_rgba(0,0,0,0.35)] md:p-6">
+            <div className="mb-5 text-center">
+              <h2 className="text-3xl font-black md:text-4xl">🎡 لف وخمن</h2>
 
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-pink-300/20 bg-pink-500/10 p-4">
-              <p className="text-sm text-white/65">{side1Name}</p>
-              <p className="mt-2 text-4xl font-black text-pink-200">{score1}</p>
-            </div>
-
-            <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 shadow-[0_0_18px_rgba(34,211,238,0.08)]">
-              <p className="text-sm text-white/65">الدور الحالي</p>
-              <p className="mt-2 text-2xl font-black">{currentTeamName}</p>
-            </div>
-
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
-              <p className="text-sm text-white/65">{side2Name}</p>
-              <p className="mt-2 text-4xl font-black text-cyan-200">{score2}</p>
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base font-bold md:text-lg">
-            {phase === "result"
-              ? `طلعت لك: ${formatValue(currentValue)}`
-              : phase === "guess"
-              ? `اختر حرفًا — قيمة الحرف ${formatValue(currentValue)}`
-              : phase === "celebrate"
-              ? "🏆 انتهت الجولة!"
-              : `الآن: ${currentTeamName} — لف العجلة`}
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-4">
-            {revealedWordGroups.map((word, wordIndex) => (
-              <div key={wordIndex} className="flex items-center gap-4">
-                <div className="flex flex-wrap justify-center gap-2">
-                  {word.map((letter, i) => (
-                    <div
-                      key={`${wordIndex}-${i}`}
-                      className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black shadow-[0_0_10px_rgba(255,255,255,0.04)]"
-                    >
-                      {letter || ""}
-                    </div>
-                  ))}
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
+                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 py-2 text-sm font-bold text-cyan-100">
+                  <span className="text-white/70">التصنيف:</span>
+                  <span>{category}</span>
                 </div>
 
-                {wordIndex < revealedWordGroups.length - 1 && (
-                  <div className="hidden h-10 w-6 items-center justify-center md:flex">
-                    <div className="h-1 w-6 rounded-full bg-cyan-300/50" />
-                  </div>
-                )}
+                <button
+                  onClick={() => setShowHelp(true)}
+                  type="button"
+                  className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/10"
+                >
+                  طريقة اللعب
+                </button>
               </div>
-            ))}
-          </div>
+            </div>
 
-          {revealedWordGroups.length > 1 && (
-            <p className="mt-3 text-sm text-white/55">
-              الكلمة مكوّنة من {revealedWordGroups.length} كلمات
-            </p>
-          )}
+            <div className="grid gap-3 md:grid-cols-3">
+              <div className="rounded-2xl border border-pink-300/20 bg-pink-500/10 p-4">
+                <p className="text-sm text-white/65">{side1Name}</p>
+                <p className="mt-2 text-4xl font-black text-pink-200">{score1}</p>
+              </div>
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
-            <div>
+              <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 shadow-[0_0_18px_rgba(34,211,238,0.08)]">
+                <p className="text-sm text-white/65">الدور الحالي</p>
+                <p className="mt-2 text-2xl font-black">{currentTeamName}</p>
+              </div>
+
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+                <p className="text-sm text-white/65">{side2Name}</p>
+                <p className="mt-2 text-4xl font-black text-cyan-200">{score2}</p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base font-bold md:text-lg">
+              {phase === "result"
+                ? `طلعت لك: ${formatValue(currentValue)}`
+                : phase === "guess"
+                ? `اختر حرفًا — قيمة الحرف ${formatValue(currentValue)}`
+                : phase === "celebrate"
+                ? "🏆 انتهت الجولة!"
+                : `الآن: ${currentTeamName} — لف العجلة`}
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-4">
+              {revealedWordGroups.map((word, wordIndex) => (
+                <div key={wordIndex} className="flex items-center gap-4">
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {word.map((letter, i) => (
+                      <div
+                        key={`${wordIndex}-${i}`}
+                        className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black shadow-[0_0_10px_rgba(255,255,255,0.04)]"
+                      >
+                        {letter || ""}
+                      </div>
+                    ))}
+                  </div>
+
+                  {wordIndex < revealedWordGroups.length - 1 && (
+                    <div className="hidden h-10 w-6 items-center justify-center md:flex">
+                      <div className="h-1 w-6 rounded-full bg-cyan-300/50" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {revealedWordGroups.length > 1 && (
+              <p className="mt-3 text-sm text-white/55">
+                الكلمة مكوّنة من {revealedWordGroups.length} كلمات
+              </p>
+            )}
+
+            <div className="mt-7">
               {(phase === "spin" || phase === "result") && (
                 <div className="flex flex-col items-center">
-                  <div className="relative h-[320px] w-[320px] md:h-[360px] md:w-[360px]">
+                  <div className="relative h-[290px] w-[290px] md:h-[340px] md:w-[340px]">
                     <div
                       className={`absolute left-1/2 top-0 z-30 -translate-x-1/2 -translate-y-2 transition ${
                         wheelGlow
@@ -554,11 +609,11 @@ export default function WheelGame({
                             key={`${segment.label}-${i}`}
                             className="absolute left-1/2 top-1/2 origin-center"
                             style={{
-                              transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-116px) rotate(${-angle}deg)`,
+                              transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-108px) rotate(${-angle}deg)`,
                             }}
                           >
                             <div
-                              className={`w-24 text-center text-base font-black leading-4 text-white transition ${
+                              className={`w-24 text-center text-sm font-black leading-4 text-white transition md:text-base ${
                                 isActive ? "scale-110" : ""
                               }`}
                               style={{
@@ -594,7 +649,7 @@ export default function WheelGame({
               )}
 
               {phase === "guess" && (
-                <div className="space-y-6">
+                <div className="space-y-5">
                   <div className="rounded-2xl border border-yellow-300/20 bg-yellow-400/10 px-4 py-3 text-base font-bold text-yellow-100">
                     اختر حرفًا مناسبًا قبل ما يروح دورك
                   </div>
@@ -615,7 +670,7 @@ export default function WheelGame({
                               key={letter}
                               onClick={() => pickLetter(letter)}
                               disabled={isUsed}
-                              className={`h-12 min-w-[46px] rounded-xl border px-3 text-base font-bold transition ${
+                              className={`h-11 min-w-[44px] rounded-xl border px-3 text-base font-bold transition ${
                                 isUsed
                                   ? "border-white/5 bg-white/5 text-white/25"
                                   : "border-white/10 bg-white/10 text-white hover:bg-white/20 active:scale-95"
@@ -638,7 +693,7 @@ export default function WheelGame({
               )}
 
               {phase === "celebrate" && (
-                <div className="mt-6">
+                <div className="mt-4">
                   <div className="rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-2xl">
                     <p className="text-5xl">🏆</p>
                     <p className="mt-4 text-3xl font-black">{winnerName}</p>
@@ -647,40 +702,11 @@ export default function WheelGame({
                 </div>
               )}
             </div>
-
-            <div className="space-y-3">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-right">
-                <p className="text-sm text-white/55">طريقة اللعب</p>
-                <ul className="mt-3 space-y-2 text-sm leading-7 text-white/85">
-                  <li>1. لف العجلة أولًا لتحديد قيمة الحرف.</li>
-                  <li>2. إذا طلعت خسارة الدور أو إفلاس ينتقل الدور مباشرة.</li>
-                  <li>3. بعد الدوران اختر حرفًا من الكلمة.</li>
-                  <li>4. كل حرف صحيح يضيف نفس قيمة العجلة.</li>
-                  <li>5. تقدر تختار حل الكلمة كاملة في دورك.</li>
-                </ul>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-right">
-                <p className="text-sm text-white/55">وضع الجولة</p>
-                <p className="mt-2 text-lg font-black">
-                  {phase === "spin"
-                    ? "لف"
-                    : phase === "result"
-                    ? "النتيجة"
-                    : phase === "guess"
-                    ? "اختيار حرف"
-                    : "النهاية"}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-right">
-                <p className="text-sm text-white/55">القيمة الحالية</p>
-                <p className="mt-2 text-lg font-black">{formatValue(currentValue)}</p>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
-    </GlassCard>
+      </GlassCard>
+
+      <HelpModal open={showHelp} onClose={() => setShowHelp(false)} />
+    </>
   );
 }
