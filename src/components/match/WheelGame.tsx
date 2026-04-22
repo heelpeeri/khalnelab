@@ -371,7 +371,7 @@ export default function WheelGame({
         }
 
         setPhase("guess");
-      }, 900);
+      }, 850);
     }, 3000);
   }
 
@@ -432,208 +432,254 @@ export default function WheelGame({
   }
 
   return (
-    <GlassCard className="min-h-[760px] p-6 text-center md:p-8">
-      <div className="mx-auto max-w-4xl">
-        <h2 className="text-3xl font-black">🎡 لف وخمن</h2>
-        <p className="mt-2 text-white/75">الفئة: {category}</p>
-
-        <div className="mt-5 grid gap-3 md:grid-cols-3">
-          <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-4">
-            <p className="text-sm text-white/60">{side1Name}</p>
-            <p className="mt-2 text-3xl font-black">{score1}</p>
-          </div>
-
-          <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 px-4 py-4 shadow-[0_0_18px_rgba(34,211,238,0.08)]">
-            <p className="text-sm text-white/60">الدور الحالي</p>
-            <p className="mt-2 text-2xl font-black">{currentTeamName}</p>
-          </div>
-
-          <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-4">
-            <p className="text-sm text-white/60">{side2Name}</p>
-            <p className="mt-2 text-3xl font-black">{score2}</p>
-          </div>
-        </div>
-
-        <div className="mt-5 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-lg font-bold">
-          {phase === "result"
-            ? `طلعت لك: ${formatValue(currentValue)}`
-            : phase === "guess"
-            ? `اختر حرفًا — قيمة الحرف ${formatValue(currentValue)}`
-            : phase === "celebrate"
-            ? "🏆 انتهت الجولة!"
-            : `🎯 الآن: ${currentTeamName} — لف العجلة`}
-        </div>
-
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
-          {revealedWordGroups.map((word, wordIndex) => (
-            <div key={wordIndex} className="flex items-center gap-4">
-              <div className="flex flex-wrap justify-center gap-2">
-                {word.map((letter, i) => (
-                  <div
-                    key={`${wordIndex}-${i}`}
-                    className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black shadow-[0_0_10px_rgba(255,255,255,0.04)]"
-                  >
-                    {letter || "_"}
-                  </div>
-                ))}
-              </div>
-
-              {wordIndex < revealedWordGroups.length - 1 && (
-                <div className="hidden h-10 w-6 items-center justify-center md:flex">
-                  <div className="h-1 w-6 rounded-full bg-cyan-300/50" />
-                </div>
-              )}
+    <GlassCard className="min-h-[760px] p-4 text-center md:p-6">
+      <div className="mx-auto max-w-5xl">
+        <div className="rounded-[28px] border border-white/10 bg-[#091039]/55 p-4 shadow-[0_0_30px_rgba(0,0,0,0.35)] md:p-6">
+          <div className="mb-5 text-center">
+            <h2 className="text-3xl font-black md:text-4xl">🎡 لف وخمن</h2>
+            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-400/10 px-4 py-2 text-sm font-bold text-cyan-100">
+              <span className="text-white/70">التصنيف:</span>
+              <span>{category}</span>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {revealedWordGroups.length > 1 && (
-          <p className="mt-3 text-sm text-white/55">
-            الكلمة مكوّنة من {revealedWordGroups.length} كلمات
-          </p>
-        )}
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-2xl border border-pink-300/20 bg-pink-500/10 p-4">
+              <p className="text-sm text-white/65">{side1Name}</p>
+              <p className="mt-2 text-4xl font-black text-pink-200">{score1}</p>
+            </div>
 
-        {(phase === "spin" || phase === "result") && (
-          <div className="mt-8 flex flex-col items-center">
-            <div className="relative h-[320px] w-[320px]">
-              <div
-                className={`absolute left-1/2 top-0 z-30 -translate-x-1/2 -translate-y-2 transition ${
-                  wheelGlow
-                    ? "scale-110 drop-shadow-[0_0_20px_rgba(248,113,113,0.95)]"
-                    : "drop-shadow-[0_0_14px_rgba(248,113,113,0.75)]"
-                }`}
-              >
-                <div className="h-0 w-0 border-l-[16px] border-r-[16px] border-t-[28px] border-l-transparent border-r-transparent border-t-red-500" />
-              </div>
+            <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 shadow-[0_0_18px_rgba(34,211,238,0.08)]">
+              <p className="text-sm text-white/65">الدور الحالي</p>
+              <p className="mt-2 text-2xl font-black">{currentTeamName}</p>
+            </div>
 
-              <div
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background:
-                    "radial-gradient(circle, rgba(255,255,255,0.10), transparent 58%)",
-                  filter: "blur(8px)",
-                }}
-              />
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+              <p className="text-sm text-white/65">{side2Name}</p>
+              <p className="mt-2 text-4xl font-black text-cyan-200">{score2}</p>
+            </div>
+          </div>
 
-              <div
-                className="relative h-full w-full rounded-full border-[6px] border-white/25"
-                style={{
-                  background: `conic-gradient(${SEGMENTS.map((s, i) => {
-                    const start = i * segmentAngle;
-                    const end = (i + 1) * segmentAngle;
-                    return `${s.color} ${start}deg ${end}deg`;
-                  }).join(", ")})`,
-                  transform: `rotate(${rotation}deg)`,
-                  transition: "transform 3s cubic-bezier(0.08, 0.9, 0.2, 1)",
-                  boxShadow:
-                    "inset 0 0 25px rgba(0,0,0,0.35), 0 18px 40px rgba(0,0,0,0.45), 0 0 30px rgba(168,85,247,0.18)",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  className="absolute inset-[10px] rounded-full border border-white/10"
-                  style={{
-                    boxShadow: "inset 0 0 20px rgba(255,255,255,0.06)",
-                  }}
-                />
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base font-bold md:text-lg">
+            {phase === "result"
+              ? `طلعت لك: ${formatValue(currentValue)}`
+              : phase === "guess"
+              ? `اختر حرفًا — قيمة الحرف ${formatValue(currentValue)}`
+              : phase === "celebrate"
+              ? "🏆 انتهت الجولة!"
+              : `الآن: ${currentTeamName} — لف العجلة`}
+          </div>
 
-                {SEGMENTS.map((segment, i) => {
-                  const angle = i * segmentAngle + segmentAngle / 2;
-                  const isActive = activeSegmentIndex === i;
-
-                  return (
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-4">
+            {revealedWordGroups.map((word, wordIndex) => (
+              <div key={wordIndex} className="flex items-center gap-4">
+                <div className="flex flex-wrap justify-center gap-2">
+                  {word.map((letter, i) => (
                     <div
-                      key={`${segment.label}-${i}`}
-                      className="absolute left-1/2 top-1/2 origin-center"
+                      key={`${wordIndex}-${i}`}
+                      className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-2xl font-black shadow-[0_0_10px_rgba(255,255,255,0.04)]"
+                    >
+                      {letter || ""}
+                    </div>
+                  ))}
+                </div>
+
+                {wordIndex < revealedWordGroups.length - 1 && (
+                  <div className="hidden h-10 w-6 items-center justify-center md:flex">
+                    <div className="h-1 w-6 rounded-full bg-cyan-300/50" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {revealedWordGroups.length > 1 && (
+            <p className="mt-3 text-sm text-white/55">
+              الكلمة مكوّنة من {revealedWordGroups.length} كلمات
+            </p>
+          )}
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
+            <div>
+              {(phase === "spin" || phase === "result") && (
+                <div className="flex flex-col items-center">
+                  <div className="relative h-[320px] w-[320px] md:h-[360px] md:w-[360px]">
+                    <div
+                      className={`absolute left-1/2 top-0 z-30 -translate-x-1/2 -translate-y-2 transition ${
+                        wheelGlow
+                          ? "scale-110 drop-shadow-[0_0_20px_rgba(248,113,113,0.95)]"
+                          : "drop-shadow-[0_0_14px_rgba(248,113,113,0.75)]"
+                      }`}
+                    >
+                      <div className="h-0 w-0 border-l-[16px] border-r-[16px] border-t-[28px] border-l-transparent border-r-transparent border-t-red-500" />
+                    </div>
+
+                    <div
+                      className="absolute inset-0 rounded-full"
                       style={{
-                        transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-116px) rotate(${-angle}deg)`,
+                        background:
+                          "radial-gradient(circle, rgba(255,255,255,0.10), transparent 58%)",
+                        filter: "blur(8px)",
+                      }}
+                    />
+
+                    <div
+                      className="relative h-full w-full rounded-full border-[6px] border-white/25"
+                      style={{
+                        background: `conic-gradient(${SEGMENTS.map((s, i) => {
+                          const start = i * segmentAngle;
+                          const end = (i + 1) * segmentAngle;
+                          return `${s.color} ${start}deg ${end}deg`;
+                        }).join(", ")})`,
+                        transform: `rotate(${rotation}deg)`,
+                        transition: "transform 3s cubic-bezier(0.08, 0.9, 0.2, 1)",
+                        boxShadow:
+                          "inset 0 0 25px rgba(0,0,0,0.35), 0 18px 40px rgba(0,0,0,0.45), 0 0 30px rgba(168,85,247,0.18)",
+                        overflow: "hidden",
                       }}
                     >
                       <div
-                        className={`w-24 text-center text-base font-black leading-4 text-white transition ${
-                          isActive ? "scale-110" : ""
-                        }`}
+                        className="absolute inset-[10px] rounded-full border border-white/10"
                         style={{
-                          textShadow: isActive
-                            ? "0 0 10px rgba(255,255,255,0.95), 0 2px 4px rgba(0,0,0,0.85)"
-                            : "0 2px 4px rgba(0,0,0,0.85)",
+                          boxShadow: "inset 0 0 20px rgba(255,255,255,0.06)",
                         }}
+                      />
+
+                      {SEGMENTS.map((segment, i) => {
+                        const angle = i * segmentAngle + segmentAngle / 2;
+                        const isActive = activeSegmentIndex === i;
+
+                        return (
+                          <div
+                            key={`${segment.label}-${i}`}
+                            className="absolute left-1/2 top-1/2 origin-center"
+                            style={{
+                              transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-116px) rotate(${-angle}deg)`,
+                            }}
+                          >
+                            <div
+                              className={`w-24 text-center text-base font-black leading-4 text-white transition ${
+                                isActive ? "scale-110" : ""
+                              }`}
+                              style={{
+                                textShadow: isActive
+                                  ? "0 0 10px rgba(255,255,255,0.95), 0 2px 4px rgba(0,0,0,0.85)"
+                                  : "0 2px 4px rgba(0,0,0,0.85)",
+                              }}
+                            >
+                              {segment.label}
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      <div
+                        className={`absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-white/25 bg-[radial-gradient(circle_at_30%_30%,#b91c1c,#7a001f)] text-2xl transition shadow-[0_0_25px_rgba(239,68,68,0.35)] ${
+                          wheelGlow ? "scale-105" : ""
+                        }`}
                       >
-                        {segment.label}
+                        🎡
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
 
-                <div
-                  className={`absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-white/25 bg-[radial-gradient(circle_at_30%_30%,#b91c1c,#7a001f)] text-2xl transition shadow-[0_0_25px_rgba(239,68,68,0.35)] ${
-                    wheelGlow ? "scale-105" : ""
-                  }`}
-                >
-                  🎡
+                  <button
+                    onClick={spinWheel}
+                    disabled={phase !== "spin" || spinning}
+                    className="btn-primary mt-5 min-w-[170px] disabled:opacity-50"
+                  >
+                    {spinning ? "العجلة تدور..." : "لف العجلة"}
+                  </button>
                 </div>
-              </div>
-            </div>
+              )}
 
-            <button
-              onClick={spinWheel}
-              disabled={phase !== "spin" || spinning}
-              className="btn-primary mt-5 min-w-[170px] disabled:opacity-50"
-            >
-              {spinning ? "العجلة تدور..." : "لف"}
-            </button>
-          </div>
-        )}
+              {phase === "guess" && (
+                <div className="space-y-6">
+                  <div className="rounded-2xl border border-yellow-300/20 bg-yellow-400/10 px-4 py-3 text-base font-bold text-yellow-100">
+                    اختر حرفًا مناسبًا قبل ما يروح دورك
+                  </div>
 
-        {phase === "guess" && (
-          <div className="mt-6 space-y-6">
-            <div className="space-y-2">
-              {LETTER_ROWS.map((row, rowIndex) => (
-                <div
-                  key={rowIndex}
-                  className={`flex justify-center gap-2 ${
-                    rowIndex === 1 ? "mr-5" : rowIndex === 2 ? "mr-10" : ""
-                  }`}
-                >
-                  {row.split("").map((letter) => {
-                    const isUsed = usedLetters.includes(letter);
-
-                    return (
-                      <button
-                        key={letter}
-                        onClick={() => pickLetter(letter)}
-                        disabled={isUsed}
-                        className={`h-12 min-w-[46px] rounded-xl border px-3 text-base font-bold transition ${
-                          isUsed
-                            ? "border-white/5 bg-white/5 text-white/25"
-                            : "border-white/10 bg-white/10 text-white hover:bg-white/20 active:scale-95"
+                  <div className="space-y-2">
+                    {LETTER_ROWS.map((row, rowIndex) => (
+                      <div
+                        key={rowIndex}
+                        className={`flex justify-center gap-2 ${
+                          rowIndex === 1 ? "mr-5" : rowIndex === 2 ? "mr-10" : ""
                         }`}
                       >
-                        {letter}
-                      </button>
-                    );
-                  })}
+                        {row.split("").map((letter) => {
+                          const isUsed = usedLetters.includes(letter);
+
+                          return (
+                            <button
+                              key={letter}
+                              onClick={() => pickLetter(letter)}
+                              disabled={isUsed}
+                              className={`h-12 min-w-[46px] rounded-xl border px-3 text-base font-bold transition ${
+                                isUsed
+                                  ? "border-white/5 bg-white/5 text-white/25"
+                                  : "border-white/10 bg-white/10 text-white hover:bg-white/20 active:scale-95"
+                              }`}
+                            >
+                              {letter}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex justify-center">
+                    <button onClick={solveWord} className="btn-primary min-w-[170px]">
+                      حل الكلمة
+                    </button>
+                  </div>
                 </div>
-              ))}
+              )}
+
+              {phase === "celebrate" && (
+                <div className="mt-6">
+                  <div className="rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-2xl">
+                    <p className="text-5xl">🏆</p>
+                    <p className="mt-4 text-3xl font-black">{winnerName}</p>
+                    <p className="mt-2 text-lg text-white/85">فاز بالجولة!</p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div>
-              <button onClick={solveWord} className="btn-primary min-w-[160px]">
-                حل الكلمة
-              </button>
-            </div>
-          </div>
-        )}
+            <div className="space-y-3">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-right">
+                <p className="text-sm text-white/55">طريقة اللعب</p>
+                <ul className="mt-3 space-y-2 text-sm leading-7 text-white/85">
+                  <li>1. لف العجلة أولًا لتحديد قيمة الحرف.</li>
+                  <li>2. إذا طلعت خسارة الدور أو إفلاس ينتقل الدور مباشرة.</li>
+                  <li>3. بعد الدوران اختر حرفًا من الكلمة.</li>
+                  <li>4. كل حرف صحيح يضيف نفس قيمة العجلة.</li>
+                  <li>5. تقدر تختار حل الكلمة كاملة في دورك.</li>
+                </ul>
+              </div>
 
-        {phase === "celebrate" && (
-          <div className="mt-8">
-            <div className="animate-bounce rounded-3xl border border-yellow-300/40 bg-yellow-400/15 px-6 py-8 shadow-2xl">
-              <p className="text-5xl">🏆</p>
-              <p className="mt-4 text-3xl font-black">{winnerName}</p>
-              <p className="mt-2 text-lg text-white/85">فاز بالجولة!</p>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-right">
+                <p className="text-sm text-white/55">وضع الجولة</p>
+                <p className="mt-2 text-lg font-black">
+                  {phase === "spin"
+                    ? "لف"
+                    : phase === "result"
+                    ? "النتيجة"
+                    : phase === "guess"
+                    ? "اختيار حرف"
+                    : "النهاية"}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-right">
+                <p className="text-sm text-white/55">القيمة الحالية</p>
+                <p className="mt-2 text-lg font-black">{formatValue(currentValue)}</p>
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </GlassCard>
   );
