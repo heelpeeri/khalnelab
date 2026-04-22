@@ -17,22 +17,27 @@ export default function ScrambleGame({
   roundKey: number;
 }) {
   const QUESTIONS = [
-    { prompt: "طلع لي اسم أكلة", answer: "شاورما" },
-    { prompt: "طلع لي اسم أكلة", answer: "شكشوكة" },
-    { prompt: "طلع لي اسم أكلة", answer: "بروستد" },
-    { prompt: "طلع لي اسم براند", answer: "سامسونج" },
-    { prompt: "طلع لي اسم براند", answer: "نايكي" },
-    { prompt: "طلع لي اسم مدينة", answer: "الرياض" },
-    { prompt: "طلع لي اسم مدينة", answer: "سويسرا" },
-    { prompt: "طلع لي اسم سيارة", answer: "تويوتا" },
-    { prompt: "طلع لي اسم سيارة", answer: "مرسيدس" },
-    { prompt: "طلع لي اسم سيارة", answer: "كورولا" },
-    { prompt: "طلع لي اسم تطبيق", answer: "واتساب" },
-    { prompt: "طلع لي اسم تطبيق", answer: "تيكتوك" },
-    { prompt: "طلع لي اسم تطبيق", answer: "انستقرام" },
-    { prompt: "طلع لي اسم لاعب", answer: "رونالدو" },
-    { prompt: "طلع لي اسم لاعب", answer: "بنزيما" },
-    { prompt: "طلع لي اسم لاعب", answer: "مبابي" },
+    { category: "أكلة", answer: "شاورما" },
+    { category: "أكلة", answer: "شكشوكة" },
+    { category: "أكلة", answer: "بروستد" },
+
+    { category: "براند", answer: "سامسونج" },
+    { category: "براند", answer: "نايكي" },
+
+    { category: "مدينة", answer: "الرياض" },
+    { category: "مدينة", answer: "سويسرا" },
+
+    { category: "سيارة", answer: "تويوتا" },
+    { category: "سيارة", answer: "مرسيدس" },
+    { category: "سيارة", answer: "كورولا" },
+
+    { category: "تطبيق", answer: "واتساب" },
+    { category: "تطبيق", answer: "تيكتوك" },
+    { category: "تطبيق", answer: "انستقرام" },
+
+    { category: "لاعب", answer: "رونالدو" },
+    { category: "لاعب", answer: "بنزيما" },
+    { category: "لاعب", answer: "مبابي" },
   ];
 
   function shuffleWord(word: string) {
@@ -112,7 +117,7 @@ export default function ScrambleGame({
     ? `الأسرع: ${winnerSide === "side1" ? side1Name : side2Name}`
     : revealed
     ? "انكشف الحل — أعلن النتيجة"
-    : "الآن: رتب الحروف بأسرع وقت";
+    : "رتب الحروف بأسرع وقت";
 
   const statusTone = winnerSide
     ? "border-yellow-300/25 bg-yellow-300/10 text-yellow-100"
@@ -128,10 +133,10 @@ export default function ScrambleGame({
       : "font-black text-cyan-200";
 
   return (
-    <GlassCard className="relative min-h-[780px] overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-8 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md">
+    <GlassCard className="relative min-h-[760px] overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-5 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md md:p-7">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 mx-auto max-w-4xl">
         <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">
           SCRAMBLE
         </p>
@@ -160,12 +165,16 @@ export default function ScrambleGame({
           </div>
         </div>
 
-        <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_0_18px_rgba(255,255,255,0.04)]">
-          <p className="text-sm text-white/60">التحدي</p>
-          <p className="mt-2 text-xl font-black text-white">{current.prompt}</p>
+        <div className="mt-7 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_0_18px_rgba(255,255,255,0.04)] md:p-6">
+          <div className="flex flex-col items-center justify-center gap-3">
+            <p className="text-sm text-white/60">التصنيف</p>
+            <div className="rounded-full border border-cyan-300/20 bg-cyan-400/10 px-5 py-2 text-lg font-black text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.08)]">
+              {current.category}
+            </div>
+          </div>
 
           <div className="mt-6 rounded-2xl border border-pink-300/20 bg-pink-500/10 px-4 py-6">
-            <div className="text-6xl font-black tracking-[0.5em] text-pink-300 drop-shadow-[0_0_20px_rgba(255,0,150,0.9)] md:text-7xl">
+            <div className="text-4xl font-black tracking-[0.35em] text-pink-300 drop-shadow-[0_0_20px_rgba(255,0,150,0.9)] md:text-6xl">
               {shuffled}
             </div>
           </div>
