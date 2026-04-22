@@ -7,9 +7,6 @@ export default function GameLayout({
   side1Score,
   side2Score,
   turn,
-  currentRound,
-  totalRounds,
-  badge = "1",
   children,
   onEndRound,
 }: {
@@ -19,58 +16,50 @@ export default function GameLayout({
   side1Score: number;
   side2Score: number;
   turn: string;
-  currentRound: number;
-  totalRounds: number;
-  badge?: string;
   children: React.ReactNode;
   onEndRound: () => void;
 }) {
-  const isSide1Turn = turn === side1;
-  const isSide2Turn = turn === side2;
-
   return (
     <div className="mx-auto w-full max-w-4xl px-4 sm:px-6">
-      <div className="arcade-panel relative rounded-[28px] p-4 sm:p-6 text-center">
-        <div className="arcade-level-badge absolute right-4 top-4">
-          {badge}
-        </div>
-
-        <div className="mb-4 text-center">
-          <h2 className="arcade-title-main">{title}</h2>
-          <p className="arcade-title-sub">
-            الجولة {currentRound} من {totalRounds}
-          </p>
-        </div>
+      <div className="glass rounded-[28px] p-4 sm:p-6 text-center border border-white/10 bg-[#121028]/80 backdrop-blur-xl shadow-[0_0_30px_rgba(0,0,0,0.4)]">
+        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
+          {title}
+        </h2>
 
         <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-stretch gap-3">
-          <div className={`arcade-team arcade-team-pink ${isSide1Turn ? "arcade-team-active-pink" : ""}`}>
-            <p className="arcade-team-name">{side1}</p>
-            <p className="arcade-team-score arcade-team-score-pink">{side1Score}</p>
+          <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4">
+            <p className="text-base sm:text-lg font-bold">{side2}</p>
+            <p className="mt-1 text-4xl font-black text-cyan-200">{side2Score}</p>
           </div>
 
-          <div className={`arcade-turn ${isSide1Turn ? "arcade-turn-pink" : isSide2Turn ? "arcade-turn-cyan" : ""}`}>
-            <p className="arcade-turn-text">دور {turn}</p>
-            <div className="arcade-turn-dots">
-              <span className={isSide1Turn ? "active-pink" : ""}></span>
-              <span></span>
-              <span className={isSide2Turn ? "active-cyan" : ""}></span>
-              <span></span>
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 flex flex-col items-center justify-center">
+            <p className="text-lg sm:text-xl font-black text-white">{turn}</p>
+            <div className="mt-2 flex gap-2">
+              <span className="h-2 w-2 rounded-full bg-purple-400" />
+              <span className="h-2 w-2 rounded-full bg-white/30" />
+              <span className="h-2 w-2 rounded-full bg-white/30" />
+              <span className="h-2 w-2 rounded-full bg-white/30" />
             </div>
           </div>
 
-          <div className={`arcade-team arcade-team-cyan ${isSide2Turn ? "arcade-team-active-cyan" : ""}`}>
-            <p className="arcade-team-name">{side2}</p>
-            <p className="arcade-team-score arcade-team-score-cyan">{side2Score}</p>
+          <div className="rounded-2xl border border-pink-300/20 bg-pink-500/10 p-4">
+            <p className="text-base sm:text-lg font-bold">{side1}</p>
+            <p className="mt-1 text-4xl font-black text-pink-200">{side1Score}</p>
           </div>
         </div>
 
-        <div className="arcade-board-frame mb-6">
+        <div className="rounded-[24px] border border-white/10 bg-[#0d1236]/70 p-4 sm:p-6">
           {children}
         </div>
 
-        <button onClick={onEndRound} className="arcade-end-button">
-          إنهاء الجولة
-        </button>
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={onEndRound}
+            className="h-12 min-w-[140px] rounded-xl border border-white/10 bg-[#4c2b7a] px-6 text-white font-bold transition hover:bg-[#5a3392]"
+          >
+            إنهاء الجولة
+          </button>
+        </div>
       </div>
     </div>
   );
