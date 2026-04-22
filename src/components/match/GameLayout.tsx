@@ -51,15 +51,6 @@ export default function GameLayout({
         <div className="rounded-[24px] border border-white/10 bg-[#0d1236]/70 p-4 sm:p-6">
           {children}
         </div>
-
-        <div className="mt-4 flex justify-center">
-          <button
-            onClick={onEndRound}
-            className="h-12 min-w-[140px] rounded-xl border border-white/10 bg-[#4c2b7a] px-6 text-white font-bold transition hover:bg-[#5a3392]"
-          >
-            إنهاء الجولة
-          </button>
-        </div>
       </div>
     </div>
   );
