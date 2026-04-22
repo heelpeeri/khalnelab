@@ -51,7 +51,7 @@ export default function ScrambleGame({
 
   const [timeLeft, setTimeLeft] = useState(ROUND_TIME);
   const [revealed, setRevealed] = useState(false);
-  const [winner, setWinner] = useState<WinnerType>(null);
+  const [winner, setWinner] = useState<WinnerType | null>(null);
 
   const [shuffled, setShuffled] = useState(() =>
     shuffleWord(QUESTIONS[index].answer)
