@@ -25,8 +25,16 @@ export default function WordGame({
   currentRound?: number;
   totalRounds?: number;
 }) {
-
-  const WORDS_4 = ["كتاب","مكتب","هاتف","تفاح","قطار","كرسي","شمعة","خيمة"];
+  const WORDS_4 = [
+    "كتاب",
+    "مكتب",
+    "هاتف",
+    "تفاح",
+    "قطار",
+    "كرسي",
+    "شمعة",
+    "خيمة",
+  ];
 
   const MAX_TRIES = 6;
 
@@ -60,115 +68,157 @@ export default function WordGame({
     setActiveSide("side1");
   }
 
-  // 🔥 التطبيع (ه = ة)
   function normalize(text: string) {
     return text
+      .trim()
+      .replace(/\s+/g, "")
       .replace(/ة/g, "ه")
       .replace(/أ|إ|آ/g, "ا")
       .replace(/ى/g, "ي");
   }
 
   function submitGuess() {
-    const guess = normalize(current);
+    if (status !== "playing") return;
+
+    const rawGuess = current.trim().replace(/\s+/g, "");
+    const guess = normalize(rawGuess);
     const ans = normalize(answer);
 
-    if (guess.length !== ans.length) return;
+    if (rawGuess.length !== answer.length) return;
+    if (guesses.length >= MAX_TRIES) return;
 
-    const nextGuesses = [...guesses, current];
+    const nextGuesses = [...guesses, rawGuess];
     const nextKeyStatus = { ...keyStatus };
 
-    current.split("").forEach((letter, i) => {
-      const l = normalize(letter);
-      const a = normalize(answer[i]);
+    rawGuess.split("").forEach((letter, i) => {
+      const normalizedLetter = normalize(letter);
+      const normalizedAnswerLetter = normalize(answer[i]);
 
-      if (l === a) nextKeyStatus[letter] = "correct";
-      else if (ans.includes(l)) nextKeyStatus[letter] = "present";
-      else nextKeyStatus[letter] = "absent";
+      if (normalizedLetter === normalizedAnswerLetter) {
+        nextKeyStatus[normalizedLetter] = "correct";
+      } else if (ans.includes(normalizedLetter)) {
+        if (nextKeyStatus[normalizedLetter] !== "correct") {
+          nextKeyStatus[normalizedLetter] = "present";
+        }
+      } else {
+        nextKeyStatus[normalizedLetter] = "absent";
+      }
     });
 
     setGuesses(nextGuesses);
     setKeyStatus(nextKeyStatus);
     setCurrent("");
 
-    // ✅ فاز
     if (guess === ans) {
       setStatus("won");
       onRoundEnd(activeSide);
       return;
     }
 
-    // ❌ انتهت المحاولات
     if (nextGuesses.length >= MAX_TRIES) {
       setStatus("lost");
       onRoundEnd("none");
       return;
     }
 
-    // 🔥 تبديل الدور
-    setActiveSide(prev => prev === "side1" ? "side2" : "side1");
+    setActiveSide((prev) => (prev === "side1" ? "side2" : "side1"));
   }
 
   function getCellColor(letter: string, index: number) {
-    if (normalize(answer[index]) === normalize(letter))
-      return "bg-green-500";
+    const normalizedLetter = normalize(letter);
+    const normalizedAnswerLetter = normalize(answer[index]);
+    const normalizedAnswer = normalize(answer);
 
-    if (normalize(answer).includes(normalize(letter)))
+    if (normalizedAnswerLetter === normalizedLetter) {
+      return "bg-green-500 text-white";
+    }
+
+    if (normalizedAnswer.includes(normalizedLetter)) {
       return "bg-yellow-400 text-black";
+    }
 
-    return "bg-gray-700";
+    return "bg-gray-700 text-white";
   }
 
   function getKeyColor(key: string) {
-    const state = keyStatus[key];
-    if (state === "correct") return "bg-green-500";
+    const state = keyStatus[normalize(key)];
+    if (state === "correct") return "bg-green-500 text-white";
     if (state === "present") return "bg-yellow-400 text-black";
-    if (state === "absent") return "bg-gray-700";
-    return "bg-white/10";
+    if (state === "absent") return "bg-gray-700 text-white";
+    return "bg-white/10 text-white";
   }
+
+  const currentTurnName = activeSide === "side1" ? side1Name : side2Name;
 
   return (
     <GameLayout
-      title={`خمن الكلمة (${currentRound}/${totalRounds})`}
+      title="خمن الكلمة 💬"
       side1={side1Name}
       side2={side2Name}
       side1Score={side1Score}
       side2Score={side2Score}
-      turn={activeSide === "side1" ? side1Name : side2Name}
+      turn={currentTurnName}
+      currentRound={currentRound}
+      totalRounds={totalRounds}
+      badge={String(currentRound)}
       onEndRound={() => onRoundEnd()}
     >
-      <div className="flex flex-col h-[80vh] justify-between">
-
-        {/* GRID */}
+      <div className="flex flex-col justify-between gap-4 min-h-[70vh] sm:min-h-[75vh]">
         <div className="space-y-2">
           {guesses.map((g, i) => (
             <div key={i} className="flex justify-center gap-2">
               {g.split("").map((l, j) => (
-                <div key={j} className={`w-12 h-12 flex items-center justify-center text-xl font-black rounded ${getCellColor(l, j)}`}>
+                <div
+                  key={j}
+                  className={`w-12 h-12 flex items-center justify-center text-xl font-black rounded-xl border border-white/10 ${getCellColor(
+                    l,
+                    j
+                  )}`}
+                >
                   {l}
                 </div>
               ))}
             </div>
           ))}
-        </div>
 
-        {/* INPUT PREVIEW */}
-        <div className="flex justify-center gap-2">
-          {Array.from({ length: answer.length }).map((_, i) => (
-            <div key={i} className="w-12 h-12 flex items-center justify-center border rounded">
-              {current[i] || ""}
+          {Array.from({ length: MAX_TRIES - guesses.length }).map((_, rowIndex) => (
+            <div key={`empty-${rowIndex}`} className="flex justify-center gap-2">
+              {Array.from({ length: answer.length }).map((__, colIndex) => {
+                const previewLetter = rowIndex === 0 ? current[colIndex] ?? "" : "";
+
+                return (
+                  <div
+                    key={colIndex}
+                    className={`w-12 h-12 flex items-center justify-center text-xl font-black rounded-xl border ${
+                      rowIndex === 0
+                        ? "border-[#6d6be9] bg-[#20193f] text-white"
+                        : "border-white/10 bg-[#16142a] text-white"
+                    }`}
+                  >
+                    {previewLetter}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
 
-        {/* KEYBOARD (بدون سكرول 🔥) */}
-        <div className="space-y-2">
+        <div className="sticky bottom-0 space-y-2 bg-[#0b0d20]/90 backdrop-blur-md py-2">
           {keyboardRows.map((row, i) => (
             <div key={i} className="flex justify-center gap-1">
               {row.split("").map((k) => (
                 <button
                   key={k}
-                  onClick={() => setCurrent(prev => prev.length < answer.length ? prev + k : prev)}
-                  className={`px-2 py-2 rounded text-sm ${getKeyColor(k)}`}
+                  type="button"
+                  onClick={() =>
+                    setCurrent((prev) =>
+                      prev.length < answer.length ? prev + k : prev
+                    )
+                  }
+                  disabled={status !== "playing"}
+                  className={`px-2 py-2 rounded-lg text-sm border border-white/10 disabled:opacity-50 ${getKeyColor(
+                    k
+                  )}`}
                 >
                   {k}
                 </button>
@@ -177,11 +227,25 @@ export default function WordGame({
           ))}
 
           <div className="flex justify-center gap-2 mt-2">
-            <button onClick={() => setCurrent(prev => prev.slice(0, -1))} className="btn-secondary">حذف</button>
-            <button onClick={submitGuess} className="btn-primary">إدخال</button>
+            <button
+              type="button"
+              onClick={() => setCurrent((prev) => prev.slice(0, -1))}
+              disabled={status !== "playing" || current.length === 0}
+              className="btn-secondary disabled:opacity-50"
+            >
+              حذف
+            </button>
+
+            <button
+              type="button"
+              onClick={submitGuess}
+              disabled={status !== "playing"}
+              className="btn-primary disabled:opacity-50"
+            >
+              إدخال
+            </button>
           </div>
         </div>
-
       </div>
     </GameLayout>
   );
