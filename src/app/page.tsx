@@ -1,87 +1,133 @@
-"use client";
-
 import Link from "next/link";
 import { GlassCard } from "@/components/GlassCard";
 import { Logo } from "@/components/Logo";
 
-const quickGamesPreview = [
-  { emoji: "❓", title: "الأسئلة" },
-  { emoji: "🎡", title: "لف وخمن" },
-  { emoji: "💬", title: "خمن الكلمة" },
-  { emoji: "🌍", title: "إنسان حيوان نبات جماد بلاد" },
-  { emoji: "✏️", title: "خمن المثل" },
-  { emoji: "🧩", title: "حروف بالخلاط" },
+const turnBasedGames = [
+  {
+    href: "/match?game=word",
+    emoji: "💬",
+    title: "خمن الكلمة",
+    desc: "خمن الكلمة بحروف عربية",
+  },
+  {
+    href: "/match?game=categories",
+    emoji: "🌍",
+    title: "إنسان حيوان نبات جماد بلاد",
+    desc: "فكر بسرعة وجاوب على نفس الحرف",
+  },
+  {
+    href: "/match?game=wheel",
+    emoji: "🎡",
+    title: "لف وخمن",
+    desc: "لف العجلة وجرب حظك",
+  },
+];
+
+const speedGames = [
+  {
+    href: "/match?game=draw",
+    emoji: "✏️",
+    title: "خمن المثل",
+    desc: "خمن المثل من الإيموجي",
+  },
+  {
+    href: "/match?game=scramble",
+    emoji: "🧩",
+    title: "حروف بالخلاط",
+    desc: "حروف ملخبطة؟ رتبها!",
+  },
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,#3b003f_0%,#14001d_45%,#09000f_100%)] px-4 py-8 text-white">
-      <div className="mx-auto max-w-6xl">
-        <section className="mx-auto max-w-4xl text-center">
-          <div className="flex justify-center">
-            <Logo size={150} />
-          </div>
+    <main className="min-h-screen px-4 py-8 text-white">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex justify-center">
+          <Logo size={210} />
+        </div>
 
-          <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-white/78 md:text-2xl md:leading-[2.2rem]">
+        <section className="mx-auto mt-6 max-w-3xl text-center">
+          <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-white/80 md:text-2xl">
             منصة ألعاب عائلية سعودية بتجربة سريعة، واضحة، وممتعة داخل البيت.
           </p>
         </section>
 
-        <section className="mt-12 grid gap-6 lg:grid-cols-2">
-          <GlassCard className="rounded-[34px] border border-fuchsia-400/20 bg-black/20 p-7 md:p-8">
-            <div className="text-right">
-              <p className="text-sm font-bold text-white/55">الوضع الرئيسي</p>
-              <h2 className="mt-2 text-3xl font-black md:text-5xl">
-                تحدي الجلسة 🏆
-              </h2>
-
-              <p className="mt-4 text-sm leading-8 text-white/72 md:text-base">
-                سجّل أسماء الفرق مرة واحدة، اختر الألعاب اللي تبيها، وكل لعبة
-                تكون جولة مستقلة، وفي النهاية يبان الفائز بالنقاط.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/match?mode=session"
-                  className="rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-fuchsia-500 px-7 py-3 font-black text-white shadow-[0_0_25px_rgba(255,60,150,0.35)] transition hover:scale-[1.02] active:scale-95"
-                >
-                  ابدأ تحدي الجلسة
-                </Link>
+        <section className="mt-14 grid gap-8 xl:grid-cols-2">
+          <GlassCard className="rounded-[32px] p-7 md:p-8">
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-right">
+                <p className="text-sm font-bold text-white/60">نمط اللعب</p>
+                <h2 className="mt-1 text-3xl font-black md:text-4xl">
+                  ألعاب بالدور
+                </h2>
+                <p className="mt-2 text-sm leading-7 text-white/70 md:text-base">
+                  كل فريق يأخذ دوره، واللعب يكون أهدأ وأوضح.
+                </p>
               </div>
+
+              <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15 text-3xl">
+                🎯
+              </div>
+            </div>
+
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              {turnBasedGames.map((game) => (
+                <Link key={game.title} href={game.href} className="block">
+                  <div className="rounded-[28px] border border-white/15 bg-white/8 p-6 text-right transition duration-200 hover:-translate-y-1 hover:bg-white/14">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-3xl">
+                        {game.emoji}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-2xl font-black">{game.title}</h3>
+                        <p className="mt-2 text-sm text-white/75 md:text-base">
+                          {game.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           </GlassCard>
 
-          <GlassCard className="rounded-[34px] border border-cyan-300/20 bg-black/20 p-7 md:p-8">
-            <div className="text-right">
-              <p className="text-sm font-bold text-white/55">الوضع السريع</p>
-              <h2 className="mt-2 text-3xl font-black md:text-5xl">
-                لعبة سريعة ⚡
-              </h2>
+          <GlassCard className="rounded-[32px] border border-white/15 bg-black/20 p-7 md:p-8">
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-right">
+                <p className="text-sm font-bold text-white/60">نمط اللعب</p>
+                <h2 className="mt-1 text-3xl font-black md:text-4xl">
+                  ألعاب السرعة
+                </h2>
+                <p className="mt-2 text-sm leading-7 text-white/70 md:text-base">
+                  هنا السرعة والتركيز هم اللي يحسمون الجولة.
+                </p>
+              </div>
 
-              <p className="mt-4 text-sm leading-8 text-white/72 md:text-base">
-                اختر لعبة واحدة فقط، حدّد عدد الجولات، وابدأ مباشرة بدون تعقيد.
-              </p>
+              <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/15 text-3xl">
+                ⚡
+              </div>
+            </div>
 
-              <div className="mt-5 flex flex-wrap gap-2">
-                {quickGamesPreview.map((game) => (
-                  <div
-                    key={game.title}
-                    className="rounded-2xl border border-white/12 bg-white/7 px-4 py-2 text-sm text-white/80"
-                  >
-                    <span className="ml-2">{game.emoji}</span>
-                    {game.title}
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              {speedGames.map((game) => (
+                <Link key={game.title} href={game.href} className="block">
+                  <div className="rounded-[28px] border border-white/15 bg-white/8 p-6 text-right transition duration-200 hover:-translate-y-1 hover:bg-white/14">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-3xl">
+                        {game.emoji}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-2xl font-black">{game.title}</h3>
+                        <p className="mt-2 text-sm text-white/75 md:text-base">
+                          {game.desc}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/match?mode=quick"
-                  className="rounded-2xl border border-white/15 bg-white/8 px-7 py-3 font-bold text-white transition hover:bg-white/12 active:scale-95"
-                >
-                  اختر لعبة سريعة
                 </Link>
-              </div>
+              ))}
             </div>
           </GlassCard>
         </section>
