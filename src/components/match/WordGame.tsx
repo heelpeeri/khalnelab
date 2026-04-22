@@ -153,14 +153,17 @@ export default function WordGame({
 
   return (
     <GameLayout
-      title="خمن الكلمة 💬"
-      side1={side1Name}
-      side2={side2Name}
-      side1Score={side1Score}
-      side2Score={side2Score}
-      turn={currentTurn}
-      onEndRound={() => onRoundEnd()}
-    >
+  title="خمن الكلمة 💬"
+  side1={side1Name}
+  side2={side2Name}
+  side1Score={side1Score}
+  side2Score={side2Score}
+  turn={currentTurn}
+  currentRound={1}
+  totalRounds={3}
+  badge="1"
+  onEndRound={() => onRoundEnd()}
+/>
       <div className="mx-auto w-full max-w-2xl">
         <div className={`rounded-2xl border px-4 py-3 text-sm sm:text-base font-bold ${statusClass}`}>
           {feedback}
