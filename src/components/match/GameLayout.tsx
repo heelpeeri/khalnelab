@@ -7,6 +7,9 @@ export default function GameLayout({
   side1Score,
   side2Score,
   turn,
+  currentRound,
+  totalRounds,
+  badge = "1",
   children,
   onEndRound,
 }: {
@@ -16,6 +19,9 @@ export default function GameLayout({
   side1Score: number;
   side2Score: number;
   turn: string;
+  currentRound: number;
+  totalRounds: number;
+  badge?: string;
   children: React.ReactNode;
   onEndRound: () => void;
 }) {
@@ -24,13 +30,16 @@ export default function GameLayout({
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 sm:px-6">
-      <div className="arcade-panel rounded-[28px] p-4 sm:p-6 text-center">
-        <div className="mb-4 flex items-center justify-center">
-          <div className="arcade-level-badge">1</div>
-          <div className="arcade-title-wrap">
-            <h2 className="arcade-title-main">{title}</h2>
-            <p className="arcade-title-sub">الجولة 2 من 5</p>
-          </div>
+      <div className="arcade-panel relative rounded-[28px] p-4 sm:p-6 text-center">
+        <div className="arcade-level-badge absolute right-4 top-4">
+          {badge}
+        </div>
+
+        <div className="mb-4 text-center">
+          <h2 className="arcade-title-main">{title}</h2>
+          <p className="arcade-title-sub">
+            الجولة {currentRound} من {totalRounds}
+          </p>
         </div>
 
         <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-stretch gap-3">
