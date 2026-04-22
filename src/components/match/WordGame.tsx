@@ -25,9 +25,14 @@ export default function WordGame({
   currentRound?: number;
   totalRounds?: number;
 }) {
-
-  const WORDS = ["كتاب","مكتب","هاتف","تفاح","قطار","كرسي","شمعة","خيمة"];
+  const WORDS = ["كتاب", "مكتب", "هاتف", "تفاح", "قطار", "كرسي", "شمعة", "خيمة"];
   const MAX_TRIES = 6;
+
+  const keyboardRows = [
+    "ةجحخهعغفقثصض",
+    "كمنتالبيسش",
+    "ورزدذطظ",
+  ];
 
   const [answer, setAnswer] = useState("");
   const [guesses, setGuesses] = useState<string[]>([]);
@@ -35,13 +40,7 @@ export default function WordGame({
   const [status, setStatus] = useState<"playing" | "won" | "lost">("playing");
   const [keyStatus, setKeyStatus] = useState<Record<string, CellState>>({});
   const [activeSide, setActiveSide] = useState<"side1" | "side2">("side1");
-  const [feedback, setFeedback] = useState("ابدأ التخمين");
-
-  const keyboardRows = [
-    "ةجحخهعغفقثصض",
-    "كمنتالبيسش",
-    "ورزدذطظ",
-  ];
+  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     resetRound();
@@ -57,35 +56,47 @@ export default function WordGame({
     setFeedback("ابدأ التخمين");
   }
 
-  // 🔥 تطبيع عربي
   function normalize(text: string) {
     return text
+      .trim()
+      .replace(/\s+/g, "")
       .replace(/ة/g, "ه")
       .replace(/أ|إ|آ/g, "ا")
       .replace(/ى/g, "ي");
   }
 
+  function getCurrentTurnName() {
+    return activeSide === "side1" ? side1Name : side2Name;
+  }
+
   function submitGuess() {
     if (status !== "playing") return;
 
-    const guess = normalize(current);
+    const rawGuess = current.trim().replace(/\s+/g, "");
+    const guess = normalize(rawGuess);
     const ans = normalize(answer);
 
-    if (guess.length !== ans.length) {
-      setFeedback(`لازم ${ans.length} حروف`);
+    if (rawGuess.length !== answer.length) {
+      setFeedback(`لازم تدخل ${answer.length} حروف`);
       return;
     }
 
-    const nextGuesses = [...guesses, current];
+    const nextGuesses = [...guesses, rawGuess];
     const nextKeyStatus = { ...keyStatus };
 
-    current.split("").forEach((letter, i) => {
-      const l = normalize(letter);
-      const a = normalize(answer[i]);
+    rawGuess.split("").forEach((letter, i) => {
+      const normalizedLetter = normalize(letter);
+      const normalizedAnswerLetter = normalize(answer[i]);
 
-      if (l === a) nextKeyStatus[letter] = "correct";
-      else if (ans.includes(l)) nextKeyStatus[letter] = "present";
-      else nextKeyStatus[letter] = "absent";
+      if (normalizedLetter === normalizedAnswerLetter) {
+        nextKeyStatus[normalizedLetter] = "correct";
+      } else if (ans.includes(normalizedLetter)) {
+        if (nextKeyStatus[normalizedLetter] !== "correct") {
+          nextKeyStatus[normalizedLetter] = "present";
+        }
+      } else {
+        nextKeyStatus[normalizedLetter] = "absent";
+      }
     });
 
     setGuesses(nextGuesses);
@@ -93,128 +104,160 @@ export default function WordGame({
     setCurrent("");
 
     if (guess === ans) {
+      const winner = activeSide;
+      const winnerName = winner === "side1" ? side1Name : side2Name;
       setStatus("won");
-      setFeedback("🔥 صح!");
-      onRoundEnd(activeSide);
+      setFeedback(`🔥 ${winnerName} عرف الكلمة`);
+      setTimeout(() => onRoundEnd(winner), 500);
       return;
     }
 
     if (nextGuesses.length >= MAX_TRIES) {
       setStatus("lost");
-      setFeedback(`❌ انتهت! الكلمة: ${answer}`);
-      onRoundEnd("none");
+      setFeedback(`انتهت المحاولات — الكلمة: ${answer}`);
+      setTimeout(() => onRoundEnd("none"), 700);
       return;
     }
 
-    setFeedback(`باقي ${MAX_TRIES - nextGuesses.length} محاولات`);
-
-    // 🔥 تبديل الدور
-    setActiveSide(prev => prev === "side1" ? "side2" : "side1");
+    const nextSide = activeSide === "side1" ? "side2" : "side1";
+    const nextTurnName = nextSide === "side1" ? side1Name : side2Name;
+    setActiveSide(nextSide);
+    setFeedback(`الدور على ${nextTurnName}`);
   }
 
   function getCellColor(letter: string, index: number) {
-    if (normalize(answer[index]) === normalize(letter))
-      return "bg-green-500";
+    const normalizedLetter = normalize(letter);
+    const normalizedAnswerLetter = normalize(answer[index]);
+    const normalizedAnswer = normalize(answer);
 
-    if (normalize(answer).includes(normalize(letter)))
-      return "bg-yellow-400 text-black";
+    if (normalizedLetter === normalizedAnswerLetter) {
+      return "bg-green-500 border-green-400 text-white";
+    }
 
-    return "bg-[#2f3750]";
+    if (normalizedAnswer.includes(normalizedLetter)) {
+      return "bg-yellow-400 border-yellow-300 text-black";
+    }
+
+    return "bg-[#2f3750] border-[#4b5676] text-white";
   }
 
   function getKeyColor(key: string) {
-    const state = keyStatus[key];
-    if (state === "correct") return "bg-green-500";
-    if (state === "present") return "bg-yellow-400 text-black";
-    if (state === "absent") return "bg-[#2f3750]";
-    return "bg-white/10 hover:bg-white/20";
+    const state = keyStatus[normalize(key)];
+    if (state === "correct") return "bg-green-500 border-green-400 text-white";
+    if (state === "present") return "bg-yellow-400 border-yellow-300 text-black";
+    if (state === "absent") return "bg-[#2f3750] border-[#4b5676] text-white";
+    return "bg-white/10 border-white/10 text-white hover:bg-white/15";
   }
+
+  const remainingRows = MAX_TRIES - guesses.length;
 
   return (
     <GameLayout
-  title={`خمن الكلمة (${currentRound}/${totalRounds})`}
-  side1={side1Name}
-  side2={side2Name}
-  side1Score={side1Score}
-  side2Score={side2Score}
-  turn={activeSide === "side1" ? side1Name : side2Name}
-  onEndRound={() => onRoundEnd()}
->
-      <div className="flex flex-col h-[75vh] justify-between">
-
-        {/* FEEDBACK */}
-        <div className="text-center font-bold text-white/80 mb-2">
+      title={`خمن الكلمة (${currentRound}/${totalRounds})`}
+      side1={side1Name}
+      side2={side2Name}
+      side1Score={side1Score}
+      side2Score={side2Score}
+      turn={`دور ${getCurrentTurnName()}`}
+      onEndRound={() => onRoundEnd()}
+    >
+      <div className="flex flex-col gap-4">
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm sm:text-base font-bold text-white">
           {feedback}
         </div>
 
-        {/* GRID */}
         <div className="space-y-2">
-          {guesses.map((g, i) => (
-            <div key={i} className="flex justify-center gap-2">
-              {g.split("").map((l, j) => (
-                <div key={j}
-                  className={`w-14 h-14 flex items-center justify-center text-xl font-black rounded-xl ${getCellColor(l, j)}`}>
-                  {l}
+          {guesses.map((guess, rowIndex) => (
+            <div key={rowIndex} className="flex justify-center gap-2">
+              {guess.split("").map((letter, colIndex) => (
+                <div
+                  key={colIndex}
+                  className={`flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-xl md:rounded-2xl border text-xl md:text-2xl font-black ${getCellColor(letter, colIndex)}`}
+                >
+                  {letter}
                 </div>
               ))}
             </div>
           ))}
 
-          {/* INPUT */}
-          <div className="flex justify-center gap-2 mt-3">
-            {Array.from({ length: answer.length }).map((_, i) => (
-              <div key={i}
-                className="w-14 h-14 flex items-center justify-center border border-white/20 rounded-xl text-xl">
-                {current[i] || ""}
-              </div>
-            ))}
-          </div>
+          {Array.from({ length: remainingRows }).map((_, rowIndex) => (
+            <div key={`empty-${rowIndex}`} className="flex justify-center gap-2">
+              {Array.from({ length: answer.length }).map((__, colIndex) => {
+                const previewLetter = rowIndex === 0 ? current[colIndex] ?? "" : "";
+
+                return (
+                  <div
+                    key={colIndex}
+                    className={`flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-xl md:rounded-2xl border text-xl md:text-2xl font-black text-white ${
+                      rowIndex === 0
+                        ? "border-[#6d6be9] bg-[#20193f]"
+                        : "border-white/10 bg-[#16142a]"
+                    }`}
+                  >
+                    {previewLetter}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
 
-        {/* KEYBOARD */}
-        <div className="mt-4 space-y-2">
-          {keyboardRows.map((row, i) => (
-            <div key={i} className="flex justify-center gap-1">
-              {row.split("").map((k) => (
+        <div className="mt-2 space-y-3">
+          {keyboardRows.map((row, rowIndex) => (
+            <div
+              key={rowIndex}
+              className={`flex justify-center gap-2 ${
+                rowIndex === 1 ? "mr-3 sm:mr-5" : rowIndex === 2 ? "mr-5 sm:mr-8" : ""
+              }`}
+            >
+              {row.split("").map((key) => (
                 <button
-                  key={k}
-                  onClick={() => {
-                    if (current.length < answer.length)
-                      setCurrent(prev => prev + k);
-                  }}
-                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg text-sm font-bold ${getKeyColor(k)}`}
+                  key={key}
+                  type="button"
+                  onClick={() =>
+                    setCurrent((prev) =>
+                      status === "playing" && prev.length < answer.length ? prev + key : prev
+                    )
+                  }
+                  disabled={status !== "playing"}
+                  className={`h-12 min-w-[44px] sm:h-14 sm:min-w-[50px] rounded-xl border text-base sm:text-lg font-bold transition active:scale-95 disabled:opacity-50 ${getKeyColor(
+                    key
+                  )}`}
                 >
-                  {k}
+                  {key}
                 </button>
               ))}
             </div>
           ))}
 
-          {/* BUTTONS */}
-          <div className="flex justify-center gap-2 mt-3">
+          <div className="mt-4 flex justify-center gap-3 flex-wrap">
             <button
-              onClick={() => setCurrent(prev => prev.slice(0, -1))}
-              className="btn-secondary w-28"
+              type="button"
+              onClick={() => setCurrent((prev) => prev.slice(0, -1))}
+              disabled={status !== "playing" || current.length === 0}
+              className="h-12 min-w-[120px] rounded-xl border border-white/10 bg-[#2a2f45] text-white font-bold transition hover:bg-[#343a56] disabled:opacity-50"
             >
               حذف
             </button>
 
             <button
+              type="button"
               onClick={submitGuess}
-              className="btn-primary w-28"
+              disabled={status !== "playing"}
+              className="h-12 min-w-[130px] rounded-xl bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold transition hover:scale-[1.02] disabled:opacity-50"
             >
               إدخال
             </button>
 
             <button
+              type="button"
               onClick={() => onRoundEnd()}
-              className="btn-secondary w-28"
+              className="h-12 min-w-[140px] rounded-xl border border-white/10 bg-[#4c2b7a] text-white font-bold transition hover:bg-[#5a3392]"
             >
-              إنهاء
+              إنهاء الجولة
             </button>
           </div>
         </div>
-
       </div>
     </GameLayout>
   );
