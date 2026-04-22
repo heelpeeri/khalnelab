@@ -14,6 +14,7 @@ export default function WordGame({
   side1Score = 0,
   side2Score = 0,
   currentRound = 1,
+  totalRounds = 3,
 }: {
   onRoundEnd: (winner?: WinnerType) => void;
   roundKey: number;
@@ -22,6 +23,7 @@ export default function WordGame({
   side1Score?: number;
   side2Score?: number;
   currentRound?: number;
+  totalRounds?: number;
 }) {
   const WORDS = ["كتاب", "مكتب", "هاتف", "تفاح", "قطار", "كرسي", "شمعة", "خيمة"];
   const MAX_TRIES = 6;
@@ -65,16 +67,16 @@ export default function WordGame({
 
   const roundLabel =
     currentRound === 1
-      ? "الجولة الأولى"
+      ? `الجولة الأولى من ${totalRounds}`
       : currentRound === 2
-      ? "الجولة الثانية"
+      ? `الجولة الثانية من ${totalRounds}`
       : currentRound === 3
-      ? "الجولة الثالثة"
+      ? `الجولة الثالثة من ${totalRounds}`
       : currentRound === 4
-      ? "الجولة الرابعة"
+      ? `الجولة الرابعة من ${totalRounds}`
       : currentRound === 5
-      ? "الجولة الخامسة"
-      : `الجولة ${currentRound}`;
+      ? `الجولة الخامسة من ${totalRounds}`
+      : `الجولة ${currentRound} من ${totalRounds}`;
 
   function getCurrentTurnName() {
     return activeSide === "side1" ? side1Name : side2Name;
@@ -170,10 +172,9 @@ export default function WordGame({
       side1Score={side1Score}
       side2Score={side2Score}
       turn={`دور ${getCurrentTurnName()}`}
-      onEndRound={() => onRoundEnd()}
     >
       <div className="flex flex-col gap-3">
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm sm:text-base font-bold text-white">
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-bold text-white sm:text-base">
           {feedback}
         </div>
 
@@ -183,7 +184,7 @@ export default function WordGame({
               {guess.split("").map((letter, colIndex) => (
                 <div
                   key={colIndex}
-                  className={`flex h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl border text-xl md:text-2xl font-black ${getCellColor(
+                  className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xl font-black md:h-14 md:w-14 md:text-2xl sm:h-12 sm:w-12 ${getCellColor(
                     letter,
                     colIndex
                   )}`}
@@ -202,7 +203,7 @@ export default function WordGame({
                 return (
                   <div
                     key={colIndex}
-                    className={`flex h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14 items-center justify-center rounded-xl border text-xl md:text-2xl font-black text-white ${
+                    className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xl font-black text-white md:h-14 md:w-14 md:text-2xl sm:h-12 sm:w-12 ${
                       rowIndex === 0
                         ? "border-[#6d6be9] bg-[#20193f]"
                         : "border-white/10 bg-[#16142a]"
@@ -216,7 +217,7 @@ export default function WordGame({
           ))}
         </div>
 
-        <div className="mt-2 space-y-2">
+        <div className="mt-1 space-y-2">
           {keyboardRows.map((row, rowIndex) => (
             <div
               key={rowIndex}
@@ -234,7 +235,7 @@ export default function WordGame({
                     )
                   }
                   disabled={status !== "playing"}
-                  className={`h-10 min-w-[38px] sm:h-11 sm:min-w-[42px] rounded-lg border text-sm sm:text-base font-bold transition active:scale-95 disabled:opacity-50 ${getKeyColor(
+                  className={`h-10 min-w-[38px] rounded-lg border text-sm font-bold transition active:scale-95 disabled:opacity-50 sm:h-11 sm:min-w-[42px] sm:text-base ${getKeyColor(
                     key
                   )}`}
                 >
@@ -244,7 +245,7 @@ export default function WordGame({
             </div>
           ))}
 
-          <div className="mt-3 flex justify-center gap-2 flex-wrap">
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
             <button
               type="button"
               onClick={() => setCurrent((prev) => prev.slice(0, -1))}
