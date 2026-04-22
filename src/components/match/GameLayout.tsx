@@ -8,7 +8,6 @@ export default function GameLayout({
   side2Score,
   turn,
   children,
-  onEndRound,
 }: {
   title: string;
   side1: string;
@@ -17,23 +16,22 @@ export default function GameLayout({
   side2Score: number;
   turn: string;
   children: React.ReactNode;
-  onEndRound: () => void;
 }) {
   return (
     <div className="mx-auto w-full max-w-4xl px-4 sm:px-6">
-      <div className="glass rounded-[28px] p-4 sm:p-6 text-center border border-white/10 bg-[#121028]/80 backdrop-blur-xl shadow-[0_0_30px_rgba(0,0,0,0.4)]">
-        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
+      <div className="glass rounded-[28px] border border-white/10 bg-[#121028]/80 p-4 text-center shadow-[0_0_30px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:p-6">
+        <h2 className="mb-2 text-2xl font-black text-white sm:text-3xl">
           {title}
         </h2>
 
         <div className="mb-4 grid grid-cols-[1fr_auto_1fr] items-stretch gap-3">
           <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4">
-            <p className="text-base sm:text-lg font-bold">{side2}</p>
+            <p className="text-base font-bold sm:text-lg">{side2}</p>
             <p className="mt-1 text-4xl font-black text-cyan-200">{side2Score}</p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 flex flex-col items-center justify-center">
-            <p className="text-lg sm:text-xl font-black text-white">{turn}</p>
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
+            <p className="text-lg font-black text-white sm:text-xl">{turn}</p>
             <div className="mt-2 flex gap-2">
               <span className="h-2 w-2 rounded-full bg-purple-400" />
               <span className="h-2 w-2 rounded-full bg-white/30" />
@@ -43,7 +41,7 @@ export default function GameLayout({
           </div>
 
           <div className="rounded-2xl border border-pink-300/20 bg-pink-500/10 p-4">
-            <p className="text-base sm:text-lg font-bold">{side1}</p>
+            <p className="text-base font-bold sm:text-lg">{side1}</p>
             <p className="mt-1 text-4xl font-black text-pink-200">{side1Score}</p>
           </div>
         </div>
