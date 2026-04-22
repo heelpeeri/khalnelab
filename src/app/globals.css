@@ -12,6 +12,17 @@
   --neon-cyan: #4de2ff;
   --neon-blue: #6aa8ff;
   --neon-gold: #ffbf3f;
+
+  --team-1: #ff62b0;
+  --team-1-bg: rgba(255, 98, 176, 0.12);
+  --team-1-border: rgba(255, 98, 176, 0.28);
+
+  --team-2: #7fe7ff;
+  --team-2-bg: rgba(127, 231, 255, 0.12);
+  --team-2-border: rgba(127, 231, 255, 0.28);
+
+  --panel-deep: #0e0b23;
+  --panel-soft: #16122d;
 }
 
 html,
