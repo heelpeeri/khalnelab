@@ -18,6 +18,7 @@ export default function CategoriesGame({
 }) {
   const ROUND_TIME = 40;
   const letters = ["م", "س", "ب", "ر", "ن", "ل", "ك"];
+
   const [letter, setLetter] = useState(
     () => letters[Math.floor(Math.random() * letters.length)]
   );
@@ -64,11 +65,18 @@ export default function CategoriesGame({
     return () => clearTimeout(timer);
   }, [timeLeft, revealed, side1Ready, side2Ready]);
 
+  const timerTextClass =
+    timeLeft <= 5
+      ? "animate-pulse font-black text-red-300"
+      : timeLeft <= 10
+      ? "font-black text-yellow-200"
+      : "font-black text-cyan-200";
+
   return (
-    <GlassCard className="relative min-h-[780px] overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-8 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md">
+    <GlassCard className="relative min-h-[740px] overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-5 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md md:p-7">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 mx-auto max-w-4xl">
         <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">
           CATEGORIES
         </p>
@@ -78,7 +86,7 @@ export default function CategoriesGame({
         </h2>
 
         <div className="mt-6 flex justify-center">
-          <div className="rounded-[30px] border-4 border-yellow-300/35 bg-[#fff7d6] px-12 py-8 text-7xl font-black text-[#ff4fd8] shadow-[0_0_26px_rgba(255,214,102,0.22)]">
+          <div className="rounded-[28px] border-4 border-yellow-300/35 bg-[#fff7d6] px-10 py-7 text-6xl font-black text-[#ff4fd8] shadow-[0_0_26px_rgba(255,214,102,0.22)] md:px-12 md:py-8 md:text-7xl">
             {letter}
           </div>
         </div>
@@ -86,15 +94,7 @@ export default function CategoriesGame({
         <div className="mx-auto mt-5 w-full max-w-md">
           <div className="mb-1 flex justify-between text-sm text-white/80">
             <span>الوقت</span>
-            <span
-              className={
-                timeLeft <= 5
-                  ? "animate-pulse font-black text-red-300"
-                  : "font-black text-yellow-200"
-              }
-            >
-              {timeLeft}
-            </span>
+            <span className={timerTextClass}>{timeLeft}</span>
           </div>
 
           <div className="h-3 w-full overflow-hidden rounded-full border border-white/10 bg-white/10">
@@ -105,7 +105,7 @@ export default function CategoriesGame({
           </div>
         </div>
 
-        <div className="mt-6 rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-6 text-center">
+        <div className="mt-6 rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-5 text-center">
           <p className="text-lg font-black text-white">تعليمات الجولة</p>
           <p className="mt-3 leading-8 text-white/80">{instructionText}</p>
         </div>
@@ -113,14 +113,17 @@ export default function CategoriesGame({
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <div className="rounded-3xl border border-pink-400/20 bg-pink-500/10 p-4 text-center">
             <p className="text-lg font-black">{side1Name}</p>
+
             <p className="mt-2 text-sm text-white/80">
               {side1Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
             </p>
+
             {side1Time !== null && (
               <p className="mt-1 text-xs text-white/70">
                 تم تسجيله خلال {side1Time} ثانية
               </p>
             )}
+
             <button
               type="button"
               onClick={() => {
@@ -128,7 +131,7 @@ export default function CategoriesGame({
                 setSide1Time(ROUND_TIME - timeLeft);
               }}
               disabled={side1Ready || revealed}
-              className="btn-primary mt-4 w-full disabled:opacity-50"
+              className="mt-4 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/15 disabled:opacity-50"
             >
               خلصنا
             </button>
@@ -136,14 +139,17 @@ export default function CategoriesGame({
 
           <div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-center">
             <p className="text-lg font-black">{side2Name}</p>
+
             <p className="mt-2 text-sm text-white/80">
               {side2Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
             </p>
+
             {side2Time !== null && (
               <p className="mt-1 text-xs text-white/70">
                 تم تسجيله خلال {side2Time} ثانية
               </p>
             )}
+
             <button
               type="button"
               onClick={() => {
@@ -151,7 +157,7 @@ export default function CategoriesGame({
                 setSide2Time(ROUND_TIME - timeLeft);
               }}
               disabled={side2Ready || revealed}
-              className="btn-primary mt-4 w-full disabled:opacity-50"
+              className="mt-4 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/15 disabled:opacity-50"
             >
               خلصنا
             </button>
