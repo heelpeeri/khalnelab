@@ -32,7 +32,7 @@ export default function CategoriesGame({
   const [side2Time, setSide2Time] = useState<number | null>(null);
 
   const instructionText =
-    'فكروا في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى الفريق، يقول لصاحب الجلسة: "خلصنا" ثم يسجلها صاحب الجلسة';
+    'فكروا في: إنسان – حيوان – نبات – جماد – بلاد، كلها بنفس الحرف. إذا انتهى الفريق يسجل صاحب الجلسة عليه "خلصنا".';
 
   useEffect(() => {
     const next = letters[Math.floor(Math.random() * letters.length)];
@@ -73,7 +73,7 @@ export default function CategoriesGame({
       : "font-black text-cyan-200";
 
   return (
-    <GlassCard className="relative min-h-[740px] overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-5 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md md:p-7">
+    <GlassCard className="relative min-h-[700px] overflow-hidden border border-pink-400/25 bg-[#10001f]/75 p-5 text-center shadow-[0_0_28px_rgba(255,0,153,0.15)] backdrop-blur-md md:p-7">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
 
       <div className="relative z-10 mx-auto max-w-4xl">
@@ -85,23 +85,43 @@ export default function CategoriesGame({
           إنسان حيوان نبات جماد بلاد
         </h2>
 
-        <div className="mt-6 flex justify-center">
-          <div className="rounded-[28px] border-4 border-yellow-300/35 bg-[#fff7d6] px-10 py-7 text-6xl font-black text-[#ff4fd8] shadow-[0_0_26px_rgba(255,214,102,0.22)] md:px-12 md:py-8 md:text-7xl">
-            {letter}
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="rounded-2xl border border-pink-300/20 bg-pink-500/10 p-4">
+            <p className="text-sm text-white/65">{side1Name}</p>
+            <p className="mt-2 text-4xl font-black text-pink-200">
+              {side1Ready ? "1" : "0"}
+            </p>
+            {side1Time !== null && (
+              <p className="mt-1 text-xs text-white/70">{side1Time} ث</p>
+            )}
+          </div>
+
+          <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 shadow-[0_0_18px_rgba(34,211,238,0.08)]">
+            <p className="text-sm text-white/65">الوقت</p>
+            <p className={`mt-2 text-4xl ${timerTextClass}`}>{timeLeft}</p>
+
+            <div className="mt-3 h-3 w-full overflow-hidden rounded-full border border-white/10 bg-white/10">
+              <div
+                className="h-full bg-gradient-to-r from-cyan-400 via-pink-500 to-yellow-300 transition-all duration-1000"
+                style={{ width: `${(timeLeft / ROUND_TIME) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-cyan-300/20 bg-white/10 p-4">
+            <p className="text-sm text-white/65">{side2Name}</p>
+            <p className="mt-2 text-4xl font-black text-cyan-200">
+              {side2Ready ? "1" : "0"}
+            </p>
+            {side2Time !== null && (
+              <p className="mt-1 text-xs text-white/70">{side2Time} ث</p>
+            )}
           </div>
         </div>
 
-        <div className="mx-auto mt-5 w-full max-w-md">
-          <div className="mb-1 flex justify-between text-sm text-white/80">
-            <span>الوقت</span>
-            <span className={timerTextClass}>{timeLeft}</span>
-          </div>
-
-          <div className="h-3 w-full overflow-hidden rounded-full border border-white/10 bg-white/10">
-            <div
-              className="h-full bg-gradient-to-r from-cyan-400 via-pink-500 to-yellow-300 transition-all duration-1000"
-              style={{ width: `${(timeLeft / ROUND_TIME) * 100}%` }}
-            />
+        <div className="mt-6 flex justify-center">
+          <div className="rounded-[28px] border border-cyan-300/20 bg-[#1b1537] px-10 py-7 text-6xl font-black text-cyan-300 shadow-[0_0_24px_rgba(34,211,238,0.15)] md:px-12 md:py-8 md:text-7xl">
+            {letter}
           </div>
         </div>
 
@@ -110,20 +130,8 @@ export default function CategoriesGame({
           <p className="mt-3 leading-8 text-white/80">{instructionText}</p>
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="rounded-3xl border border-pink-400/20 bg-pink-500/10 p-4 text-center">
-            <p className="text-lg font-black">{side1Name}</p>
-
-            <p className="mt-2 text-sm text-white/80">
-              {side1Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
-            </p>
-
-            {side1Time !== null && (
-              <p className="mt-1 text-xs text-white/70">
-                تم تسجيله خلال {side1Time} ثانية
-              </p>
-            )}
-
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="grid gap-3 md:grid-cols-2">
             <button
               type="button"
               onClick={() => {
@@ -131,24 +139,10 @@ export default function CategoriesGame({
                 setSide1Time(ROUND_TIME - timeLeft);
               }}
               disabled={side1Ready || revealed}
-              className="mt-4 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/15 disabled:opacity-50"
+              className="rounded-xl border border-pink-300/20 bg-pink-500/10 px-4 py-3 text-base font-bold text-white transition hover:bg-pink-500/20 disabled:opacity-50"
             >
-              خلصنا
+              {side1Name} — خلصنا
             </button>
-          </div>
-
-          <div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/10 p-4 text-center">
-            <p className="text-lg font-black">{side2Name}</p>
-
-            <p className="mt-2 text-sm text-white/80">
-              {side2Ready ? "✅ تم التسجيل" : "⏳ لم يسجل بعد"}
-            </p>
-
-            {side2Time !== null && (
-              <p className="mt-1 text-xs text-white/70">
-                تم تسجيله خلال {side2Time} ثانية
-              </p>
-            )}
 
             <button
               type="button"
@@ -157,10 +151,19 @@ export default function CategoriesGame({
                 setSide2Time(ROUND_TIME - timeLeft);
               }}
               disabled={side2Ready || revealed}
-              className="mt-4 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/15 disabled:opacity-50"
+              className="rounded-xl border border-cyan-300/20 bg-cyan-400/10 px-4 py-3 text-base font-bold text-white transition hover:bg-cyan-400/20 disabled:opacity-50"
             >
-              خلصنا
+              {side2Name} — خلصنا
             </button>
+          </div>
+
+          <div className="mt-3 grid gap-2 text-sm text-white/75 md:grid-cols-2">
+            <div>
+              {side1Ready ? `✅ ${side1Name} سجّل` : `⏳ ${side1Name} لم يسجل بعد`}
+            </div>
+            <div>
+              {side2Ready ? `✅ ${side2Name} سجّل` : `⏳ ${side2Name} لم يسجل بعد`}
+            </div>
           </div>
         </div>
 
