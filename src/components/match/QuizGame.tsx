@@ -80,7 +80,7 @@ export default function QuizGame({
     }
 
     onProgressChange?.(index + 1, questions.length);
-  }, [category, index, questions]);
+  }, [category, index, questions, onProgressChange]);
 
   function handleSelectCategory(cat: QuizCategoryKey) {
     const picked = pickQuestions(cat);
@@ -121,7 +121,7 @@ export default function QuizGame({
         return;
       }
 
-      onRoundEnd();
+      onRoundEnd("none");
       return;
     }
 
@@ -129,15 +129,6 @@ export default function QuizGame({
     setShowAnswer(false);
     setShowWinnerPick(false);
   }
-
-  const categoryTitle =
-    category === "seerah"
-      ? "السيرة والأنبياء"
-      : category === "saudi"
-      ? "تاريخ السعودية"
-      : category === "football"
-      ? "كرة القدم السعودية"
-      : "الجغرافيا";
 
   if (!category) {
     return (
@@ -152,127 +143,142 @@ export default function QuizGame({
 
   if (!current) {
     return (
-      <GlassCard className="min-h-[780px] p-8 text-center">
+      <GlassCard className="min-h-[720px] p-8 text-center">
         <p className="text-xl font-black">ما فيه أسئلة كفاية في هذه الفئة</p>
       </GlassCard>
     );
   }
 
   return (
-    <GlassCard className="min-h-[780px] p-8 text-center">
-      <p className="text-sm font-black tracking-[0.18em] text-cyan-300/80">
-        QUIZ
-      </p>
+    <GlassCard className="relative min-h-[720px] overflow-hidden border border-pink-400/20 bg-[#10001f]/75 p-5 text-center shadow-[0_0_28px_rgba(255,0,153,0.12)] backdrop-blur-md md:p-7">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.06),_transparent_35%)]" />
 
-      <h2 className="mt-2 text-3xl font-black">الأسئلة</h2>
-
-      <div className="mt-5 grid gap-3 md:grid-cols-3">
-        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-          <p className="text-sm text-white/60">الفئة</p>
-          <p className="mt-1 text-xl font-black text-yellow-200">
-            {categoryTitle}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-          <p className="text-sm text-white/60">السؤال</p>
-          <p dir="ltr" className="mt-1 text-left text-xl font-black text-cyan-200">
-            {index + 1} / {questions.length}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-          <p className="text-sm text-white/60">نتيجة الجولة</p>
-          <p className="mt-1 text-xl font-black">
-            {side1Name} {side1Correct} - {side2Correct} {side2Name}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_0_18px_rgba(255,255,255,0.04)]">
-        <p className="text-2xl font-black leading-relaxed text-white">
-          {current.question}
+      <div className="relative z-10 mx-auto max-w-4xl">
+        <p className="text-sm font-black tracking-[0.22em] text-cyan-300/75">
+          QUIZ
         </p>
 
-        {current.options && current.options.length > 0 && (
-          <div className="mt-6 grid gap-3">
-            {current.options.map((opt) => (
-              <div
-                key={opt}
-                className="rounded-xl border border-cyan-300/20 bg-cyan-400/10 p-3 text-lg font-bold text-white"
-              >
-                {opt}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+        <h2 className="mt-2 text-3xl font-black text-white">❓ الأسئلة</h2>
 
-      {!showAnswer ? (
-        <div className="mt-8">
-          <button
-            type="button"
-            onClick={() => setShowAnswer(true)}
-            className="btn-primary min-w-[200px]"
-          >
-            إظهار الإجابة
-          </button>
-        </div>
-      ) : !showWinnerPick ? (
-        <div className="mt-8">
-          <div className="rounded-2xl border border-yellow-300/25 bg-yellow-300/10 p-5 shadow-[0_0_18px_rgba(250,204,21,0.12)]">
-            <p className="text-sm text-white/70">الإجابة الصحيحة</p>
-            <p className="mt-2 text-2xl font-black text-yellow-100">
-              {current.answer}
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="rounded-2xl border border-pink-300/20 bg-pink-500/10 p-4">
+            <p className="text-sm text-white/60">{side1Name}</p>
+            <p className="mt-2 text-4xl font-black text-pink-200">
+              {side1Correct}
             </p>
           </div>
 
-          <div className="mt-6">
+          <div className="rounded-2xl border border-cyan-300/20 bg-cyan-400/10 p-4 shadow-[0_0_18px_rgba(34,211,238,0.08)]">
+            <p className="text-sm text-white/60">السؤال الحالي</p>
+            <p
+              dir="ltr"
+              className="mt-2 text-3xl font-black text-cyan-200"
+            >
+              {index + 1} / {questions.length}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-cyan-300/20 bg-white/10 p-4">
+            <p className="text-sm text-white/60">{side2Name}</p>
+            <p className="mt-2 text-4xl font-black text-cyan-200">
+              {side2Correct}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-lg font-black text-white">
+          {!showAnswer
+            ? "اقرأ السؤال ثم اكشف الإجابة"
+            : !showWinnerPick
+            ? "الإجابة ظهرت — اختر من جاوب صح"
+            : "حدد الفريق الذي جاوب بشكل صحيح"}
+        </div>
+
+        <div className="mt-7 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_0_18px_rgba(255,255,255,0.04)] md:p-6">
+          <p className="text-2xl font-black leading-relaxed text-white">
+            {current.question}
+          </p>
+
+          {current.options && current.options.length > 0 && (
+            <div className="mt-6 grid gap-3">
+              {current.options.map((opt) => (
+                <div
+                  key={opt}
+                  className="rounded-xl border border-cyan-300/20 bg-cyan-400/10 p-3 text-lg font-bold text-white"
+                >
+                  {opt}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {!showAnswer ? (
+          <div className="mt-8">
             <button
               type="button"
-              onClick={() => setShowWinnerPick(true)}
+              onClick={() => setShowAnswer(true)}
               className="btn-primary min-w-[220px]"
             >
-              مين جاوب صح؟
+              إظهار الإجابة
             </button>
           </div>
-        </div>
-      ) : (
-        <div className="mt-8">
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-5">
-            <p className="text-xl font-black">مين جاوب صح؟</p>
-            <p className="mt-2 text-white/70">
-              اختر الفريق الذي جاوب السؤال بشكل صحيح
-            </p>
+        ) : !showWinnerPick ? (
+          <div className="mt-8">
+            <div className="rounded-2xl border border-yellow-300/25 bg-yellow-300/10 p-5 shadow-[0_0_18px_rgba(250,204,21,0.12)]">
+              <p className="text-sm text-white/70">الإجابة الصحيحة</p>
+              <p className="mt-2 text-2xl font-black text-yellow-100">
+                {current.answer}
+              </p>
+            </div>
 
-            <div className="mt-6 space-y-3">
+            <div className="mt-6">
               <button
                 type="button"
-                onClick={() => handleWinnerPick("side1")}
-                className="btn-primary w-full"
+                onClick={() => setShowWinnerPick(true)}
+                className="btn-primary min-w-[220px]"
               >
-                {side1Name}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleWinnerPick("side2")}
-                className="btn-primary w-full"
-              >
-                {side2Name}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleWinnerPick("none")}
-                className="btn-secondary w-full"
-              >
-                لا أحد
+                من جاوب صح؟
               </button>
             </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="mt-8">
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-5">
+              <p className="text-xl font-black">من جاوب صح؟</p>
+              <p className="mt-2 text-white/70">
+                اختر الفريق الذي أجاب بشكل صحيح
+              </p>
+
+              <div className="mt-6 space-y-3">
+                <button
+                  type="button"
+                  onClick={() => handleWinnerPick("side1")}
+                  className="btn-primary w-full"
+                >
+                  {side1Name}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleWinnerPick("side2")}
+                  className="btn-primary w-full"
+                >
+                  {side2Name}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleWinnerPick("none")}
+                  className="btn-secondary w-full"
+                >
+                  لا أحد
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </GlassCard>
   );
 }
